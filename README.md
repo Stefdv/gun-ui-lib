@@ -4,7 +4,7 @@ gun-ui-lib
 > A collection of widgets created to work brilliantly with GUN, or without.
 
 ## NOTE: 
-There is no need ( or purpose ) to load this element by yourself. All widget components of the gun-ui library have this element as a dependency, if you  `bower install` any of the widgets this will be included for you. Except for 'gun-ui-lcd'.
+There is no need ( or purpose ) to load this element by yourself. All widget components of the gun-ui library have this element as a dependency, if you  `bower install` any of the widgets this will be included for you. ( Except for 'gun-ui-lcd' which doesn't need it ).
 
 Disclamer:
 _All canvas elements in the gun-ui library are created by Gerrit Grunwald (@hansolo)_**
