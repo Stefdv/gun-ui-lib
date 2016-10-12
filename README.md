@@ -18,9 +18,10 @@ Yes, the original file holds all widgets in a single file. I needed every widget
 ## gun-ui-lib(rary)
 curently the library consists of;
 <pre>
-gun-ui-lib    : https://github.com/Stefdv/gun-ui-lib     ( you're already here )
-gun-ui-gauge  : https://github.com/Stefdv/gun-ui-gauge
-gun-ui-lcd    : https://github.com/Stefdv/gun-ui-lcd
+gun-ui-lib      : https://github.com/Stefdv/gun-ui-lib  ( you`re already here )   
+gun-ui-gauge    : https://github.com/Stefdv/gun-ui-gauge 
+gun-ui-bargauge : https://github.com/Stefdv/gun-ui-bargauge 
+gun-ui-lcd      : https://github.com/Stefdv/gun-ui-lcd
 </pre>
 
 _All canvas elements in the gun-ui-lib are created by Gerrit Grunwald (@hansolo)_**
