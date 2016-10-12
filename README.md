@@ -15,5 +15,12 @@ by itself it is not very usefull. But all gun-ui elements require this element. 
 ## Stripped-down?
 Yes, the original file holds all widgets in a single file. I needed every widget as a single component and didn't want to pack the original file with each element due to filesize.
 
+## gun-ui-lib(rary)
+curently the library consists of;
+<pre>
+gun-ui-lib    : https://github.com/Stefdv/gun-ui-lib     ( your already here )
+gun-ui-gauge  : https://github.com/Stefdv/gun-ui-gauge
+gun-ui-lcd    : https://github.com/Stefdv/gun-ui-lcd
+</pre>
 
 _All canvas elements in the gun-ui-lib are created by Gerrit Grunwald (@hansolo)_**
