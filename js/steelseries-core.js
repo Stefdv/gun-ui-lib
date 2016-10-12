@@ -3383,6 +3383,8 @@ var steelseries = (function () {
         drawRadialCustomImage:drawRadialCustomImage,
         createLedImage :createLedImage ,
         createKnobImage :createKnobImage ,
+        createLcdBackgroundImage:createLcdBackgroundImage ,
+        createTrendIndicator:createTrendIndicator,
         drawTitleImage :drawTitleImage ,
         drawPointerImage :drawPointerImage ,
         // Images
