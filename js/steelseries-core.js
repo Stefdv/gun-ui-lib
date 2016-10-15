@@ -3617,34 +3617,21 @@ var steelseries = (function () {
         getCanvasContext: getCanvasContext,
         createBuffer :createBuffer ,
         calcNiceNumber :calcNiceNumber ,
-
         drawRadialFrameImage:drawRadialFrameImage ,
         drawRadialBackgroundImage:drawRadialBackgroundImage,
         drawRadialCustomImage:drawRadialCustomImage,
-
-        drawLinearFrameImage:drawLinearFrameImage,
-        drawLinearBackgroundImage:drawLinearBackgroundImage,
-        drawLinearForegroundImage:drawLinearForegroundImage,
-
-
         createLedImage :createLedImage ,
         createKnobImage :createKnobImage ,
         createLcdBackgroundImage:createLcdBackgroundImage ,
         createTrendIndicator:createTrendIndicator,
-        createMeasuredValueImage:createMeasuredValueImage,
         drawTitleImage :drawTitleImage ,
         drawPointerImage :drawPointerImage ,
         // Images
         drawFrame : drawRadialFrameImage,
         drawBackground : drawRadialBackgroundImage,
         drawForeground : drawRadialForegroundImage,
-
         drawRadialForegroundImage :drawRadialForegroundImage ,
-
-        drawRoseImage:drawRoseImage,
-
-
-
+        createMeasuredValueImage :createMeasuredValueImage ,
 
         // Tools
         rgbaColor :  RgbaColor,
@@ -3671,8 +3658,7 @@ var steelseries = (function () {
         TrendState: trendState,
 
         // Other
-        Section : section,
-        Odometer:odometer
+        Section : section
     };
 }());
 
