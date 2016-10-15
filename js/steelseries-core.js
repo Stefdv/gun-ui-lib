@@ -1,3 +1,3679 @@
-function Delegate(){}Delegate.create=function(a,b){for(var c=[],d=arguments.length,e=2;e<d;e++)c[e-2]=arguments[e];return function(){var d=[].concat(arguments,c);b.apply(a,d)}};var Tween=function(a,b,c,d,e,f,g){this.init(a,b,c,d,e,f,g)},t=Tween.prototype;t.obj={},t.prop="",t.func=function(a,b,c,d){return c*a/d+b},t.begin=0,t.change=0,t.prevTime=0,t.prevPos=0,t.looping=!1,t._duration=0,t._time=0,t._pos=0,t._position=0,t._startTime=0,t._finish=0,t.name="",t.suffixe="",t._listeners=[],t.setTime=function(a){this.prevTime=this._time,a>this.getDuration()?this.looping?(this.rewind(a-this._duration),this.update(),this.broadcastMessage("onMotionLooped",{target:this,type:"onMotionLooped"})):(this._time=this._duration,this.update(),this.stop(),this.broadcastMessage("onMotionFinished",{target:this,type:"onMotionFinished"})):a<0?(this.rewind(),this.update()):(this._time=a,this.update())},t.getTime=function(){return this._time},t.setDuration=function(a){this._duration=null===a||a<=0?1e5:a},t.getDuration=function(){return this._duration},t.setPosition=function(a){this.prevPos=this._pos;var b=""!==this.suffixe?this.suffixe:"";this.obj[this.prop]=Math.round(a)+b,this._pos=a,this.broadcastMessage("onMotionChanged",{target:this,type:"onMotionChanged"})},t.getPosition=function(a){return void 0===a&&(a=this._time),this.func(a,this.begin,this.change,this._duration)},t.setFinish=function(a){this.change=a-this.begin},t.getFinish=function(){return this.begin+this.change},t.init=function(a,b,c,d,e,f,g){arguments.length&&(this._listeners=[],this.addListener(this),g&&(this.suffixe=g),this.obj=a,this.prop=b,this.begin=d,this._pos=d,this.setDuration(f),null!==c&&""!==c&&(this.func=c),this.setFinish(e))},t.start=function(){this.rewind(),this.startEnterFrame(),this.broadcastMessage("onMotionStarted",{target:this,type:"onMotionStarted"})},t.rewind=function(a){this.stop(),this._time=void 0===a?0:a,this.fixTime(),this.update()},t.fforward=function(){this._time=this._duration,this.fixTime(),this.update()},t.update=function(){this.setPosition(this.getPosition(this._time))},t.startEnterFrame=function(){this.stopEnterFrame(),this.isPlaying=!0,this.onEnterFrame()},t.onEnterFrame=function(){this.isPlaying&&(this.nextFrame(),setTimeout(Delegate.create(this,this.onEnterFrame),25))},t.nextFrame=function(){this.setTime((this.getTimer()-this._startTime)/1e3)},t.stop=function(){this.stopEnterFrame(),this.broadcastMessage("onMotionStopped",{target:this,type:"onMotionStopped"})},t.stopEnterFrame=function(){this.isPlaying=!1},t.playing=function(){return this.isPlaying},t.continueTo=function(a,b){this.begin=this._pos,this.setFinish(a),void 0!==this._duration&&this.setDuration(b),this.start()},t.resume=function(){this.fixTime(),this.startEnterFrame(),this.broadcastMessage("onMotionResumed",{target:this,type:"onMotionResumed"})},t.yoyo=function(){this.continueTo(this.begin,this._time)},t.addListener=function(a){return this.removeListener(a),this._listeners.push(a)},t.removeListener=function(a){for(var b=this._listeners,c=b.length;c--;)if(b[c]===a)return b.splice(c,1),!0;return!1},t.broadcastMessage=function(){for(var b,a=[],c=this._listeners,d=c.length,e=0;e<arguments.length;e++)a.push(arguments[e]);for(b=a.shift(),e=0;e<d;e++)c[e][b]&&c[e][b].apply(c[e],a)},t.fixTime=function(){this._startTime=this.getTimer()-1e3*this._time},t.getTimer=function(){return(new Date).getTime()-this._time},Tween.backEaseIn=function(a,b,c,d){var e=1.70158;return c*(a/=d)*a*((e+1)*a-e)+b},Tween.backEaseOut=function(a,b,c,d){var e=1.70158;return c*((a=a/d-1)*a*((e+1)*a+e)+1)+b},Tween.backEaseInOut=function(a,b,c,d){var e=1.70158;return(a/=d/2)<1?c/2*a*a*(((e*=1.525)+1)*a-e)+b:c/2*((a-=2)*a*(((e*=1.525)+1)*a+e)+2)+b},Tween.elasticEaseIn=function(a,b,c,d,e,f){var g;return 0===a?b:1==(a/=d)?b+c:(f||(f=.3*d),!e||e<Math.abs(c)?(e=c,g=f/4):g=f/(2*Math.PI)*Math.asin(c/e),-(e*Math.pow(2,10*(a-=1))*Math.sin(2*(a*d-g)*Math.PI/f))+b)},Tween.elasticEaseOut=function(a,b,c,d,e,f){var g;return 0===a?b:1==(a/=d)?b+c:(f||(f=.3*d),!e||e<Math.abs(c)?(e=c,g=f/4):g=f/(2*Math.PI)*Math.asin(c/e),e*Math.pow(2,-10*a)*Math.sin(2*(a*d-g)*Math.PI/f)+c+b)},Tween.elasticEaseInOut=function(a,b,c,d,e,f){var g;return 0===a?b:2==(a/=d/2)?b+c:(f||(f=.3*d*1.5),!e||e<Math.abs(c)?(e=c,g=f/4):g=f/(2*Math.PI)*Math.asin(c/e),a<1?-.5*e*Math.pow(2,10*(a-=1))*Math.sin(2*(a*d-g)*Math.PI/f)+b:e*Math.pow(2,-10*(a-=1))*Math.sin(2*(a*d-g)*Math.PI/f)*.5+c+b)},Tween.bounceEaseOut=function(a,b,c,d){return(a/=d)<1/2.75?7.5625*c*a*a+b:a<2/2.75?c*(7.5625*(a-=1.5/2.75)*a+.75)+b:a<2.5/2.75?c*(7.5625*(a-=2.25/2.75)*a+.9375)+b:c*(7.5625*(a-=2.625/2.75)*a+.984375)+b},Tween.bounceEaseIn=function(a,b,c,d){return c-Tween.bounceEaseOut(d-a,0,c,d)+b},Tween.bounceEaseInOut=function(a,b,c,d){return a<d/2?.5*Tween.bounceEaseIn(2*a,0,c,d)+b:.5*Tween.bounceEaseOut(2*a-d,0,c,d)+.5*c+b},Tween.strongEaseInOut=function(a,b,c,d){return c*(a/=d)*a*a*a*a+b},Tween.regularEaseIn=function(a,b,c,d){return c*(a/=d)*a+b},Tween.regularEaseOut=function(a,b,c,d){return-c*(a/=d)*(a-2)+b},Tween.regularEaseInOut=function(a,b,c,d){return(a/=d/2)<1?c/2*a*a+b:-c/2*(--a*(a-2)-1)+b},Tween.strongEaseIn=function(a,b,c,d){return c*(a/=d)*a*a*a*a+b},Tween.strongEaseOut=function(a,b,c,d){return c*((a=a/d-1)*a*a*a*a+1)+b},Tween.strongEaseInOut=function(a,b,c,d){return(a/=d/2)<1?c/2*a*a*a*a*a+b:c/2*((a-=2)*a*a*a*a+2)+b};var steelseries=function(){function D(a,b){var c="#"===a.charAt(0)?a.substring(1,7):a,d=parseInt(c.substring(0,2),16),e=parseInt(c.substring(2,4),16),f=parseInt(c.substring(4,6),16),g="rgba("+d+","+e+","+f+","+b+")";return g}function E(a,b,c,d,e){var f=1/255,g=a.getRed(),h=a.getGreen(),i=a.getBlue(),j=a.getAlpha(),k=b.getRed()-g,l=b.getGreen()-h,m=b.getBlue()-i,n=b.getAlpha()*f-j*f,o=k/c*d,p=l/c*d,q=m/c*d,r=n/c*d;return e=e||!1,e?[(g+o).toFixed(0),(h+p).toFixed(0),(i+q).toFixed(0),j+r]:new A((g+o).toFixed(0),(h+p).toFixed(0),(i+q).toFixed(0),j+r)}function F(a,b,c){return{start:a,stop:b,color:c}}function G(a,b){var e,c=Math.floor(Math.log10(a)),d=a/Math.pow(10,c);return e=b?1.5>d?1:3>d?2:7>d?5:10:1>=d?1:2>=d?2:5>=d?5:10,e*Math.pow(10,c)}function H(a,b,c,d,e,f){var g=b+d,h=c+e;a.beginPath(),a.moveTo(b+f,c),a.lineTo(g-f,c),a.quadraticCurveTo(g,c,g,c+f),a.lineTo(g,c+e-f),a.quadraticCurveTo(g,h,g-f,h),a.lineTo(b+f,h),a.quadraticCurveTo(b,h,b,h-f),a.lineTo(b,c+f),a.quadraticCurveTo(b,c,b+f,c),a.closePath()}function I(a,b){var c=f.createElement("canvas");return c.width=a,c.height=b,c}function J(a,b,c){var d=f.createElement("canvas");return d.width=a,d.height=b,c(d.getContext("2d")),d}function P(a,b){return a<0?0:a>b?b:a}function V(a){var b="string"==typeof a||a instanceof String?f.getElementById(a):a;return b.getContext("2d")}var b=(.5*Math.PI,2*Math.PI),c=Math.PI,d=Math.PI/180,f=(180/Math.PI,document),h="Arial,Verdana,sans-serif",j=function(a,c,d,e,f){var g,h,i,k,l=c.toString()+d.type+e.light.getHexColor()+e.medium.getHexColor();if(!j.cache[l]){switch(g=I(c,c),h=g.getContext("2d"),d.type){case"type2":i=h.createLinearGradient(0,.471962*c,0,.130841*c),i.addColorStop(0,f.getRgbaColor()),i.addColorStop(.36,f.getRgbaColor()),i.addColorStop(.361,e.light.getRgbaColor()),i.addColorStop(1,e.light.getRgbaColor()),h.fillStyle=i,h.beginPath(),h.moveTo(.518691*c,.471962*c),h.lineTo(.509345*c,.462616*c),h.lineTo(.509345*c,.341121*c),h.lineTo(.504672*c,.130841*c),h.lineTo(.495327*c,.130841*c),h.lineTo(.490654*c,.341121*c),h.lineTo(.490654*c,.462616*c),h.lineTo(.481308*c,.471962*c),h.closePath(),h.fill();break;case"type3":h.beginPath(),h.rect(.495327*c,.130841*c,.009345*c,.373831*c),h.closePath(),h.fillStyle=e.light.getRgbaColor(),h.fill();break;case"type4":i=h.createLinearGradient(.467289*c,0,.528036*c,0),i.addColorStop(0,e.dark.getRgbaColor()),i.addColorStop(.51,e.dark.getRgbaColor()),i.addColorStop(.52,e.light.getRgbaColor()),i.addColorStop(1,e.light.getRgbaColor()),h.fillStyle=i,h.beginPath(),h.moveTo(.5*c,.126168*c),h.lineTo(.514018*c,.135514*c),h.lineTo(.53271*c,.5*c),h.lineTo(.523364*c,.602803*c),h.lineTo(.476635*c,.602803*c),h.lineTo(.467289*c,.5*c),h.lineTo(.485981*c,.135514*c),h.lineTo(.5*c,.126168*c),h.closePath(),h.fill();break;case"type5":i=h.createLinearGradient(.471962*c,0,.528036*c,0),i.addColorStop(0,e.light.getRgbaColor()),i.addColorStop(.5,e.light.getRgbaColor()),i.addColorStop(.5,e.medium.getRgbaColor()),i.addColorStop(1,e.medium.getRgbaColor()),h.fillStyle=i,h.beginPath(),h.moveTo(.5*c,.495327*c),h.lineTo(.528037*c,.495327*c),h.lineTo(.5*c,.149532*c),h.lineTo(.471962*c,.495327*c),h.lineTo(.5*c,.495327*c),h.closePath(),h.fill(),h.lineWidth=1,h.lineCap="square",h.lineJoin="miter",h.strokeStyle=e.dark.getRgbaColor(),h.stroke();break;case"type6":h.fillStyle=e.medium.getRgbaColor(),h.beginPath(),h.moveTo(.481308*c,.485981*c),h.lineTo(.481308*c,.392523*c),h.lineTo(.485981*c,.317757*c),h.lineTo(.495327*c,.130841*c),h.lineTo(.504672*c,.130841*c),h.lineTo(.514018*c,.317757*c),h.lineTo(.518691*c,.38785*c),h.lineTo(.518691*c,.485981*c),h.lineTo(.504672*c,.485981*c),h.lineTo(.504672*c,.38785*c),h.lineTo(.5*c,.317757*c),h.lineTo(.495327*c,.392523*c),h.lineTo(.495327*c,.485981*c),h.lineTo(.481308*c,.485981*c),h.closePath(),h.fill();break;case"type7":i=h.createLinearGradient(.481308*c,0,.518691*c,0),i.addColorStop(0,e.dark.getRgbaColor()),i.addColorStop(1,e.medium.getRgbaColor()),h.fillStyle=i,h.beginPath(),h.moveTo(.490654*c,.130841*c),h.lineTo(.481308*c,.5*c),h.lineTo(.518691*c,.5*c),h.lineTo(.504672*c,.130841*c),h.lineTo(.490654*c,.130841*c),h.closePath(),h.fill();break;case"type8":i=h.createLinearGradient(.471962*c,0,.528036*c,0),i.addColorStop(0,e.light.getRgbaColor()),i.addColorStop(.5,e.light.getRgbaColor()),i.addColorStop(.5,e.medium.getRgbaColor()),i.addColorStop(1,e.medium.getRgbaColor()),h.fillStyle=i,h.strokeStyle=e.dark.getRgbaColor(),h.beginPath(),h.moveTo(.5*c,.53271*c),h.lineTo(.53271*c,.5*c),h.bezierCurveTo(.53271*c,.5*c,.509345*c,.457943*c,.5*c,.149532*c),h.bezierCurveTo(.490654*c,.457943*c,.467289*c,.5*c,.467289*c,.5*c),h.lineTo(.5*c,.53271*c),h.closePath(),h.fill(),h.stroke();break;case"type9":i=h.createLinearGradient(.471962*c,0,.528036*c,0),i.addColorStop(0,"rgb(50, 50, 50)"),i.addColorStop(.5,"#666666"),i.addColorStop(1,"rgb(50, 50, 50)"),h.fillStyle=i,h.strokeStyle="#2E2E2E",h.beginPath(),h.moveTo(.495327*c,.233644*c),h.lineTo(.504672*c,.233644*c),h.lineTo(.514018*c,.439252*c),h.lineTo(.485981*c,.439252*c),h.lineTo(.495327*c,.233644*c),h.closePath(),h.moveTo(.490654*c,.130841*c),h.lineTo(.471962*c,.471962*c),h.lineTo(.471962*c,.528037*c),h.bezierCurveTo(.471962*c,.528037*c,.476635*c,.602803*c,.476635*c,.602803*c),h.bezierCurveTo(.476635*c,.607476*c,.481308*c,.607476*c,.5*c,.607476*c),h.bezierCurveTo(.518691*c,.607476*c,.523364*c,.607476*c,.523364*c,.602803*c),h.bezierCurveTo(.523364*c,.602803*c,.528037*c,.528037*c,.528037*c,.528037*c),h.lineTo(.528037*c,.471962*c),h.lineTo(.509345*c,.130841*c),h.lineTo(.490654*c,.130841*c),h.closePath(),h.fill(),h.beginPath(),h.moveTo(.495327*c,.219626*c),h.lineTo(.504672*c,.219626*c),h.lineTo(.504672*c,.135514*c),h.lineTo(.495327*c,.135514*c),h.lineTo(.495327*c,.219626*c),h.closePath(),h.fillStyle=e.medium.getRgbaColor(),h.fill();break;case"type10":h.beginPath(),h.moveTo(.5*c,.149532*c),h.bezierCurveTo(.5*c,.149532*c,.443925*c,.490654*c,.443925*c,.5*c),h.bezierCurveTo(.443925*c,.53271*c,.467289*c,.556074*c,.5*c,.556074*c),h.bezierCurveTo(.53271*c,.556074*c,.556074*c,.53271*c,.556074*c,.5*c),h.bezierCurveTo(.556074*c,.490654*c,.5*c,.149532*c,.5*c,.149532*c),h.closePath(),i=h.createLinearGradient(.471962*c,0,.528036*c,0),i.addColorStop(0,e.light.getRgbaColor()),i.addColorStop(.5,e.light.getRgbaColor()),i.addColorStop(.5,e.medium.getRgbaColor()),i.addColorStop(1,e.medium.getRgbaColor()),h.fillStyle=i,h.strokeStyle=e.medium.getRgbaColor(),h.lineWidth=1,h.lineCap="square",h.lineJoin="miter",h.fill(),h.stroke();break;case"type11":h.beginPath(),h.moveTo(.5*c,.168224*c),h.lineTo(.485981*c,.5*c),h.bezierCurveTo(.485981*c,.5*c,.481308*c,.584112*c,.5*c,.584112*c),h.bezierCurveTo(.514018*c,.584112*c,.509345*c,.5*c,.509345*c,.5*c),h.lineTo(.5*c,.168224*c),h.closePath(),i=h.createLinearGradient(0,.168224*c,0,.584112*c),i.addColorStop(0,e.medium.getRgbaColor()),i.addColorStop(1,e.dark.getRgbaColor()),h.fillStyle=i,h.strokeStyle=e.dark.getRgbaColor(),h.fill(),h.stroke();break;case"type12":h.beginPath(),h.moveTo(.5*c,.168224*c),h.lineTo(.485981*c,.5*c),h.lineTo(.5*c,.504672*c),h.lineTo(.509345*c,.5*c),h.lineTo(.5*c,.168224*c),h.closePath(),i=h.createLinearGradient(0,.168224*c,0,.504672*c),i.addColorStop(0,e.medium.getRgbaColor()),i.addColorStop(1,e.dark.getRgbaColor()),h.fillStyle=i,h.strokeStyle=e.dark.getRgbaColor(),h.fill(),h.stroke();break;case"type13":case"type14":h.beginPath(),h.moveTo(.485981*c,.168224*c),h.lineTo(.5*c,.130841*c),h.lineTo(.509345*c,.168224*c),h.lineTo(.509345*c,.509345*c),h.lineTo(.485981*c,.509345*c),h.lineTo(.485981*c,.168224*c),h.closePath(),"type13"===d.type?(i=h.createLinearGradient(0,.5*c,0,.130841*c),i.addColorStop(0,f.getRgbaColor()),i.addColorStop(.85,f.getRgbaColor()),i.addColorStop(.85,e.medium.getRgbaColor()),i.addColorStop(1,e.medium.getRgbaColor()),h.fillStyle=i):(i=h.createLinearGradient(.485981*c,0,.509345*c,0),i.addColorStop(0,e.veryDark.getRgbaColor()),i.addColorStop(.5,e.light.getRgbaColor()),i.addColorStop(1,e.veryDark.getRgbaColor()),h.fillStyle=i),h.fill();break;case"type15":case"type16":h.beginPath(),h.moveTo(.509345*c,.457943*c),h.lineTo(.5015*c,.13*c),h.lineTo(.4985*c,.13*c),h.lineTo(.490654*c,.457943*c),h.bezierCurveTo(.490654*c,.457943*c,.490654*c,.457943*c,.490654*c,.457943*c),h.bezierCurveTo(.471962*c,.462616*c,.457943*c,.481308*c,.457943*c,.5*c),h.bezierCurveTo(.457943*c,.518691*c,.471962*c,.537383*c,.490654*c,.542056*c),h.bezierCurveTo(.490654*c,.542056*c,.490654*c,.542056*c,.490654*c,.542056*c),"type15"===d.type?(h.lineTo(.490654*c,.57*c),h.bezierCurveTo(.46*c,.58*c,.46*c,.62*c,.490654*c,.63*c),h.bezierCurveTo(.47*c,.62*c,.48*c,.59*c,.5*c,.59*c),h.bezierCurveTo(.53*c,.59*c,.52*c,.62*c,.509345*c,.63*c),h.bezierCurveTo(.54*c,.62*c,.54*c,.58*c,.509345*c,.57*c),h.lineTo(.509345*c,.57*c)):(h.lineTo(.490654*c,.621495*c),h.lineTo(.509345*c,.621495*c)),h.lineTo(.509345*c,.542056*c),h.bezierCurveTo(.509345*c,.542056*c,.509345*c,.542056*c,.509345*c,.542056*c),h.bezierCurveTo(.528037*c,.537383*c,.542056*c,.518691*c,.542056*c,.5*c),h.bezierCurveTo(.542056*c,.481308*c,.528037*c,.462616*c,.509345*c,.457943*c),h.bezierCurveTo(.509345*c,.457943*c,.509345*c,.457943*c,.509345*c,.457943*c),h.closePath(),i="type15"===d.type?h.createLinearGradient(0,0,0,.63*c):h.createLinearGradient(0,0,0,.621495*c),i.addColorStop(0,e.medium.getRgbaColor()),i.addColorStop(.388888,e.medium.getRgbaColor()),i.addColorStop(.5,e.light.getRgbaColor()),i.addColorStop(.611111,e.medium.getRgbaColor()),i.addColorStop(1,e.medium.getRgbaColor()),h.fillStyle=i,h.strokeStyle=e.dark.getRgbaColor(),h.fill(),h.stroke(),h.beginPath(),k=.06542*c/2,h.arc(.5*c,.5*c,k,0,b),i=h.createLinearGradient(.5*c-k,.5*c+k,0,.5*c+k),i.addColorStop(0,"#e6b35c"),i.addColorStop(.01,"#e6b35c"),i.addColorStop(.99,"#c48200"),i.addColorStop(1,"#c48200"),h.fillStyle=i,h.closePath(),h.fill(),h.beginPath(),k=.046728*c/2,h.arc(.5*c,.5*c,k,0,b),i=h.createRadialGradient(.5*c,.5*c,0,.5*c,.5*c,k),i.addColorStop(0,"#c5c5c5"),i.addColorStop(.19,"#c5c5c5"),i.addColorStop(.22,"#000000"),i.addColorStop(.8,"#000000"),i.addColorStop(.99,"#707070"),i.addColorStop(1,"#707070"),h.fillStyle=i,h.closePath(),h.fill();break;case"type1":default:i=h.createLinearGradient(0,.471962*c,0,.130841*c),i.addColorStop(0,e.veryDark.getRgbaColor()),i.addColorStop(.3,e.medium.getRgbaColor()),i.addColorStop(.59,e.medium.getRgbaColor()),i.addColorStop(1,e.veryDark.getRgbaColor()),h.fillStyle=i,h.beginPath(),h.moveTo(.518691*c,.471962*c),h.bezierCurveTo(.514018*c,.457943*c,.509345*c,.415887*c,.509345*c,.401869*c),h.bezierCurveTo(.504672*c,.383177*c,.5*c,.130841*c,.5*c,.130841*c),h.bezierCurveTo(.5*c,.130841*c,.490654*c,.383177*c,.490654*c,.397196*c),h.bezierCurveTo(.490654*c,.415887*c,.485981*c,.457943*c,.481308*c,.471962*c),h.bezierCurveTo(.471962*c,.481308*c,.467289*c,.490654*c,.467289*c,.5*c),h.bezierCurveTo(.467289*c,.518691*c,.481308*c,.53271*c,.5*c,.53271*c),h.bezierCurveTo(.518691*c,.53271*c,.53271*c,.518691*c,.53271*c,.5*c),h.bezierCurveTo(.53271*c,.490654*c,.528037*c,.481308*c,.518691*c,.471962*c),h.closePath(),h.fill()}j.cache[l]=g}return a.drawImage(j.cache[l],0,0),this};j.cache={};var k=function(a,c,d,e,f,g){var h,i,j,l,m,n,o,p=f.toString()+g+c.design;if(!k.cache[p]){switch(h=I(f,g),i=h.getContext("2d"),i.fillStyle="#848484",i.strokeStyle="rgba(132, 132, 132, 0.5)",i.beginPath(),i.arc(d,e,f/2,0,b,!0),i.closePath(),i.fill(),i.stroke(),i.beginPath(),i.arc(d,e,.990654*f/2,0,b,!0),i.closePath(),c.design){case"metal":j=i.createLinearGradient(0,.004672*f,0,.990654*g),j.addColorStop(0,"#fefefe"),j.addColorStop(.07,"rgb(210, 210, 210)"),j.addColorStop(.12,"rgb(179, 179, 179)"),j.addColorStop(1,"rgb(213, 213, 213)"),i.fillStyle=j,i.fill();break;case"brass":j=i.createLinearGradient(0,.004672*f,0,.990654*g),j.addColorStop(0,"rgb(249, 243, 155)"),j.addColorStop(.05,"rgb(246, 226, 101)"),j.addColorStop(.1,"rgb(240, 225, 132)"),j.addColorStop(.5,"rgb(90, 57, 22)"),j.addColorStop(.9,"rgb(249, 237, 139)"),j.addColorStop(.95,"rgb(243, 226, 108)"),j.addColorStop(1,"rgb(202, 182, 113)"),i.fillStyle=j,i.fill();break;case"steel":j=i.createLinearGradient(0,.004672*f,0,.990654*g),j.addColorStop(0,"rgb(231, 237, 237)"),j.addColorStop(.05,"rgb(189, 199, 198)"),j.addColorStop(.1,"rgb(192, 201, 200)"),j.addColorStop(.5,"rgb(23, 31, 33)"),j.addColorStop(.9,"rgb(196, 205, 204)"),j.addColorStop(.95,"rgb(194, 204, 203)"),j.addColorStop(1,"rgb(189, 201, 199)"),i.fillStyle=j,i.fill();break;case"gold":j=i.createLinearGradient(0,.004672*f,0,.990654*g),j.addColorStop(0,"rgb(255, 255, 207)"),j.addColorStop(.15,"rgb(255, 237, 96)"),j.addColorStop(.22,"rgb(254, 199, 57)"),j.addColorStop(.3,"rgb(255, 249, 203)"),j.addColorStop(.38,"rgb(255, 199, 64)"),j.addColorStop(.44,"rgb(252, 194, 60)"),j.addColorStop(.51,"rgb(255, 204, 59)"),j.addColorStop(.6,"rgb(213, 134, 29)"),j.addColorStop(.68,"rgb(255, 201, 56)"),j.addColorStop(.75,"rgb(212, 135, 29)"),j.addColorStop(1,"rgb(247, 238, 101)"),i.fillStyle=j,i.fill();break;case"anthracite":j=i.createLinearGradient(0,.004672*g,0,.995326*g),j.addColorStop(0,"rgb(118, 117, 135)"),j.addColorStop(.06,"rgb(74, 74, 82)"),j.addColorStop(.12,"rgb(50, 50, 54)"),j.addColorStop(1,"rgb(79, 79, 87)"),i.fillStyle=j,i.fill();break;case"tiltedGray":j=i.createLinearGradient(.233644*f,.084112*g,.81258*f,.910919*g),j.addColorStop(0,"#ffffff"),j.addColorStop(.07,"rgb(210, 210, 210)"),j.addColorStop(.16,"rgb(179, 179, 179)"),j.addColorStop(.33,"#ffffff"),j.addColorStop(.55,"#c5c5c5"),j.addColorStop(.79,"#ffffff"),j.addColorStop(1,"#666666"),i.fillStyle=j,i.fill();break;case"tiltedBlack":j=i.createLinearGradient(.228971*f,.079439*g,.802547*f,.898591*g),j.addColorStop(0,"#666666"),j.addColorStop(.21,"#000000"),j.addColorStop(.47,"#666666"),j.addColorStop(.99,"#000000"),j.addColorStop(1,"#000000"),i.fillStyle=j,i.fill();break;case"glossyMetal":j=i.createRadialGradient(.5*f,.5*g,0,.5*f,.5*f,.5*f),j.addColorStop(0,"rgb(207, 207, 207)"),j.addColorStop(.96,"rgb(205, 204, 205)"),j.addColorStop(1,"rgb(244, 244, 244)"),i.fillStyle=j,i.fill(),i.beginPath(),i.arc(.5*f,.5*g,.973962*f/2,0,b),i.closePath(),j=i.createLinearGradient(0,g-.971962*g,0,.971962*g),j.addColorStop(0,"rgb(249, 249, 249)"),j.addColorStop(.23,"rgb(200, 195, 191)"),j.addColorStop(.36,"#ffffff"),j.addColorStop(.59,"rgb(29, 29, 29)"),j.addColorStop(.76,"rgb(200, 194, 192)"),j.addColorStop(1,"rgb(209, 209, 209)"),i.fillStyle=j,i.fill(),i.beginPath(),i.arc(.5*f,.5*g,.869158*f/2,0,b),i.closePath(),i.fillStyle="#f6f6f6",i.fill(),i.beginPath(),i.arc(.5*f,.5*g,.85*f/2,0,b),i.closePath(),i.fillStyle="#333333",i.fill();break;case"blackMetal":n=[0,.125,.347222,.5,.680555,.875,1],o=[new A(254,254,254,1),new A(0,0,0,1),new A(153,153,153,1),new A(0,0,0,1),new A(153,153,153,1),new A(0,0,0,1),new A(254,254,254,1)],i.save(),i.arc(d,e,.990654*f/2,0,b,!0),i.clip(),l=.495327*f,m=.42056*f,j=new B(n,o),j.fillCircle(i,d,e,m,l),i.strokeStyle="#848484",i.strokeStyle="rgba(132, 132, 132, 0.8)",i.beginPath(),i.lineWidth=f/90,i.arc(d,e,f/2,0,b,!0),i.closePath(),i.stroke(),i.restore();break;case"shinyMetal":n=[0,.125,.25,.347222,.5,.652777,.75,.875,1],o=[new A(254,254,254,1),new A(210,210,210,1),new A(179,179,179,1),new A(238,238,238,1),new A(160,160,160,1),new A(238,238,238,1),new A(179,179,179,1),new A(210,210,210,1),new A(254,254,254,1)],i.save(),i.arc(d,e,.990654*f/2,0,b,!0),i.clip(),l=.495327*f,m=.42056*f,j=new B(n,o),j.fillCircle(i,d,e,m,l),i.strokeStyle="#848484",i.strokeStyle="rgba(132, 132, 132, 0.8)",i.beginPath(),i.lineWidth=f/90,i.arc(d,e,f/2,0,b,!0),i.closePath(),i.stroke(),i.restore();break;case"chrome":n=[0,.09,.12,.16,.25,.29,.33,.38,.48,.52,.63,.68,.8,.83,.87,.97,1],o=[new A(255,255,255,1),new A(255,255,255,1),new A(136,136,138,1),new A(164,185,190,1),new A(158,179,182,1),new A(112,112,112,1),new A(221,227,227,1),new A(155,176,179,1),new A(156,176,177,1),new A(254,255,255,1),new A(255,255,255,1),new A(156,180,180,1),new A(198,209,211,1),new A(246,248,247,1),new A(204,216,216,1),new A(164,188,190,1),new A(255,255,255,1)],i.save(),i.arc(d,e,.990654*f/2,0,b,!0),i.clip(),l=.495327*f,m=.42056*f,j=new B(n,o),j.fillCircle(i,d,e,m,l),i.strokeStyle="#848484",i.strokeStyle="rgba(132, 132, 132, 0.8)",i.beginPath(),i.lineWidth=f/90,i.arc(d,e,f/2,0,b,!0),i.closePath(),i.stroke(),i.restore()}i.fillStyle="rgb(191, 191, 191)",i.beginPath(),i.arc(d,e,.841121*f/2,0,b,!0),i.closePath(),i.fill(),i.globalCompositeOperation="destination-out",i.beginPath(),i.arc(d,e,.83*f/2,0,b,!0),i.closePath(),i.fill(),k.cache[p]=h}return a.drawImage(k.cache[p],0,0),this};k.cache={};var l=function(a,b,c,d,e){var f,g,h,i,j,k,m,n=[],o=[],p=c.toString()+d+b.design+e;if(!l.cache[p]){switch(f=.04*Math.sqrt(c*c+d*d),f=Math.ceil(Math.min(f,.1*(e?c:d))),g=I(c,d),h=g.getContext("2d"),e?(i=Math.ceil(.05*c),j=i-1,k=Math.floor(.028571*c)):(i=Math.ceil(.05*d),j=i-1,k=Math.floor(.028571*d)),H(h,0,0,c,d,i),h.fillStyle="#838383",h.fill(),H(h,1,1,c-2,d-2,j),b.design){case"metal":m=h.createLinearGradient(0,.004672*c,0,.990654*d),m.addColorStop(0,"#fefefe"),m.addColorStop(.07,"rgb(210, 210, 210)"),m.addColorStop(.12,"rgb(179, 179, 179)"),m.addColorStop(1,"rgb(213, 213, 213)"),h.fillStyle=m,h.fill();break;case"brass":m=h.createLinearGradient(0,.004672*c,0,.990654*d),m.addColorStop(0,"rgb(249, 243, 155)"),m.addColorStop(.05,"rgb(246, 226, 101)"),m.addColorStop(.1,"rgb(240, 225, 132)"),m.addColorStop(.5,"rgb(90, 57, 22)"),m.addColorStop(.9,"rgb(249, 237, 139)"),m.addColorStop(.95,"rgb(243, 226, 108)"),m.addColorStop(1,"rgb(202, 182, 113)"),h.fillStyle=m,h.fill();break;case"steel":m=h.createLinearGradient(0,.004672*c,0,.990654*d),m.addColorStop(0,"rgb(231, 237, 237)"),m.addColorStop(.05,"rgb(189, 199, 198)"),m.addColorStop(.1,"rgb(192, 201, 200)"),m.addColorStop(.5,"rgb(23, 31, 33)"),m.addColorStop(.9,"rgb(196, 205, 204)"),m.addColorStop(.95,"rgb(194, 204, 203)"),m.addColorStop(1,"rgb(189, 201, 199)"),h.fillStyle=m,h.fill();break;case"gold":m=h.createLinearGradient(0,.004672*c,0,.990654*d),m.addColorStop(0,"rgb(255, 255, 207)"),m.addColorStop(.15,"rgb(255, 237, 96)"),m.addColorStop(.22,"rgb(254, 199, 57)"),m.addColorStop(.3,"rgb(255, 249, 203)"),m.addColorStop(.38,"rgb(255, 199, 64)"),m.addColorStop(.44,"rgb(252, 194, 60)"),m.addColorStop(.51,"rgb(255, 204, 59)"),m.addColorStop(.6,"rgb(213, 134, 29)"),m.addColorStop(.68,"rgb(255, 201, 56)"),m.addColorStop(.75,"rgb(212, 135, 29)"),m.addColorStop(1,"rgb(247, 238, 101)"),h.fillStyle=m,h.fill();break;case"anthracite":m=h.createLinearGradient(0,.004672*d,0,.995326*d),m.addColorStop(0,"rgb(118, 117, 135)"),m.addColorStop(.06,"rgb(74, 74, 82)"),m.addColorStop(.12,"rgb(50, 50, 54)"),m.addColorStop(1,"rgb(79, 79, 87)"),h.fillStyle=m,h.fill();break;case"tiltedGray":m=h.createLinearGradient(.233644*c,.084112*d,.81258*c,.910919*d),m.addColorStop(0,"#ffffff"),m.addColorStop(.07,"rgb(210, 210, 210)"),m.addColorStop(.16,"rgb(179, 179, 179)"),m.addColorStop(.33,"#ffffff"),m.addColorStop(.55,"#c5c5c5"),m.addColorStop(.79,"#ffffff"),m.addColorStop(1,"#666666"),h.fillStyle=m,h.fill();break;case"tiltedBlack":m=h.createLinearGradient(.228971*c,.079439*d,.802547*c,.898591*d),m.addColorStop(0,"#666666"),m.addColorStop(.21,"#000000"),m.addColorStop(.47,"#666666"),m.addColorStop(.99,"#000000"),m.addColorStop(1,"#000000"),h.fillStyle=m,h.fill();break;case"glossyMetal":H(h,1,1,c-2,d-2,i),h.clip(),m=h.createLinearGradient(0,1,0,d-2),m.addColorStop(0,"rgb(249, 249, 249)"),m.addColorStop(.2,"rgb(200, 195, 191)"),m.addColorStop(.3,"#ffffff"),m.addColorStop(.6,"rgb(29, 29, 29)"),m.addColorStop(.8,"rgb(200, 194, 192)"),m.addColorStop(1,"rgb(209, 209, 209)"),h.fillStyle=m,h.fill(),H(h,f-2,f-2,c-2*(f-2),d-2*(f-2),k),h.clip(),h.fillStyle="#f6f6f6",h.fill(),H(h,f-1,f-1,c-2*(f-1),d-2*(f-1),k),h.clip(),h.fillStyle="#333333";break;case"blackMetal":n=[0,.125,.347222,.5,.680555,.875,1],o=[new A("#FFFFFF"),new A("#000000"),new A("#999999"),new A("#000000"),new A("#999999"),new A("#000000"),new A("#FFFFFF")],h.beginPath(),H(h,1,1,c-2,d-2,i),h.closePath(),h.clip(),m=new B(n,o),m.fillRect(h,c/2,d/2,c,d,f,f);break;case"shinyMetal":n=[0,.125,.25,.347222,.5,.652777,.75,.875,1],o=[new A("#FFFFFF"),new A("#D2D2D2"),new A("#B3B3B3"),new A("#EEEEEE"),new A("#A0A0A0"),new A("#EEEEEE"),new A("#B3B3B3"),new A("#D2D2D2"),new A("#FFFFFF")],h.beginPath(),H(h,1,1,c-2,d-2,i),h.closePath(),h.clip(),m=new B(n,o),m.fillRect(h,c/2,d/2,c,d,f,f);break;case"chrome":n=[0,.09,.12,.16,.25,.29,.33,.38,.48,.52,.63,.68,.8,.83,.87,.97,1],o=[new A("#FFFFFF"),new A("#FFFFFF"),new A("#888890"),new A("#A4B9BE"),new A("#9EB3B6"),new A("#707070"),new A("#DDE3E3"),new A("#9BB0B3"),new A("#9CB0B1"),new A("#FEFFFF"),new A("#FFFFFF"),new A("#9CB4B4"),new A("#C6D1D3"),new A("#F6F8F7"),new A("#CCD8D8"),new A("#A4BCBE"),new A("#FFFFFF")],h.beginPath(),H(h,1,1,c-2,d-2,i),h.closePath(),h.clip(),m=new B(n,o),m.fillRect(h,c/2,d/2,c,d,f,f)}H(h,f,f,c-2*f,d-2*f,k),h.fillStyle="rgb(192, 192, 192)",h.globalCompositeOperation="destination-out",H(h,f,f,c-2*f,d-2*f,k),h.fill(),l.cache[p]=g}return a.drawImage(l.cache[p],0,0),this};l.cache={};var m=function(a,c,e,f,g,h){var i,j,k,l,n,p,q,r,s,t,u,v,w,o=.831775*g/2,C=g.toString()+h+c.name;if(!m.cache[C]){if(i=I(g,h),j=i.getContext("2d"),j.beginPath(),j.arc(e,f,o,0,b,!0),j.closePath(),"CARBON"===c.name||"PUNCHED_SHEET"===c.name||"BRUSHED_METAL"===c.name||"BRUSHED_STAINLESS"===c.name)"CARBON"===c.name&&(j.fillStyle=j.createPattern(x,"repeat"),j.fill()),"PUNCHED_SHEET"===c.name&&(j.fillStyle=j.createPattern(y,"repeat"),j.fill()),k=j.createLinearGradient(o,0,g-o,0),k.addColorStop(0,"rgba(0, 0, 0, 0.25)"),k.addColorStop(.5,"rgba(0, 0, 0, 0)"),k.addColorStop(1,"rgba(0, 0, 0, 0.25)"),j.fillStyle=k,j.beginPath(),j.arc(e,f,o,0,b,!0),j.closePath(),j.fill(),"BRUSHED_METAL"!==c.name&&"BRUSHED_STAINLESS"!==c.name||(p="BRUSHED_METAL"===c.name,q=parseInt(c.gradientStop.getHexColor().substr(-6),16),r=z(q,5,.1,p,.5),j.fillStyle=j.createPattern(r.fill(0,0,g,h),"no-repeat"),j.fill());else if("STAINLESS"===c.name||"TURNED"===c.name){if(l=[0,.03,.1,.14,.24,.33,.38,.5,.62,.67,.76,.81,.85,.97,1],n=[new A("#FDFDFD"),new A("#FDFDFD"),new A("#B2B2B4"),new A("#ACACAE"),new A("#FDFDFD"),new A("#8E8E8E"),new A("#8E8E8E"),new A("#FDFDFD"),new A("#8E8E8E"),new A("#8E8E8E"),new A("#FDFDFD"),new A("#ACACAE"),new A("#B2B2B4"),new A("#FDFDFD"),new A("#FDFDFD")],k=new B(l,n),k.fillCircle(j,e,f,0,o),"TURNED"===c.name){for(s=o,t=.55*s,u=d*(500/s),j.save(),j.beginPath(),j.arc(e,f,s,0,b),j.closePath(),j.clip(),j.lineWidth=.5,v=b-.3*u,w=0;w<v;w+=u)j.strokeStyle="rgba(240, 240, 255, 0.25)",j.beginPath(),j.arc(e+t,f,t,0,b),j.stroke(),j.translate(e,f),j.rotate(.3*u),j.translate(-e,-f),j.strokeStyle="rgba(25, 10, 10, 0.1)",j.beginPath(),j.arc(e+t,f,t,0,b),j.stroke(),j.translate(e,f),j.rotate(u-.3*u),j.translate(-e,-f);j.restore()}}else k=j.createLinearGradient(0,.084112*g,0,2*o),k.addColorStop(0,c.gradientStart.getRgbaColor()),k.addColorStop(.4,c.gradientFraction.getRgbaColor()),k.addColorStop(1,c.gradientStop.getRgbaColor()),j.fillStyle=k,j.fill();k=j.createRadialGradient(e,f,0,e,f,o),k.addColorStop(0,"rgba(0, 0, 0, 0)"),k.addColorStop(.7,"rgba(0, 0, 0, 0)"),k.addColorStop(.71,"rgba(0, 0, 0, 0)"),k.addColorStop(.86,"rgba(0, 0, 0, 0.03)"),k.addColorStop(.92,"rgba(0, 0, 0, 0.07)"),k.addColorStop(.97,"rgba(0, 0, 0, 0.15)"),k.addColorStop(1,"rgba(0, 0, 0, 0.3)"),j.fillStyle=k,j.beginPath(),j.arc(e,f,o,0,b,!0),j.closePath(),j.fill(),m.cache[C]=i}return a.drawImage(m.cache[C],0,0),this};m.cache={};var n=function(a,c,d,e,f,g){var h=.831775*f,i=.831775*g,j=(f-h)/2,k=(g-i)/2;return null!==c&&c.height>0&&c.width>0&&(a.save(),a.beginPath(),a.arc(d,e,.831775*f/2,0,b,!0),a.clip(),a.drawImage(c,j,k,h,i),a.restore()),this},o=function(a,c,d,e,f){var g,h,i,j,k,l,m,n,p,q,r,s,t,u,v,w,C,D=d.toString()+e+f+c.name;if(!o.cache[D]){l=.04*Math.sqrt(d*d+e*e),l=Math.ceil(Math.min(l,.1*(f?d:e)))-1;var E=Math.floor(.028571*(f?d:e));if(m=I(d,e),n=m.getContext("2d"),p=c,n.lineWidth=0,H(n,l,l,d-2*l,e-2*l,E),"CARBON"===c.name||"PUNCHED_SHEET"===c.name||"STAINLESS"===c.name||"BRUSHED_METAL"===c.name||"BRUSHED_STAINLESS"===c.name||"TURNED"===c.name){if("CARBON"===c.name&&(n.fillStyle=n.createPattern(x,"repeat"),n.fill()),"PUNCHED_SHEET"===c.name&&(n.fillStyle=n.createPattern(y,"repeat"),n.fill()),("STAINLESS"===c.name||"TURNED"===c.name)&&(j=[0,.03,.1,.14,.24,.33,.38,.5,.62,.67,.76,.81,.85,.97,1],k=[new A("#FDFDFD"),new A("#FDFDFD"),new A("#B2B2B4"),new A("#ACACAE"),new A("#FDFDFD"),new A("#8E8E8E"),new A("#8E8E8E"),new A("#FDFDFD"),new A("#8E8E8E"),new A("#8E8E8E"),new A("#FDFDFD"),new A("#ACACAE"),new A("#B2B2B4"),new A("#FDFDFD"),new A("#FDFDFD")],i=new B(j,k),n.clip(),i.fillRect(n,d/2,e/2,d-2*l,e-2*l,d/2,e/2),i=n.createLinearGradient(0,l,0,e-2*l),i.addColorStop(0,"rgba(0, 0, 0, 0.25)"),i.addColorStop(.1,"rgba(0, 0, 0, 0.05)"),i.addColorStop(1,"rgba(0, 0, 0, 0)"),n.fillStyle=i,n.fill(),"TURNED"===c.name)){for(q=Math.sqrt((d-2*l)*(d-2*l)+(e-2*l)*(e-2*l))/2,r=.55*q,s=d/2,t=e/2,u=b/360*(400/q),n.save(),H(n,l,l,d-2*l,e-2*l,E),n.clip(),n.lineWidth=.5,h=b-.3*u,g=0;g<h;g+=u)n.strokeStyle="rgba(240, 240, 255, 0.25)",n.beginPath(),n.arc(s+r,t,r,0,b),n.stroke(),n.translate(s,t),n.rotate(.3*u),n.translate(-s,-t),n.strokeStyle="rgba(25, 10, 10, 0.1)",n.beginPath(),n.arc(s+r,t,r,0,b),n.stroke(),n.translate(s,t),n.rotate(.3*-u),n.translate(-s,-t),n.translate(s,t),n.rotate(u),n.translate(-s,-t);n.restore()}i=n.createLinearGradient(l,l,d-2*l,e-2*l),i.addColorStop(0,"rgba(0, 0, 0, 0.25)"),i.addColorStop(.5,"rgba(0, 0, 0, 0)"),i.addColorStop(1,"rgba(0, 0, 0, 0.25)"),n.fillStyle=i,H(n,l,l,d-2*l,e-2*l,E),n.fill(),"BRUSHED_METAL"!==c.name&&"BRUSHED_STAINLESS"!==c.name||(v="BRUSHED_METAL"===c.name,w=parseInt(c.gradientStop.getHexColor().substr(-6),16),C=z(w,5,.1,v,.5),n.fillStyle=n.createPattern(C.fill(0,0,d,e),"no-repeat"),n.fill())}else i=n.createLinearGradient(0,l,0,e-2*l),i.addColorStop(0,c.gradientStart.getRgbaColor()),i.addColorStop(.4,c.gradientFraction.getRgbaColor()),i.addColorStop(1,c.gradientStop.getRgbaColor()),n.fillStyle=i,n.fill();for(k=["rgba(0, 0, 0, 0.30)","rgba(0, 0, 0, 0.20)","rgba(0, 0, 0, 0.13)","rgba(0, 0, 0, 0.09)","rgba(0, 0, 0, 0.06)","rgba(0, 0, 0, 0.04)","rgba(0, 0, 0, 0.03)"],g=0;g<7;g++)n.strokeStyle=k[g],H(n,l+g,l+g,d-2*l-2*g,e-2*l-2*g,E),n.stroke();o.cache[D]=m}return a.drawImage(o.cache[D],0,0),this};o.cache={};var p=function(a,b,c,d,e,f,g,h,i){var j,k,q,s,l=Math.ceil(.084112*d),m=.5*c-l/2,n=.5*d-l/2,o=.008*c,t=b.type+c+d+e+(void 0!==f?f.type:"-")+(void 0!==g?g.style:"-")+(void 0!==i?i.type:"-");if(!p.cache[t]){switch(j=I(c,d),k=j.getContext("2d"),e&&(k.shadowColor="rgba(0, 0, 0, 0.8)",k.shadowOffsetX=k.shadowOffsetY=o,k.shadowBlur=2*o,h===steelseries.GaugeType.TYPE5?steelseries.Orientation.WEST===i?(m=.733644*c-l/2,k.drawImage(r(l,f,g),m,n)):steelseries.Orientation.EAST===i?(m=c*(1-.733644)-l/2,
-k.drawImage(r(l,f,g),m,n)):(n=.733644*d-l/2,k.drawImage(r(l,f,g),m,.6857*d)):k.drawImage(r(l,f,g),m,n),k.shadowOffsetX=k.shadowOffsetY=0,k.shadowBlur=0),b.type){case"type2":k.beginPath(),k.moveTo(.135514*c,.696261*d),k.bezierCurveTo(.214953*c,.588785*d,.317757*c,.5*d,.462616*c,.425233*d),k.bezierCurveTo(.612149*c,.345794*d,.733644*c,.317757*d,.873831*c,.322429*d),k.bezierCurveTo(.766355*c,.112149*d,.528037*c,.023364*d,.313084*c,.130841*d),k.bezierCurveTo(.09813*c,.238317*d,.028037*c,.485981*d,.135514*c,.696261*d),k.closePath(),q=k.createLinearGradient(.313084*c,.135514*d,.495528*c,.493582*d),q.addColorStop(0,"rgba(255, 255, 255, 0.275)"),q.addColorStop(1,"rgba(255, 255, 255, 0.015)");break;case"type3":k.beginPath(),k.moveTo(.084112*c,.509345*d),k.bezierCurveTo(.21028*c,.556074*d,.462616*c,.560747*d,.5*c,.560747*d),k.bezierCurveTo(.537383*c,.560747*d,.794392*c,.560747*d,.915887*c,.509345*d),k.bezierCurveTo(.915887*c,.2757*d,.738317*c,.084112*d,.5*c,.084112*d),k.bezierCurveTo(.261682*c,.084112*d,.084112*c,.2757*d,.084112*c,.509345*d),k.closePath(),q=k.createLinearGradient(0,.093457*d,0,.556073*d),q.addColorStop(0,"rgba(255, 255, 255, 0.275)"),q.addColorStop(1,"rgba(255, 255, 255, 0.015)");break;case"type4":k.beginPath(),k.moveTo(.67757*c,.24299*d),k.bezierCurveTo(.771028*c,.308411*d,.822429*c,.411214*d,.813084*c,.528037*d),k.bezierCurveTo(.799065*c,.654205*d,.719626*c,.757009*d,.593457*c,.799065*d),k.bezierCurveTo(.485981*c,.831775*d,.369158*c,.808411*d,.285046*c,.728971*d),k.bezierCurveTo(.2757*c,.719626*d,.252336*c,.714953*d,.233644*c,.728971*d),k.bezierCurveTo(.214953*c,.747663*d,.219626*c,.771028*d,.228971*c,.7757*d),k.bezierCurveTo(.331775*c,.878504*d,.476635*c,.915887*d,.616822*c,.869158*d),k.bezierCurveTo(.771028*c,.822429*d,.873831*c,.691588*d,.88785*c,.53271*d),k.bezierCurveTo(.897196*c,.38785*d,.836448*c,.257009*d,.719626*c,.182242*d),k.bezierCurveTo(.705607*c,.172897*d,.682242*c,.163551*d,.663551*c,.186915*d),k.bezierCurveTo(.654205*c,.205607*d,.668224*c,.238317*d,.67757*c,.24299*d),k.closePath(),q=k.createRadialGradient(.5*c,.5*d,0,.5*c,.5*d,.38785*c),q.addColorStop(0,"rgba(255, 255, 255, 0)"),q.addColorStop(.82,"rgba(255, 255, 255, 0)"),q.addColorStop(.83,"rgba(255, 255, 255, 0)"),q.addColorStop(1,"rgba(255, 255, 255, 0.15)"),k.beginPath(),k.moveTo(.261682*c,.224299*d),k.bezierCurveTo(.285046*c,.238317*d,.252336*c,.285046*d,.24299*c,.317757*d),k.bezierCurveTo(.24299*c,.350467*d,.271028*c,.383177*d,.271028*c,.397196*d),k.bezierCurveTo(.2757*c,.415887*d,.261682*c,.457943*d,.238317*c,.509345*d),k.bezierCurveTo(.224299*c,.542056*d,.17757*c,.612149*d,.158878*c,.612149*d),k.bezierCurveTo(.144859*c,.612149*d,.088785*c,.546728*d,.130841*c,.369158*d),k.bezierCurveTo(.140186*c,.336448*d,.214953*c,.200934*d,.261682*c,.224299*d),k.closePath(),s=k.createLinearGradient(.130841*c,.369158*d,.273839*c,.412877*d),s.addColorStop(0,"rgba(255, 255, 255, 0.275)"),s.addColorStop(1,"rgba(255, 255, 255, 0.015)"),k.fillStyle=s,k.fill();break;case"type5":k.beginPath(),k.moveTo(.084112*c,.5*d),k.bezierCurveTo(.084112*c,.271028*d,.271028*c,.084112*d,.5*c,.084112*d),k.bezierCurveTo(.700934*c,.084112*d,.864485*c,.224299*d,.906542*c,.411214*d),k.bezierCurveTo(.911214*c,.439252*d,.911214*c,.518691*d,.845794*c,.537383*d),k.bezierCurveTo(.794392*c,.546728*d,.551401*c,.411214*d,.392523*c,.457943*d),k.bezierCurveTo(.168224*c,.509345*d,.135514*c,.7757*d,.093457*c,.593457*d),k.bezierCurveTo(.088785*c,.560747*d,.084112*c,.53271*d,.084112*c,.5*d),k.closePath(),q=k.createLinearGradient(0,.084112*d,0,.644859*d),q.addColorStop(0,"rgba(255, 255, 255, 0.275)"),q.addColorStop(1,"rgba(255, 255, 255, 0.015)");break;case"type1":default:k.beginPath(),k.moveTo(.084112*c,.509345*d),k.bezierCurveTo(.205607*c,.448598*d,.336448*c,.415887*d,.5*c,.415887*d),k.bezierCurveTo(.672897*c,.415887*d,.789719*c,.443925*d,.915887*c,.509345*d),k.bezierCurveTo(.915887*c,.2757*d,.738317*c,.084112*d,.5*c,.084112*d),k.bezierCurveTo(.261682*c,.084112*d,.084112*c,.2757*d,.084112*c,.509345*d),k.closePath(),q=k.createLinearGradient(0,.088785*d,0,.490654*d),q.addColorStop(0,"rgba(255, 255, 255, 0.275)"),q.addColorStop(1,"rgba(255, 255, 255, 0.015)")}k.fillStyle=q,k.fill(),p.cache[t]=j}return a.drawImage(p.cache[t],0,0),this};p.cache={};var q=function(a,b,c,d){var e,f,g,h,i,j,k=b.toString()+c+d;return q.cache[k]||(e=I(b,c),f=e.getContext("2d"),h=.04*Math.sqrt(b*b+c*c),h=Math.min(h,.1*(d?b:c)),i=1.3*h,j=1.33*i,f.beginPath(),f.moveTo(i,c-i),f.lineTo(b-i,c-i),f.bezierCurveTo(b-i,c-i,b-j,.7*c,b-j,.5*c),f.bezierCurveTo(b-j,j,b-i,i,b-h,i),f.lineTo(i,i),f.bezierCurveTo(i,i,j,.285714*c,j,.5*c),f.bezierCurveTo(j,.7*c,i,c-i,h,c-i),f.closePath(),g=f.createLinearGradient(0,c-h,0,h),g.addColorStop(0,"rgba(255, 255, 255, 0)"),g.addColorStop(.06,"rgba(255, 255, 255, 0)"),g.addColorStop(.07,"rgba(255, 255, 255, 0)"),g.addColorStop(.12,"rgba(255, 255, 255, 0)"),g.addColorStop(.17,"rgba(255, 255, 255, 0.013546)"),g.addColorStop(.1701,"rgba(255, 255, 255, 0)"),g.addColorStop(.79,"rgba(255, 255, 255, 0)"),g.addColorStop(.8,"rgba(255, 255, 255, 0)"),g.addColorStop(.84,"rgba(255, 255, 255, 0.082217)"),g.addColorStop(.93,"rgba(255, 255, 255, 0.288702)"),g.addColorStop(.94,"rgba(255, 255, 255, 0.298039)"),g.addColorStop(.96,"rgba(255, 255, 255, 0.119213)"),g.addColorStop(.97,"rgba(255, 255, 255, 0)"),g.addColorStop(1,"rgba(255, 255, 255, 0)"),f.fillStyle=g,f.fill(),q.cache[k]=e),a.drawImage(q.cache[k],0,0),this};q.cache={};var r=function(a,c,d){var e,f,i,g=a/2,h=a/2,j=a.toString()+c.type+d.style;if(!r.cache[j]){switch(e=I(1.18889*a,1.18889*a),f=e.getContext("2d"),c.type){case"metalKnob":switch(f.beginPath(),f.moveTo(0,.5*a),f.bezierCurveTo(0,.222222*a,.222222*a,0,.5*a,0),f.bezierCurveTo(.777777*a,0,a,.222222*a,a,.5*a),f.bezierCurveTo(a,.777777*a,.777777*a,a,.5*a,a),f.bezierCurveTo(.222222*a,a,0,.777777*a,0,.5*a),f.closePath(),i=f.createLinearGradient(0,0,0,a),i.addColorStop(0,"rgb(92, 95, 101)"),i.addColorStop(.47,"rgb(46, 49, 53)"),i.addColorStop(1,"rgb(22, 23, 26)"),f.fillStyle=i,f.fill(),f.beginPath(),f.moveTo(.055555*a,.5*a),f.bezierCurveTo(.055555*a,.277777*a,.277777*a,.055555*a,.5*a,.055555*a),f.bezierCurveTo(.722222*a,.055555*a,.944444*a,.277777*a,.944444*a,.5*a),f.bezierCurveTo(.944444*a,.722222*a,.722222*a,.944444*a,.5*a,.944444*a),f.bezierCurveTo(.277777*a,.944444*a,.055555*a,.722222*a,.055555*a,.5*a),f.closePath(),i=f.createLinearGradient(0,.055555*a,0,.944443*a),d.style){case"black":i.addColorStop(0,"rgb(43, 42, 47)"),i.addColorStop(1,"rgb(26, 27, 32)");break;case"brass":i.addColorStop(0,"rgb(150, 110, 54)"),i.addColorStop(1,"rgb(124, 95, 61)");break;case"silver":default:i.addColorStop(0,"rgb(204, 204, 204)"),i.addColorStop(1,"rgb(87, 92, 98)")}f.fillStyle=i,f.fill(),f.beginPath(),f.moveTo(.777777*a,.833333*a),f.bezierCurveTo(.722222*a,.722222*a,.611111*a,.666666*a,.5*a,.666666*a),f.bezierCurveTo(.388888*a,.666666*a,.277777*a,.722222*a,.222222*a,.833333*a),f.bezierCurveTo(.277777*a,.888888*a,.388888*a,.944444*a,.5*a,.944444*a),f.bezierCurveTo(.611111*a,.944444*a,.722222*a,.888888*a,.777777*a,.833333*a),f.closePath(),i=f.createRadialGradient(.555555*a,.944444*a,0,.555555*a,.944444*a,.388888*a),i.addColorStop(0,"rgba(255, 255, 255, 0.6)"),i.addColorStop(1,"rgba(255, 255, 255, 0)"),f.fillStyle=i,f.fill(),f.beginPath(),f.moveTo(.944444*a,.277777*a),f.bezierCurveTo(.833333*a,.111111*a,.666666*a,0,.5*a,0),f.bezierCurveTo(.333333*a,0,.166666*a,.111111*a,.055555*a,.277777*a),f.bezierCurveTo(.166666*a,.333333*a,.333333*a,.388888*a,.5*a,.388888*a),f.bezierCurveTo(.666666*a,.388888*a,.833333*a,.333333*a,.944444*a,.277777*a),f.closePath(),i=f.createRadialGradient(.5*a,0,0,.5*a,0,.583333*a),i.addColorStop(0,"rgba(255, 255, 255, 0.749019)"),i.addColorStop(1,"rgba(255, 255, 255, 0)"),f.fillStyle=i,f.fill(),f.beginPath(),f.moveTo(.277777*a,.555555*a),f.bezierCurveTo(.277777*a,.388888*a,.388888*a,.277777*a,.5*a,.277777*a),f.bezierCurveTo(.611111*a,.277777*a,.777777*a,.388888*a,.777777*a,.555555*a),f.bezierCurveTo(.777777*a,.666666*a,.611111*a,.777777*a,.5*a,.777777*a),f.bezierCurveTo(.388888*a,.777777*a,.277777*a,.666666*a,.277777*a,.555555*a),f.closePath(),i=f.createLinearGradient(0,.277777*a,0,.722221*a),i.addColorStop(0,"#000000"),i.addColorStop(1,"rgb(204, 204, 204)"),f.fillStyle=i,f.fill(),f.beginPath(),f.moveTo(.333333*a,.555555*a),f.bezierCurveTo(.333333*a,.444444*a,.388888*a,.333333*a,.5*a,.333333*a),f.bezierCurveTo(.611111*a,.333333*a,.722222*a,.444444*a,.722222*a,.555555*a),f.bezierCurveTo(.722222*a,.611111*a,.611111*a,.722222*a,.5*a,.722222*a),f.bezierCurveTo(.388888*a,.722222*a,.333333*a,.611111*a,.333333*a,.555555*a),f.closePath(),i=f.createLinearGradient(0,.333333*a,0,.666666*a),i.addColorStop(0,"rgb(10, 9, 1)"),i.addColorStop(1,"rgb(42, 41, 37)"),f.fillStyle=i,f.fill();break;case"standardKnob":switch(i=f.createLinearGradient(0,0,0,a),i.addColorStop(0,"rgb(180, 180, 180)"),i.addColorStop(.46,"rgb(63, 63, 63)"),i.addColorStop(1,"rgb(40, 40, 40)"),f.fillStyle=i,f.beginPath(),f.arc(g,h,a/2,0,b,!0),f.closePath(),f.fill(),i=f.createLinearGradient(0,a-.77*a,0,a-.77*a+.77*a),d.style){case"black":i.addColorStop(0,"rgb(191, 191, 191)"),i.addColorStop(.5,"rgb(45, 44, 49)"),i.addColorStop(1,"rgb(125, 126, 128)");break;case"brass":i.addColorStop(0,"rgb(223, 208, 174)"),i.addColorStop(.5,"rgb(123, 95, 63)"),i.addColorStop(1,"rgb(207, 190, 157)");break;case"silver":default:i.addColorStop(0,"rgb(215, 215, 215)"),i.addColorStop(.5,"rgb(116, 116, 116)"),i.addColorStop(1,"rgb(215, 215, 215)")}f.fillStyle=i,f.beginPath(),f.arc(g,h,.77*a/2,0,b,!0),f.closePath(),f.fill(),i=f.createRadialGradient(g,h,0,g,h,.77*a/2),i.addColorStop(0,"rgba(0, 0, 0, 0)"),i.addColorStop(.75,"rgba(0, 0, 0, 0)"),i.addColorStop(.76,"rgba(0, 0, 0, 0.01)"),i.addColorStop(1,"rgba(0, 0, 0, 0.2)"),f.fillStyle=i,f.beginPath(),f.arc(g,h,.77*a/2,0,b,!0),f.closePath(),f.fill()}r.cache[j]=e}return r.cache[j]};r.cache={};var s=function(a,c,d){var e,f,i,g=2*Math.round(a/4),h=2*Math.round(a/4),j=a.toString()+c+d.outerColor_ON;if(!s.cache[j]){switch(e=I(a,a),f=e.getContext("2d"),c){case 0:i=f.createRadialGradient(g,h,0,g,h,.5*a/2),i.addColorStop(0,d.innerColor1_OFF),i.addColorStop(.2,d.innerColor2_OFF),i.addColorStop(1,d.outerColor_OFF),f.fillStyle=i,f.beginPath(),f.arc(g,h,.5*a/2,0,b,!0),f.closePath(),f.fill(),i=f.createRadialGradient(g,h,0,g,h,.5*a/2),i.addColorStop(0,"rgba(0, 0, 0, 0)"),i.addColorStop(.8,"rgba(0, 0, 0, 0)"),i.addColorStop(1,"rgba(0, 0, 0, 0.4)"),f.fillStyle=i,f.beginPath(),f.arc(g,h,.5*a/2,0,b,!0),f.closePath(),f.fill(),i=f.createLinearGradient(0,.35*a,0,.35*a+.15*a),i.addColorStop(0,"rgba(255, 255, 255, 0.4)"),i.addColorStop(1,"rgba(255, 255, 255, 0)"),f.fillStyle=i,f.beginPath(),f.arc(g,.35*a+.2*a/2,.2*a,0,b,!0),f.closePath(),f.fill();break;case 1:i=f.createRadialGradient(g,h,0,g,h,.5*a/2),i.addColorStop(0,d.innerColor1_ON),i.addColorStop(.2,d.innerColor2_ON),i.addColorStop(1,d.outerColor_ON),f.fillStyle=i,f.beginPath(),f.arc(g,h,.5*a/2,0,b,!0),f.closePath(),f.fill(),i=f.createRadialGradient(g,h,0,g,h,.5*a/2),i.addColorStop(0,"rgba(0, 0, 0, 0)"),i.addColorStop(.8,"rgba(0, 0, 0, 0)"),i.addColorStop(1,"rgba(0, 0, 0, 0.4)"),f.fillStyle=i,f.beginPath(),f.arc(g,h,.5*a/2,0,b,!0),f.closePath(),f.fill(),i=f.createLinearGradient(0,.35*a,0,.35*a+.15*a),i.addColorStop(0,"rgba(255, 255, 255, 0.4)"),i.addColorStop(1,"rgba(255, 255, 255, 0)"),f.fillStyle=i,f.beginPath(),f.arc(g,.35*a+.2*a/2,.2*a,0,b,!0),f.closePath(),f.fill(),i=f.createRadialGradient(g,h,0,g,h,a/2),i.addColorStop(0,D(d.coronaColor,0)),i.addColorStop(.6,D(d.coronaColor,.4)),i.addColorStop(.7,D(d.coronaColor,.25)),i.addColorStop(.8,D(d.coronaColor,.15)),i.addColorStop(.85,D(d.coronaColor,.05)),i.addColorStop(1,D(d.coronaColor,0)),f.fillStyle=i,f.beginPath(),f.arc(g,h,a/2,0,b,!0),f.closePath(),f.fill()}s.cache[j]=e}return s.cache[j]};s.cache={};var t=function(a,b,c){var d,e,k,f=0,g=0,h=a,i=b,j=.095*Math.min(a,b),l=1,m=1,n=a-2,o=b-2,p=j-1,q=a.toString()+b+JSON.stringify(c);return t.cache[q]||(d=I(a,b),e=d.getContext("2d"),k=e.createLinearGradient(0,g,0,g+i),k.addColorStop(0,"#4c4c4c"),k.addColorStop(.08,"#666666"),k.addColorStop(.92,"#666666"),k.addColorStop(1,"#e6e6e6"),e.fillStyle=k,H(e,f,g,h,i,j),e.fill(),k=e.createLinearGradient(0,m,0,m+o),k.addColorStop(0,c.gradientStartColor),k.addColorStop(.03,c.gradientFraction1Color),k.addColorStop(.49,c.gradientFraction2Color),k.addColorStop(.5,c.gradientFraction3Color),k.addColorStop(1,c.gradientStopColor),e.fillStyle=k,H(e,l,m,n,o,p),e.fill(),t.cache[q]=d),t.cache[q]};t.cache={};var u=function(a,b,c,d){var e,g,h=a.toString()+b+c+d;return u.cache[h]||(e=f.createElement("canvas"),g=e.getContext("2d"),e.width=a,e.height=a,g.fillStyle=b,c?(g.beginPath(),g.moveTo(.5*a,a),g.lineTo(0,0),g.lineTo(a,0),g.closePath(),g.fill()):d?(g.beginPath(),g.moveTo(a,.5*a),g.lineTo(0,0),g.lineTo(0,a),g.closePath(),g.fill()):(g.beginPath(),g.moveTo(.5*a,0),g.lineTo(a,a),g.lineTo(0,a),g.closePath(),g.fill()),u.cache[h]=e),u.cache[h]};u.cache={};var v=function(a,c,d){var f,g,h,e=2*a,i=c.state+a+JSON.stringify(d),j=function(){var f=d[0];"up"===c.state?(h=g.createRadialGradient(.5*a,.2*e,0,.5*a,.2*e,.5*a),h.addColorStop(0,f.innerColor1_ON),h.addColorStop(.2,f.innerColor2_ON),h.addColorStop(1,f.outerColor_ON)):(h=g.createLinearGradient(0,0,0,.5*e),h.addColorStop(0,"#323232"),h.addColorStop(1,"#5c5c5c")),g.fillStyle=h,g.beginPath(),g.moveTo(.5*a,0),g.lineTo(a,.2*e),g.lineTo(.752*a,.2*e),g.lineTo(.752*a,.37*e),g.lineTo(.252*a,.37*e),g.lineTo(.252*a,.2*e),g.lineTo(0,.2*e),g.closePath(),g.fill(),"up"!==c.state?(g.strokeStyle="rgba(0, 0, 0, 0.4)",g.beginPath(),g.moveTo(0,.2*e),g.lineTo(.5*a,0),g.lineTo(a,.2*e),g.moveTo(.252*a,.2*e),g.lineTo(.252*a,.37*e),g.stroke(),g.strokeStyle="rgba(255, 255, 255, 0.3)",g.beginPath(),g.moveTo(.252*a,.37*e),g.lineTo(.752*a,.37*e),g.lineTo(.752*a,.2*e),g.lineTo(a,.2*e),g.stroke()):(h=g.createRadialGradient(.5*a,.2*e,0,.5*a,.2*e,.7*a),h.addColorStop(0,D(f.coronaColor,0)),h.addColorStop(.5,D(f.coronaColor,.3)),h.addColorStop(.7,D(f.coronaColor,.2)),h.addColorStop(.8,D(f.coronaColor,.1)),h.addColorStop(.85,D(f.coronaColor,.05)),h.addColorStop(1,D(f.coronaColor,0)),g.fillStyle=h,g.beginPath(),g.arc(.5*a,.2*e,.7*a,0,b,!0),g.closePath(),g.fill())},k=function(){var f=d[1];g.beginPath(),"steady"===c.state?(h=f.outerColor_ON,g.fillStyle=h,g.rect(.128*a,.41*e,.744*a,.074*e),g.rect(.128*a,.516*e,.744*a,.074*e),g.closePath(),g.fill()):(h=g.createLinearGradient(0,.41*e,0,.41*e+.074*e),h.addColorStop(0,"#323232"),h.addColorStop(1,"#5c5c5c"),g.fillStyle=h,g.rect(.128*a,.41*e,.744*a,.074*e),g.closePath(),g.fill(),h=g.createLinearGradient(0,.516*e,0,.516*e+.074*e),h.addColorStop(0,"#323232"),h.addColorStop(1,"#5c5c5c"),g.fillStyle=h,g.rect(.128*a,.516*e,.744*a,.074*e),g.closePath(),g.fill()),"steady"!==c.state?(g.strokeStyle="rgba(0, 0, 0, 0.4)",g.beginPath(),g.moveTo(.128*a,.41*e+.074*e),g.lineTo(.128*a,.41*e),g.lineTo(.128*a+.744*a,.41*e),g.stroke(),g.beginPath(),g.moveTo(.128*a,.516*e+.074*e),g.lineTo(.128*a,.516*e),g.lineTo(.128*a+.744*a,.516*e),g.stroke(),g.strokeStyle="rgba(255, 255, 255, 0.3)",g.beginPath(),g.moveTo(.128*a+.744*a,.41*e),g.lineTo(.128*a+.744*a,.41*e+.074*e),g.lineTo(.128*a,.41*e+.074*e),g.stroke(),g.beginPath(),g.moveTo(.128*a+.744*a,.516*e),g.lineTo(.128*a+.744*a,.516*e+.074*e),g.lineTo(.128*a,.516*e+.074*e),g.stroke()):(h=g.createRadialGradient(.5*a,.5*e,0,.5*a,.5*e,.7*a),h.addColorStop(0,D(f.coronaColor,0)),h.addColorStop(.5,D(f.coronaColor,.3)),h.addColorStop(.7,D(f.coronaColor,.2)),h.addColorStop(.8,D(f.coronaColor,.1)),h.addColorStop(.85,D(f.coronaColor,.05)),h.addColorStop(1,D(f.coronaColor,0)),g.fillStyle=h,g.beginPath(),g.arc(.5*a,.5*e,.7*a,0,b,!0),g.closePath(),g.fill())},l=function(){var f=d[2];"down"===c.state?(h=g.createRadialGradient(.5*a,.8*e,0,.5*a,.8*e,.5*a),h.addColorStop(0,f.innerColor1_ON),h.addColorStop(.2,f.innerColor2_ON),h.addColorStop(1,f.outerColor_ON)):(h=g.createLinearGradient(0,.63*e,0,e),h.addColorStop(0,"#323232"),h.addColorStop(1,"#5c5c5c")),g.beginPath(),g.fillStyle=h,g.moveTo(.5*a,e),g.lineTo(a,.8*e),g.lineTo(.725*a,.8*e),g.lineTo(.725*a,.63*e),g.lineTo(.252*a,.63*e),g.lineTo(.252*a,.8*e),g.lineTo(0,.8*e),g.closePath(),g.fill(),"down"!==c.state?(g.strokeStyle="rgba(0, 0, 0, 0.4)",g.beginPath(),g.moveTo(0,.8*e),g.lineTo(.252*a,.8*e),g.moveTo(.252*a,.63*e),g.lineTo(.752*a,.63*e),g.stroke(),g.beginPath(),g.moveTo(.752*a,.8*e),g.lineTo(a,.8*e),g.stroke(),g.strokeStyle="rgba(255, 255, 255, 0.3)",g.beginPath(),g.moveTo(0,.8*e),g.lineTo(.5*a,e),g.lineTo(a,.8*e),g.stroke(),g.beginPath(),g.moveTo(.752*a,.8*e),g.lineTo(.752*a,.63*e),g.stroke()):(h=g.createRadialGradient(.5*a,.8*e,0,.5*a,.8*e,.7*a),h.addColorStop(0,D(f.coronaColor,0)),h.addColorStop(.5,D(f.coronaColor,.3)),h.addColorStop(.7,D(f.coronaColor,.2)),h.addColorStop(.8,D(f.coronaColor,.1)),h.addColorStop(.85,D(f.coronaColor,.05)),h.addColorStop(1,D(f.coronaColor,0)),g.fillStyle=h,g.beginPath(),g.arc(.5*a,.8*e,.7*a,0,b,!0),g.closePath(),g.fill())};if(!v.cache[i]){switch(f=I(2*a,4*a),g=f.getContext("2d"),g.translate(.5*a,.5*a),c.state){case"up":l(),k(),j();break;case"steady":l(),j(),k();break;case"down":default:j(),k(),l()}v.cache[i]=f}return v.cache[i]};v.cache={};var w=function(a,b,c,d,e,f,g,i,j,k){k=void 0===k?k=steelseries.GaugeType.TYPE1:k,a.save(),a.textAlign=i?"center":"left",a.textBaseline="middle",a.strokeStyle=f.labelColor.getRgbaColor(),a.fillStyle=f.labelColor.getRgbaColor(),i?(a.font=.046728*b+"px "+h,a.fillText(d,b/2,.3*c,.3*b),a.fillText(e,b/2,.38*c,.3*b)):g?(a.font=.1*b+"px "+h,a.save(),a.translate(.671428*b,.1375*c),a.rotate(1.570796),a.fillText(d,0,0),a.translate(-.671428*b,-.1375*c),a.restore(),a.font=.071428*b+"px "+h,j?"type2"===k.type?(a.textAlign="right",a.fillText(e,.36*b,.79*c,.25*b)):a.fillText(e,.63*b,.85*c,.2*b):(a.textAlign="center","type2"===k.type?a.fillText(e,b/2,.92*c,.2*b):a.fillText(e,b/2,.89*c,.2*b))):(a.font=.035*b+"px "+h,a.fillText(d,.15*b,.25*c,.3*b),a.font=.025*b+"px "+h,a.fillText(e,.0625*b,.7*c,.07*b)),a.restore()},x=J(12,12,function(a){var f,b=a.canvas.width,c=a.canvas.height,d=0,e=0;a.save(),a.save(),a.beginPath(),a.rect(0,0,.5*b,.5*c),a.closePath(),a.restore(),f=a.createLinearGradient(0,e*c,0,.5*c+e*c),f.addColorStop(0,"rgb(35, 35, 35)"),f.addColorStop(1,"rgb(23, 23, 23)"),a.fillStyle=f,a.fill(),a.save(),a.beginPath(),a.rect(.083333*b,0,.333333*b,.416666*c),a.closePath(),a.restore(),d=.083333,e=0,f=a.createLinearGradient(0,e*c,0,.416666*c+e*c),f.addColorStop(0,"rgb(38, 38, 38)"),f.addColorStop(1,"rgb(30, 30, 30)"),a.fillStyle=f,a.fill(),a.save(),a.beginPath(),a.rect(.5*b,.5*c,.5*b,.5*c),a.closePath(),a.restore(),d=.5,e=.5,f=a.createLinearGradient(0,e*c,0,.5*c+e*c),f.addColorStop(0,"rgb(35, 35, 35)"),f.addColorStop(1,"rgb(23, 23, 23)"),a.fillStyle=f,a.fill(),a.save(),a.beginPath(),a.rect(.583333*b,.5*c,.333333*b,.416666*c),a.closePath(),a.restore(),d=.583333,e=.5,f=a.createLinearGradient(0,e*c,0,.416666*c+e*c),f.addColorStop(0,"rgb(38, 38, 38)"),f.addColorStop(1,"rgb(30, 30, 30)"),a.fillStyle=f,a.fill(),a.save(),a.beginPath(),a.rect(.5*b,0,.5*b,.5*c),a.closePath(),a.restore(),d=.5,e=0,f=a.createLinearGradient(0,e*c,0,.5*c+e*c),f.addColorStop(0,"#303030"),f.addColorStop(1,"rgb(40, 40, 40)"),a.fillStyle=f,a.fill(),a.save(),a.beginPath(),a.rect(.583333*b,.083333*c,.333333*b,.416666*c),a.closePath(),a.restore(),d=.583333,e=.083333,f=a.createLinearGradient(0,e*c,0,.416666*c+e*c),f.addColorStop(0,"rgb(53, 53, 53)"),f.addColorStop(1,"rgb(45, 45, 45)"),a.fillStyle=f,a.fill(),a.save(),a.beginPath(),a.rect(0,.5*c,.5*b,.5*c),a.closePath(),a.restore(),d=0,e=.5,f=a.createLinearGradient(0,e*c,0,.5*c+e*c),f.addColorStop(0,"#303030"),f.addColorStop(1,"#282828"),a.fillStyle=f,a.fill(),a.save(),a.beginPath(),a.rect(.083333*b,.583333*c,.333333*b,.416666*c),a.closePath(),a.restore(),d=.083333,e=.583333,f=a.createLinearGradient(0,e*c,0,.416666*c+e*c),f.addColorStop(0,"#353535"),f.addColorStop(1,"#2d2d2d"),a.fillStyle=f,a.fill(),a.restore()}),y=J(15,15,function(a){var d,b=a.canvas.width,c=a.canvas.height;a.save(),a.save(),a.beginPath(),a.rect(0,0,b,c),a.closePath(),a.restore(),a.fillStyle="#1D2123",a.fill(),a.save(),a.beginPath(),a.moveTo(0,.266666*c),a.bezierCurveTo(0,.4*c,.066666*b,.466666*c,.2*b,.466666*c),a.bezierCurveTo(.333333*b,.466666*c,.4*b,.4*c,.4*b,.266666*c),a.bezierCurveTo(.4*b,.133333*c,.333333*b,.066666*c,.2*b,.066666*c),a.bezierCurveTo(.066666*b,.066666*c,0,.133333*c,0,.266666*c),a.closePath(),d=a.createLinearGradient(0,.066666*c,0,.466666*c),d.addColorStop(0,"#000000"),d.addColorStop(1,"#444444"),a.fillStyle=d,a.fill(),a.save(),a.beginPath(),a.moveTo(0,.2*c),a.bezierCurveTo(0,.333333*c,.066666*b,.4*c,.2*b,.4*c),a.bezierCurveTo(.333333*b,.4*c,.4*b,.333333*c,.4*b,.2*c),a.bezierCurveTo(.4*b,.066666*c,.333333*b,0,.2*b,0),a.bezierCurveTo(.066666*b,0,0,.066666*c,0,.2*c),a.closePath(),a.fillStyle="#050506",a.fill(),a.save(),a.beginPath(),a.moveTo(.466666*b,.733333*c),a.bezierCurveTo(.466666*b,.866666*c,.533333*b,.933333*c,.666666*b,.933333*c),a.bezierCurveTo(.8*b,.933333*c,.866666*b,.866666*c,.866666*b,.733333*c),a.bezierCurveTo(.866666*b,.6*c,.8*b,.533333*c,.666666*b,.533333*c),a.bezierCurveTo(.533333*b,.533333*c,.466666*b,.6*c,.466666*b,.733333*c),a.closePath(),d=a.createLinearGradient(0,.533333*c,0,.933333*c),d.addColorStop(0,"#000000"),d.addColorStop(1,"#444444"),a.fillStyle=d,a.fill(),a.save(),a.beginPath(),a.moveTo(.466666*b,.666666*c),a.bezierCurveTo(.466666*b,.8*c,.533333*b,.866666*c,.666666*b,.866666*c),a.bezierCurveTo(.8*b,.866666*c,.866666*b,.8*c,.866666*b,.666666*c),a.bezierCurveTo(.866666*b,.533333*c,.8*b,.466666*c,.666666*b,.466666*c),a.bezierCurveTo(.533333*b,.466666*c,.466666*b,.533333*c,.466666*b,.666666*c),a.closePath(),a.fillStyle="#050506",a.fill(),a.restore()}),z=function(a,b,d,e,f){function g(a,b){return a+=(2*Math.random()-1)*b|0,a<0?0:a>255?255:a}function h(a){return a<0?0:a>255?255:a}function i(a,b,c,d,e,f){var g,h,i,j,k,l,m,n;for(e>=c&&(e=c-1),j=1/(2*e+1),k=0,h=0;h<d;h++){for(l=m=n=0,g=0;g<e;g++)i=4*(k+g),l+=a.data[i],m+=a.data[i+1],n+=a.data[i+2];for(g=0;g<c;g++)g>e&&(i=4*(k-e-1),l-=a.data[i],m-=a.data[i+1],n-=a.data[i+2]),g+e<c&&(i=4*(k+e),l+=a.data[i],m+=a.data[i+1],n+=a.data[i+2]),i=4*k,b.data[i]=l*j|0,b.data[i+1]=m*j|0,b.data[i+2]=n*j|0,b.data[i+3]=f,k++}}return this.fill=function(j,k,l,m){var n,o,p,q,r,s,t,u,v,w,D,E,F,G,H,J,K,L,x=255,y=a>>16&255,z=a>>8&255,A=255&a,B=0,C=255*d;if(j=Math.floor(j),k=Math.floor(k),l=Math.ceil(l),m=Math.ceil(m),r=l-j,s=m-k,t=I(r,s),u=t.getContext("2d"),v=u.createImageData(r,s),w=u.createImageData(r,s),0!==f)for(q=[],n=0;n<r;n++)q[n]=255*f*Math.sin(n/r*c)|0;for(p=0;p<s;p++)for(0!==b&&(D=E=F=0),o=0;o<r;o++)G=p*r*4+4*o,H=y,J=z,K=A,0!==f&&(L=q[o],H+=L,J+=L,K+=L),e?(B=(2*Math.random()-1)*C|0,v.data[G]=h(H+B),v.data[G+1]=h(J+B),v.data[G+2]=h(K+B),v.data[G+3]=x):(v.data[G]=g(H,C),v.data[G+1]=g(J,C),v.data[G+2]=g(K,C),v.data[G+3]=x);return b>0?(i(v,w,r,s,b,x),u.putImageData(w,j,k)):u.putImageData(v,j,k),t},this},A=function(a,b,c,d){function i(){e=P(a,255),f=P(b,255),g=P(c,255),h=P(d,1)}var e,f,g,h;1===arguments.length?(c=parseInt(a.substr(5,2),16),b=parseInt(a.substr(3,2),16),a=parseInt(a.substr(1,2),16),d=1):3===arguments.length&&(d=1),i(),this.getRed=function(){return e},this.setRed=function(a){e=P(a,255)},this.getGreen=function(){return f},this.setGreen=function(a){f=P(a,255)},this.getBlue=function(){return g},this.setBlue=function(a){g=P(a,255)},this.getAlpha=function(){return h},this.setAlpha=function(a){h=P(a,1)},this.getRgbaColor=function(){return"rgba("+e+", "+f+", "+g+", "+h+")"},this.getRgbColor=function(){return"rgb("+e+", "+f+", "+g+")"},this.getHexColor=function(){return"#"+e.toString(16)+f.toString(16)+g.toString(16)}},B=function(a,d){var f,e=a.length-1;for(f=0;f<=e;f++)a[f]=b*a[f]-c;this.fillCircle=function(b,c,g,h,i){var j,m,n,o,p,q,r,s,t,u,v,w,x,k=Math.ceil(i),l=2*k;for(m=b.createImageData(l,l),n=255,p=0;p<l;p++)for(r=k-p,s=r*r,o=0;o<l;o++)if(q=o-k,t=Math.sqrt(q*q+s),t<=k&&t>=h){for(j=Math.atan2(q,r),f=0;f<e;f++)j>=a[f]&&j<a[f+1]&&(v=E(d[f],d[f+1],a[f+1]-a[f],j-a[f],!0));u=(l-p)*l*4+4*o,m.data[u]=v[0],m.data[u+1]=v[1],m.data[u+2]=v[2],m.data[u+3]=n}w=I(l,l),x=w.getContext("2d"),x.putImageData(m,0,0),b.drawImage(w,c-k,g-k)},this.fillRect=function(b,c,g,h,i,j,k){var l,m,n,o,p,q,r,s,t,u,v,w,x;for(h=Math.ceil(h),i=Math.ceil(i),m=h/2,n=i/2,j=Math.ceil(j),k=Math.ceil(k),o=b.createImageData(h,i),p=255,r=0;r<i;r++)for(t=n-r,q=0;q<h;q++){for(r>k&&r<=i-k&&q>j&&q<h-j&&(q=h-j),s=q-m,l=Math.atan2(s,t),f=0;f<e;f++)l>=a[f]&&l<a[f+1]&&(v=E(d[f],d[f+1],a[f+1]-a[f],l-a[f],!0));u=(i-r)*h*4+4*q,o.data[u]=v[0],o.data[u+1]=v[0],o.data[u+2]=v[0],o.data[u+3]=p}w=I(h,i),x=w.getContext("2d"),x.putImageData(o,0,0),b.drawImage(w,c-m,g-n)}},C=function(a,b,c,d){this.getColorAt=function(a){var h,i,b=0,e=0,f=1,g=1;for(a=a<0?0:a>1?1:a,h=0;h<c.length;h++){if(c[h]<a&&b<c[h]&&(b=c[h],e=h),c[h]===a)return d[h];c[h]>a&&f>=c[h]&&(f=c[h],g=h)}return i=(a-b)/(f-b),E(d[e],d[g],1,i)},this.getStart=function(){return a},this.getEnd=function(){return b}};Math.log10=function(a){return Math.log(a)/Math.LN10};var W,U=function(){return window.requestAnimationFrame||window.webkitRequestAnimationFrame||window.mozRequestAnimationFrame||window.oRequestAnimationFrame||window.msRequestAnimationFrame||function(a){window.setTimeout(a,62.5)}}();!function(){W=function(a,b,c,d,e,f){this.gradientStart=a,this.gradientFraction=b,this.gradientStop=c,this.labelColor=d,this.symbolColor=e,this.name=f}}();var X;!function(){X=function(a,b,c,d,e,f){this.gradientStartColor=a,this.gradientFraction1Color=b,this.gradientFraction2Color=c,this.gradientFraction3Color=d,this.gradientStopColor=e,this.textColor=f}}();var Y;!function(){Y=function(a,b,c,d,e,f){this.veryDark=a,this.dark=b,this.medium=c,this.light=d,this.lighter=e,this.veryLight=f}}();var Z;!function(){Z=function(a,b,c,d,e,f,g){this.innerColor1_ON=a,this.innerColor2_ON=b,this.outerColor_ON=c,this.coronaColor=d,this.innerColor1_OFF=e,this.innerColor2_OFF=f,this.outerColor_OFF=g}}();var $;!function(){$=function(a){this.type=a}}();var _;!function(){_=function(a){this.type=a}}();var aa;!function(){aa=function(a){this.type=a}}();var ba;!function(){ba=function(a){this.style=a}}();var ca;!function(){ca=function(a){this.design=a}}();var da;!function(){da=function(a){this.type=a}}();var ea;!function(){ea=function(a){this.type=a}}();var fa;!function(){fa=function(a){this.format=a}}();var ga;!function(){ga=function(a){this.type=a}}();var ha;!function(){ha=function(a){this.state=a}}();var ia={DARK_GRAY:new W(new A(0,0,0,1),new A(51,51,51,1),new A(153,153,153,1),new A(255,255,255,1),new A(180,180,180,1),"DARK_GRAY"),SATIN_GRAY:new W(new A(45,57,57,1),new A(45,57,57,1),new A(45,57,57,1),new A(167,184,180,1),new A(137,154,150,1),"SATIN_GRAY"),LIGHT_GRAY:new W(new A(130,130,130,1),new A(181,181,181,1),new A(253,253,253,1),new A(0,0,0,1),new A(80,80,80,1),"LIGHT_GRAY"),WHITE:new W(new A(255,255,255,1),new A(255,255,255,1),new A(255,255,255,1),new A(0,0,0,1),new A(80,80,80,1),"WHITE"),BLACK:new W(new A(0,0,0,1),new A(0,0,0,1),new A(0,0,0,1),new A(255,255,255,1),new A(150,150,150,1),"BLACK"),BEIGE:new W(new A(178,172,150,1),new A(204,205,184,1),new A(231,231,214,1),new A(0,0,0,1),new A(80,80,80,1),"BEIGE"),BROWN:new W(new A(245,225,193,1),new A(245,225,193,1),new A(255,250,240,1),new A(109,73,47,1),new A(89,53,27,1),"BROWN"),RED:new W(new A(198,93,95,1),new A(212,132,134,1),new A(242,218,218,1),new A(0,0,0,1),new A(90,0,0,1),"RED"),GREEN:new W(new A(65,120,40,1),new A(129,171,95,1),new A(218,237,202,1),new A(0,0,0,1),new A(0,90,0,1),"GREEN"),BLUE:new W(new A(45,83,122,1),new A(115,144,170,1),new A(227,234,238,1),new A(0,0,0,1),new A(0,0,90,1),"BLUE"),ANTHRACITE:new W(new A(50,50,54,1),new A(47,47,51,1),new A(69,69,74,1),new A(250,250,250,1),new A(180,180,180,1),"ANTHRACITE"),MUD:new W(new A(80,86,82,1),new A(70,76,72,1),new A(57,62,58,1),new A(255,255,240,1),new A(225,225,210,1),"MUD"),PUNCHED_SHEET:new W(new A(50,50,54,1),new A(47,47,51,1),new A(69,69,74,1),new A(255,255,255,1),new A(180,180,180,1),"PUNCHED_SHEET"),CARBON:new W(new A(50,50,54,1),new A(47,47,51,1),new A(69,69,74,1),new A(255,255,255,1),new A(180,180,180,1),"CARBON"),STAINLESS:new W(new A(130,130,130,1),new A(181,181,181,1),new A(253,253,253,1),new A(0,0,0,1),new A(80,80,80,1),"STAINLESS"),BRUSHED_METAL:new W(new A(50,50,54,1),new A(47,47,51,1),new A(69,69,74,1),new A(0,0,0,1),new A(80,80,80,1),"BRUSHED_METAL"),BRUSHED_STAINLESS:new W(new A(50,50,54,1),new A(47,47,51,1),new A(110,110,112,1),new A(0,0,0,1),new A(80,80,80,1),"BRUSHED_STAINLESS"),TURNED:new W(new A(130,130,130,1),new A(181,181,181,1),new A(253,253,253,1),new A(0,0,0,1),new A(80,80,80,1),"TURNED")},ja={BEIGE:new X("#c8c8b1","rgb(241, 237, 207)","rgb(234, 230, 194)","rgb(225, 220, 183)","rgb(237, 232, 191)","#000000"),BLUE:new X("#ffffff","rgb(231, 246, 255)","rgb(170, 224, 255)","rgb(136, 212, 255)","rgb(192, 232, 255)","#124564"),ORANGE:new X("#ffffff","rgb(255, 245, 225)","rgb(255, 217, 147)","rgb(255, 201, 104)","rgb(255, 227, 173)","#503700"),RED:new X("#ffffff","rgb(255, 225, 225)","rgb(253, 152, 152)","rgb(252, 114, 115)","rgb(254, 178, 178)","#4f0c0e"),YELLOW:new X("#ffffff","rgb(245, 255, 186)","rgb(210, 255, 0)","rgb(158, 205, 0)","rgb(210, 255, 0)","#405300"),WHITE:new X("#ffffff","#ffffff","rgb(241, 246, 242)","rgb(229, 239, 244)","#ffffff","#000000"),GRAY:new X("#414141","rgb(117, 117, 117)","rgb(87, 87, 87)","#414141","rgb(81, 81, 81)","#ffffff"),BLACK:new X("#414141","#666666","#333333","#000000","#333333","#cccccc"),GREEN:new X("rgb(33, 67, 67)","rgb(33, 67, 67)","rgb(29, 58, 58)","rgb(28, 57, 57)","rgb(23, 46, 46)","rgba(0, 185, 165, 255)"),BLUE2:new X("rgb(0, 68, 103)","rgb(8, 109, 165)","rgb(0, 72, 117)","rgb(0, 72, 117)","rgb(0, 68, 103)","rgb(111, 182, 228)"),BLUE_BLACK:new X("rgb(22, 125, 212)","rgb(3, 162, 254)","rgb(3, 162, 254)","rgb(3, 162, 254)","rgb(11, 172, 244)","#000000"),BLUE_DARKBLUE:new X("rgb(18, 33, 88)","rgb(18, 33, 88)","rgb(19, 30, 90)","rgb(17, 31, 94)","rgb(21, 25, 90)","rgb(23, 99, 221)"),BLUE_GRAY:new X("rgb(135, 174, 255)","rgb(101, 159, 255)","rgb(44, 93, 255)","rgb(27, 65, 254)","rgb(12, 50, 255)","#b2b4ed"),STANDARD:new X("rgb(131, 133, 119)","rgb(176, 183, 167)","rgb(165, 174, 153)","rgb(166, 175, 156)","rgb(175, 184, 165)","rgb(35, 42, 52)"),STANDARD_GREEN:new X("#ffffff","rgb(219, 230, 220)","rgb(179, 194, 178)","rgb(153, 176, 151)","rgb(114, 138, 109)","#080C06"),BLUE_BLUE:new X("rgb(100, 168, 253)","rgb(100, 168, 253)","rgb(95, 160, 250)","rgb(80, 144, 252)","rgb(74, 134, 255)","#002cbb"),RED_DARKRED:new X("rgb(72, 36, 50)","rgb(185, 111, 110)","rgb(148, 66, 72)","rgb(83, 19, 20)","rgb(7, 6, 14)","#FE8B92"),DARKBLUE:new X("rgb(14, 24, 31)","rgb(46, 105, 144)","rgb(19, 64, 96)","rgb(6, 20, 29)","rgb(8, 9, 10)","#3DB3FF"),LILA:new X("rgb(175, 164, 255)","rgb(188, 168, 253)","rgb(176, 159, 255)","rgb(174, 147, 252)","rgb(168, 136, 233)","#076148"),BLACKRED:new X("rgb(8, 12, 11)","rgb(10, 11, 13)","rgb(11, 10, 15)","rgb(7, 13, 9)","rgb(9, 13, 14)","#B50026"),DARKGREEN:new X("rgb(25, 85, 0)","rgb(47, 154, 0)","rgb(30, 101, 0)","rgb(30, 101, 0)","rgb(25, 85, 0)","#233123"),AMBER:new X("rgb(182, 71, 0)","rgb(236, 155, 25)","rgb(212, 93, 5)","rgb(212, 93, 5)","rgb(182, 71, 0)","#593A0A"),LIGHTBLUE:new X("rgb(125, 146, 184)","rgb(197, 212, 231)","rgb(138, 155, 194)","rgb(138, 155, 194)","rgb(125, 146, 184)","#090051"),SECTIONS:new X("#b2b2b2","#ffffff","#c4c4c4","#c4c4c4","#b2b2b2","#000000")},ka={RED:new Y(new A(82,0,0,1),new A(158,0,19,1),new A(213,0,25,1),new A(240,82,88,1),new A(255,171,173,1),new A(255,217,218,1)),GREEN:new Y(new A(8,54,4,1),new A(0,107,14,1),new A(15,148,0,1),new A(121,186,37,1),new A(190,231,141,1),new A(234,247,218,1)),BLUE:new Y(new A(0,11,68,1),new A(0,73,135,1),new A(0,108,201,1),new A(0,141,242,1),new A(122,200,255,1),new A(204,236,255,1)),ORANGE:new Y(new A(118,83,30,1),new A(215,67,0,1),new A(240,117,0,1),new A(255,166,0,1),new A(255,255,128,1),new A(255,247,194,1)),YELLOW:new Y(new A(41,41,0,1),new A(102,102,0,1),new A(177,165,0,1),new A(255,242,0,1),new A(255,250,153,1),new A(255,252,204,1)),
-CYAN:new Y(new A(15,109,109,1),new A(0,109,144,1),new A(0,144,191,1),new A(0,174,239,1),new A(153,223,249,1),new A(204,239,252,1)),MAGENTA:new Y(new A(98,0,114,1),new A(128,24,72,1),new A(191,36,107,1),new A(255,48,143,1),new A(255,172,210,1),new A(255,214,23,1)),WHITE:new Y(new A(210,210,210,1),new A(220,220,220,1),new A(235,235,235,1),new A(255,255,255,1),new A(255,255,255,1),new A(255,255,255,1)),GRAY:new Y(new A(25,25,25,1),new A(51,51,51,1),new A(76,76,76,1),new A(128,128,128,1),new A(204,204,204,1),new A(243,243,243,1)),BLACK:new Y(new A(0,0,0,1),new A(5,5,5,1),new A(10,10,10,1),new A(15,15,15,1),new A(20,20,20,1),new A(25,25,25,1)),RAITH:new Y(new A(0,32,65,1),new A(0,65,125,1),new A(0,106,172,1),new A(130,180,214,1),new A(148,203,242,1),new A(191,229,255,1)),GREEN_LCD:new Y(new A(0,55,45,1),new A(15,109,93,1),new A(0,185,165,1),new A(48,255,204,1),new A(153,255,227,1),new A(204,255,241,1)),JUG_GREEN:new Y(new A(0,56,0,1),new A(32,69,36,1),new A(50,161,0,1),new A(129,206,0,1),new A(190,231,141,1),new A(234,247,218,1))},la={RED_LED:new Z("#FF9A89","#FF9A89","#FF3300","#FF8D70","#7E1C00","#7E1C00","#641B00"),GREEN_LED:new Z("#9AFF89","#9AFF89","#59FF2A","#A5FF00","#1C7E00","#1C7E00","#1B6400"),BLUE_LED:new Z("#899AFF","#899AFF","#0033FF","#708DFF","#001C7E","#001C7E","#001B64"),ORANGE_LED:new Z("#FEA23F","#FEA23F","#FD6C00","#FD6C00","#592800","#592800","#421F00"),YELLOW_LED:new Z("#FFFF62","#FFFF62","#FFFF00","#FFFF00","#6B6D00","#6B6D00","#515300"),CYAN_LED:new Z("#00FFFF","#00FFFF","#1BC3C3","#00FFFF","#083B3B","#083B3B","#052727"),MAGENTA_LED:new Z("#D300FF","#D300FF","#8600CB","#C300FF","#38004B","#38004B","#280035")},ma={TYPE1:new $("type1"),TYPE2:new $("type2"),TYPE3:new $("type3"),TYPE4:new $("type4"),TYPE5:new $("type5")},na={NORTH:new _("north"),SOUTH:new _("south"),EAST:new _("east"),WEST:new _("west")},oa={STANDARD_KNOB:new aa("standardKnob"),METAL_KNOB:new aa("metalKnob")},pa={BLACK:new ba("black"),BRASS:new ba("brass"),SILVER:new ba("silver")},qa={BLACK_METAL:new ca("blackMetal"),METAL:new ca("metal"),SHINY_METAL:new ca("shinyMetal"),BRASS:new ca("brass"),STEEL:new ca("steel"),CHROME:new ca("chrome"),GOLD:new ca("gold"),ANTHRACITE:new ca("anthracite"),TILTED_GRAY:new ca("tiltedGray"),TILTED_BLACK:new ca("tiltedBlack"),GLOSSY_METAL:new ca("glossyMetal")},ra={TYPE1:new da("type1"),TYPE2:new da("type2"),TYPE3:new da("type3"),TYPE4:new da("type4"),TYPE5:new da("type5"),TYPE6:new da("type6"),TYPE7:new da("type7"),TYPE8:new da("type8"),TYPE9:new da("type9"),TYPE10:new da("type10"),TYPE11:new da("type11"),TYPE12:new da("type12"),TYPE13:new da("type13"),TYPE14:new da("type14"),TYPE15:new da("type15"),TYPE16:new da("type16")},sa={TYPE1:new ea("type1"),TYPE2:new ea("type2"),TYPE3:new ea("type3"),TYPE4:new ea("type4"),TYPE5:new ea("type5")},ta={STANDARD:new fa("standard"),FRACTIONAL:new fa("fractional"),SCIENTIFIC:new fa("scientific")},ua={NORMAL:new ga("normal"),HORIZONTAL:new ga("horizontal"),TANGENT:new ga("tangent")},va={UP:new ha("up"),STEADY:new ha("steady"),DOWN:new ha("down"),OFF:new ha("off")};return{getCanvasContext:V,createBuffer:I,calcNiceNumber:G,drawRadialFrameImage:k,drawRadialBackgroundImage:m,drawRadialCustomImage:n,createLedImage:s,createKnobImage:r,createLcdBackgroundImage:t,createTrendIndicator:v,drawTitleImage:w,drawPointerImage:j,drawFrame:k,drawBackground:m,drawForeground:p,drawRadialForegroundImage:p,createMeasuredValueImage:u,rgbaColor:A,ConicalGradient:B,setAlpha:D,getColorFromFraction:E,gradientWrapper:C,requestAnimFrame:U,BackgroundColor:ia,LcdColor:ja,ColorDef:ka,LedColor:la,GaugeType:ma,Orientation:na,FrameDesign:qa,PointerType:ra,ForegroundType:sa,KnobType:oa,KnobStyle:pa,LabelNumberFormat:ta,TickLabelOrientation:ua,TrendState:va,Section:F}}();
+function Delegate(){}Delegate.create=function(n,t){for(var r=[],u=arguments.length,i=2;i<u;i++)r[i-2]=arguments[i];return function(){var i=[].concat(arguments,r);t.apply(n,i)}};var Tween=function(n,t,i,r,u,f,e){this.init(n,t,i,r,u,f,e)},t=Tween.prototype;t.obj={},t.prop="",t.func=function(n,t,i,r){return i*n/r+t},t.begin=0,t.change=0,t.prevTime=0,t.prevPos=0,t.looping=!1,t._duration=0,t._time=0,t._pos=0,t._position=0,t._startTime=0,t._finish=0,t.name="",t.suffixe="",t._listeners=[],t.setTime=function(n){this.prevTime=this._time,n>this.getDuration()?this.looping?(this.rewind(n-this._duration),this.update(),this.broadcastMessage("onMotionLooped",{target:this,type:"onMotionLooped"})):(this._time=this._duration,this.update(),this.stop(),this.broadcastMessage("onMotionFinished",{target:this,type:"onMotionFinished"})):n<0?(this.rewind(),this.update()):(this._time=n,this.update())},t.getTime=function(){return this._time},t.setDuration=function(n){this._duration=n===null||n<=0?1e5:n},t.getDuration=function(){return this._duration},t.setPosition=function(n){this.prevPos=this._pos;var t=this.suffixe!==""?this.suffixe:"";this.obj[this.prop]=Math.round(n)+t,this._pos=n,this.broadcastMessage("onMotionChanged",{target:this,type:"onMotionChanged"})},t.getPosition=function(n){return n===undefined&&(n=this._time),this.func(n,this.begin,this.change,this._duration)},t.setFinish=function(n){this.change=n-this.begin},t.getFinish=function(){return this.begin+this.change},t.init=function(n,t,i,r,u,f,e){arguments.length&&(this._listeners=[],this.addListener(this),e&&(this.suffixe=e),this.obj=n,this.prop=t,this.begin=r,this._pos=r,this.setDuration(f),i!==null&&i!==""&&(this.func=i),this.setFinish(u))},t.start=function(){this.rewind(),this.startEnterFrame(),this.broadcastMessage("onMotionStarted",{target:this,type:"onMotionStarted"})},t.rewind=function(n){this.stop(),this._time=n===undefined?0:n,this.fixTime(),this.update()},t.fforward=function(){this._time=this._duration,this.fixTime(),this.update()},t.update=function(){this.setPosition(this.getPosition(this._time))},t.startEnterFrame=function(){this.stopEnterFrame(),this.isPlaying=!0,this.onEnterFrame()},t.onEnterFrame=function(){this.isPlaying&&(this.nextFrame(),setTimeout(Delegate.create(this,this.onEnterFrame),25))},t.nextFrame=function(){this.setTime((this.getTimer()-this._startTime)/1e3)},t.stop=function(){this.stopEnterFrame(),this.broadcastMessage("onMotionStopped",{target:this,type:"onMotionStopped"})},t.stopEnterFrame=function(){this.isPlaying=!1},t.playing=function(){return this.isPlaying},t.continueTo=function(n,t){this.begin=this._pos,this.setFinish(n),this._duration!==undefined&&this.setDuration(t),this.start()},t.resume=function(){this.fixTime(),this.startEnterFrame(),this.broadcastMessage("onMotionResumed",{target:this,type:"onMotionResumed"})},t.yoyo=function(){this.continueTo(this.begin,this._time)},t.addListener=function(n){return this.removeListener(n),this._listeners.push(n)},t.removeListener=function(n){for(var t=this._listeners,i=t.length;i--;)if(t[i]===n)return t.splice(i,1),!0;return!1},t.broadcastMessage=function(){for(var i=[],r,t=this._listeners,u=t.length,n=0;n<arguments.length;n++)i.push(arguments[n]);for(r=i.shift(),n=0;n<u;n++)t[n][r]&&t[n][r].apply(t[n],i)},t.fixTime=function(){this._startTime=this.getTimer()-this._time*1e3},t.getTimer=function(){return(new Date).getTime()-this._time},Tween.backEaseIn=function(n,t,i,r){var u=1.70158;return i*(n/=r)*n*((u+1)*n-u)+t},Tween.backEaseOut=function(n,t,i,r){var u=1.70158;return i*((n=n/r-1)*n*((u+1)*n+u)+1)+t},Tween.backEaseInOut=function(n,t,i,r){var u=1.70158;return(n/=r/2)<1?i/2*n*n*(((u*=1.525)+1)*n-u)+t:i/2*((n-=2)*n*(((u*=1.525)+1)*n+u)+2)+t},Tween.elasticEaseIn=function(n,t,i,r,u,f){var e;return n===0?t:(n/=r)==1?t+i:(f||(f=r*.3),!u||u<Math.abs(i)?(u=i,e=f/4):e=f/(2*Math.PI)*Math.asin(i/u),-(u*Math.pow(2,10*(n-=1))*Math.sin((n*r-e)*2*Math.PI/f))+t)},Tween.elasticEaseOut=function(n,t,i,r,u,f){var e;return n===0?t:(n/=r)==1?t+i:(f||(f=r*.3),!u||u<Math.abs(i)?(u=i,e=f/4):e=f/(2*Math.PI)*Math.asin(i/u),u*Math.pow(2,-10*n)*Math.sin((n*r-e)*2*Math.PI/f)+i+t)},Tween.elasticEaseInOut=function(n,t,i,r,u,f){var e;return n===0?t:(n/=r/2)==2?t+i:(f||(f=r*.3*1.5),!u||u<Math.abs(i)?(u=i,e=f/4):e=f/(2*Math.PI)*Math.asin(i/u),n<1)?-.5*u*Math.pow(2,10*(n-=1))*Math.sin((n*r-e)*2*Math.PI/f)+t:u*Math.pow(2,-10*(n-=1))*Math.sin((n*r-e)*2*Math.PI/f)*.5+i+t},Tween.bounceEaseOut=function(n,t,i,r){return(n/=r)<1/2.75?i*7.5625*n*n+t:n<2/2.75?i*(7.5625*(n-=1.5/2.75)*n+.75)+t:n<2.5/2.75?i*(7.5625*(n-=2.25/2.75)*n+.9375)+t:i*(7.5625*(n-=2.625/2.75)*n+.984375)+t},Tween.bounceEaseIn=function(n,t,i,r){return i-Tween.bounceEaseOut(r-n,0,i,r)+t},Tween.bounceEaseInOut=function(n,t,i,r){return n<r/2?Tween.bounceEaseIn(n*2,0,i,r)*.5+t:Tween.bounceEaseOut(n*2-r,0,i,r)*.5+i*.5+t},Tween.strongEaseInOut=function(n,t,i,r){return i*(n/=r)*n*n*n*n+t},Tween.regularEaseIn=function(n,t,i,r){return i*(n/=r)*n+t},Tween.regularEaseOut=function(n,t,i,r){return-i*(n/=r)*(n-2)+t},Tween.regularEaseInOut=function(n,t,i,r){return(n/=r/2)<1?i/2*n*n+t:-i/2*(--n*(n-2)-1)+t},Tween.strongEaseIn=function(n,t,i,r){return i*(n/=r)*n*n*n*n+t},Tween.strongEaseOut=function(n,t,i,r){return i*((n=n/r-1)*n*n*n*n+1)+t},Tween.strongEaseInOut=function(n,t,i,r){return(n/=r/2)<1?i/2*n*n*n*n*n+t:i/2*((n-=2)*n*n*n*n+2)+t}
+
+
+/*!
+ * Name          : steelseries.js
+ * Authors       : Gerrit Grunwald, Mark Crossley
+ * Last modified : 25.01.2016
+ * Revision      : 0.14.17
+ *
+ * Copyright (c) 2011, Gerrit Grunwald, Mark Crossley
+ * All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without modification, are permitted
+ *  provided that the following conditions are met:
+ *
+ *  # Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+ *  # Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+ *    disclaimer in the documentation and/or other materials provided with the distribution.
+ *
+ *   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+ *   BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+ *   SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ *   DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ *   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ *   OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+/*globals Tween */
+/*jshint onevar:false,plusplus:false,nomen:false,bitwise:false*/
+
+var steelseries = (function () {
+    // Constants
+    var HALF_PI     = Math.PI * 0.5,
+        TWO_PI      = Math.PI * 2,
+        PI          = Math.PI,
+        RAD_FACTOR  = Math.PI / 180,
+        DEG_FACTOR  = 180 / Math.PI,
+        doc         = document,
+        lcdFontName = 'LCDMono2Ultra,Arial,Verdana,sans-serif',
+        stdFontName = 'Arial,Verdana,sans-serif';
+
+    var odometer = function (canvas, parameters) {
+        parameters = parameters || {};
+
+        // parameters
+        var _context = (undefined === parameters._context ? null : parameters._context),  // If component used internally by steelseries
+            height = (undefined === parameters.height ? 0 : parameters.height),
+            digits = (undefined === parameters.digits ? 6 : parameters.digits),
+            decimals = (undefined === parameters.decimals ? 1 : parameters.decimals),
+            decimalBackColor = (undefined === parameters.decimalBackColor ? '#F0F0F0' : parameters.decimalBackColor),
+            decimalForeColor = (undefined === parameters.decimalForeColor ? '#F01010' : parameters.decimalForeColor),
+            font = (undefined === parameters.font ? 'sans-serif' : parameters.font),
+            value = (undefined === parameters.value ? 0 : parameters.value),
+            valueBackColor = (undefined === parameters.valueBackColor ? '#050505' : parameters.valueBackColor),
+            valueForeColor = (undefined === parameters.valueForeColor ? '#F8F8F8' : parameters.valueForeColor),
+            wobbleFactor = (undefined === parameters.wobbleFactor ? 0.07 : parameters.wobbleFactor),
+            //
+            initialized = false,
+            tween, ctx,
+            repainting = false,
+            digitHeight, digitWidth, stdFont,
+            width, columnHeight, verticalSpace, zeroOffset,
+            wobble = [],
+            //buffers
+            backgroundBuffer, backgroundContext,
+            foregroundBuffer, foregroundContext,
+            digitBuffer, digitContext,
+            decimalBuffer, decimalContext;
+            // End of variables
+
+        // Get the canvas context and clear it
+        if (_context) {
+            ctx = _context;
+        } else {
+            ctx = getCanvasContext(canvas);
+        }
+
+        // Has a height been specified?
+        if (height === 0) {
+            height = ctx.canvas.height;
+        }
+
+        // Cannot display negative values yet
+        if (value < 0) {
+            value = 0;
+        }
+
+        digitHeight = Math.floor(height * 0.85);
+        stdFont = '600 ' + digitHeight + 'px ' + font;
+
+        digitWidth = Math.floor(height * 0.68);
+        width = digitWidth * (digits + decimals);
+        columnHeight = digitHeight * 11;
+        verticalSpace = columnHeight / 12;
+        zeroOffset = verticalSpace * 0.81;
+
+        // Resize and clear the main context
+        ctx.canvas.width = width;
+        ctx.canvas.height = height;
+
+        // Create buffers
+        backgroundBuffer = createBuffer(width, height);
+        backgroundContext = backgroundBuffer.getContext('2d');
+
+        foregroundBuffer = createBuffer(width, height);
+        foregroundContext = foregroundBuffer.getContext('2d');
+
+        digitBuffer = createBuffer(digitWidth, columnHeight * 1.1);
+        digitContext = digitBuffer.getContext('2d');
+
+        decimalBuffer = createBuffer(digitWidth, columnHeight * 1.1);
+        decimalContext = decimalBuffer.getContext('2d');
+
+        function init() {
+            var grad, i;
+
+            initialized = true;
+
+            // Create the foreground
+            foregroundContext.rect(0, 0, width, height);
+            grad = foregroundContext.createLinearGradient(0, 0, 0, height);
+            grad.addColorStop(0, 'rgba(0, 0, 0, 1)');
+            grad.addColorStop(0.1, 'rgba(0, 0, 0, 0.4)');
+            grad.addColorStop(0.33, 'rgba(255, 255, 255, 0.45)');
+            grad.addColorStop(0.46, 'rgba(255, 255, 255, 0)');
+            grad.addColorStop(0.9, 'rgba(0, 0, 0, 0.4)');
+            grad.addColorStop(1, 'rgba(0, 0, 0, 1)');
+            foregroundContext.fillStyle = grad;
+            foregroundContext.fill();
+
+            // Create a digit column
+            // background
+            digitContext.rect(0, 0, digitWidth, columnHeight * 1.1);
+            digitContext.fillStyle = valueBackColor;
+            digitContext.fill();
+            // edges
+            digitContext.strokeStyle = '#f0f0f0';
+            digitContext.lineWidth = '1px'; //height * 0.1 + 'px';
+            digitContext.moveTo(0, 0);
+            digitContext.lineTo(0, columnHeight * 1.1);
+            digitContext.stroke();
+            digitContext.strokeStyle = '#202020';
+            digitContext.moveTo(digitWidth, 0);
+            digitContext.lineTo(digitWidth, columnHeight * 1.1);
+            digitContext.stroke();
+            // numerals
+            digitContext.textAlign = 'center';
+            digitContext.textBaseline = 'middle';
+            digitContext.font = stdFont;
+            digitContext.fillStyle = valueForeColor;
+            // put the digits 901234567890 vertically into the buffer
+            for (i = 9; i < 21; i++) {
+                digitContext.fillText(i % 10, digitWidth * 0.5, verticalSpace * (i - 9) + verticalSpace / 2);
+            }
+
+            // Create a decimal column
+            if (decimals > 0) {
+                // background
+                decimalContext.rect(0, 0, digitWidth, columnHeight * 1.1);
+                decimalContext.fillStyle = decimalBackColor;
+                decimalContext.fill();
+                // edges
+                decimalContext.strokeStyle = '#f0f0f0';
+                decimalContext.lineWidth = '1px'; //height * 0.1 + 'px';
+                decimalContext.moveTo(0, 0);
+                decimalContext.lineTo(0, columnHeight * 1.1);
+                decimalContext.stroke();
+                decimalContext.strokeStyle = '#202020';
+                decimalContext.moveTo(digitWidth, 0);
+                decimalContext.lineTo(digitWidth, columnHeight * 1.1);
+                decimalContext.stroke();
+                // numerals
+                decimalContext.textAlign = 'center';
+                decimalContext.textBaseline = 'middle';
+                decimalContext.font = stdFont;
+                decimalContext.fillStyle = decimalForeColor;
+                // put the digits 901234567890 vertically into the buffer
+                for (i = 9; i < 21; i++) {
+                    decimalContext.fillText(i % 10, digitWidth * 0.5, verticalSpace * (i - 9) + verticalSpace / 2);
+                }
+            }
+            // wobble factors
+            for (i = 0; i < (digits + decimals); i++) {
+                wobble[i] = Math.random() * wobbleFactor * height - wobbleFactor * height / 2;
+            }
+
+        }
+
+        function drawDigits() {
+            var pos = 1,
+            val = value, i, num, numb, frac, prevNum;
+
+            // do not use Math.pow() - rounding errors!
+            for (i = 0; i < decimals; i++) {
+                val *= 10;
+            }
+
+            numb = Math.floor(val);
+            frac = val - numb;
+            numb = String(numb);
+            prevNum = 9;
+
+            for (i = 0; i < decimals + digits; i++) {
+                num = +numb.substring(numb.length - i - 1, numb.length - i) || 0;
+                if (prevNum !== 9) {
+                    frac = 0;
+                }
+                if (i < decimals) {
+                    backgroundContext.drawImage(decimalBuffer, width - digitWidth * pos, -(verticalSpace * (num + frac) + zeroOffset + wobble[i]));
+                } else {
+                    backgroundContext.drawImage(digitBuffer, width - digitWidth * pos, -(verticalSpace * (num + frac) + zeroOffset + wobble[i]));
+                }
+                pos++;
+                prevNum = num;
+            }
+        }
+
+        this.setValueAnimated = function (newVal, callback) {
+            var gauge = this;
+            newVal = parseFloat(newVal);
+
+            if (newVal < 0) {
+                newVal = 0;
+            }
+            if (value !== newVal) {
+                if (undefined !== tween && tween.isPlaying) {
+                    tween.stop();
+                }
+
+                tween = new Tween({}, '', Tween.strongEaseOut, value, newVal, 2);
+                tween.onMotionChanged = function (event) {
+                    value = event.target._pos;
+                    if (!repainting) {
+                        repainting = true;
+                        requestAnimFrame(gauge.repaint);
+                    }
+                };
+
+                // do we have a callback function to process?
+                if (callback && typeof(callback) === "function") {
+                    tween.onMotionFinished = callback;
+                }
+
+                tween.start();
+            }
+            this.repaint();
+            return this;
+        };
+
+        this.setValue = function (newVal) {
+            value = parseFloat(newVal);
+            if (value < 0) {
+                value = 0;
+            }
+            this.repaint();
+            return this;
+        };
+
+        this.getValue = function () {
+            return value;
+        };
+
+        this.repaint = function () {
+            if (!initialized) {
+                init();
+            }
+
+            // draw digits
+            drawDigits();
+
+            // draw the foreground
+            backgroundContext.drawImage(foregroundBuffer, 0, 0);
+
+            // paint back to the main context
+            ctx.drawImage(backgroundBuffer, 0, 0);
+
+            repainting = false;
+        };
+
+        this.repaint();
+    };
+
+    //************************************  I M A G E   -   F U N C T I O N S  *****************************************
+
+    var drawRoseImage = function (ctx, centerX, centerY, imageWidth, imageHeight, backgroundColor) {
+        var fill = true,
+            i, grad,
+            symbolColor = backgroundColor.symbolColor.getRgbaColor();
+
+        ctx.save();
+        ctx.lineWidth = 1;
+        ctx.fillStyle = symbolColor;
+        ctx.strokeStyle = symbolColor;
+        ctx.translate(centerX, centerY);
+        // broken ring
+        for (i = 0; i < 360; i += 15) {
+            fill = !fill;
+
+            ctx.beginPath();
+            ctx.arc(0, 0, imageWidth * 0.26, i * RAD_FACTOR, (i + 15) * RAD_FACTOR, false);
+            ctx.arc(0, 0, imageWidth * 0.23, (i + 15) * RAD_FACTOR, i * RAD_FACTOR, true);
+            ctx.closePath();
+            if (fill) {
+                ctx.fill();
+            }
+            ctx.stroke();
+        }
+
+        ctx.translate(-centerX, -centerY);
+        for (i = 0; 360 >= i; i += 90) {
+            // Small pointers
+            ctx.beginPath();
+            ctx.moveTo(imageWidth * 0.560747, imageHeight * 0.584112);
+            ctx.lineTo(imageWidth * 0.640186, imageHeight * 0.644859);
+            ctx.lineTo(imageWidth * 0.584112, imageHeight * 0.560747);
+            ctx.lineTo(imageWidth * 0.560747, imageHeight * 0.584112);
+            ctx.closePath();
+            ctx.fillStyle = symbolColor;
+            ctx.fill();
+            ctx.stroke();
+            // Large pointers
+            ctx.beginPath();
+            ctx.moveTo(imageWidth * 0.523364, imageHeight * 0.397196);
+            ctx.lineTo(imageWidth * 0.5, imageHeight * 0.196261);
+            ctx.lineTo(imageWidth * 0.471962, imageHeight * 0.397196);
+            ctx.lineTo(imageWidth * 0.523364, imageHeight * 0.397196);
+            ctx.closePath();
+            grad = ctx.createLinearGradient(0.476635 * imageWidth, 0, 0.518691 * imageWidth, 0);
+            grad.addColorStop(0, 'rgb(222, 223, 218)');
+            grad.addColorStop(0.48, 'rgb(222, 223, 218)');
+            grad.addColorStop(0.49, symbolColor);
+            grad.addColorStop(1, symbolColor);
+            ctx.fillStyle = grad;
+            ctx.fill();
+            ctx.stroke();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(i * RAD_FACTOR);
+            ctx.translate(-centerX, -centerY);
+        }
+
+        // Central ring
+        ctx.beginPath();
+        ctx.translate(centerX, centerY);
+        ctx.arc(0, 0, imageWidth * 0.1, 0, TWO_PI, false);
+        ctx.lineWidth = imageWidth * 0.022;
+        ctx.stroke();
+        ctx.translate(-centerX, -centerY);
+
+        ctx.restore();
+    };
+
+    var drawPointerImage = function (ctx, size, ptrType, ptrColor, lblColor) {
+        var ptrBuffer, ptrCtx,
+            grad, radius,
+            cacheKey = size.toString() + ptrType.type + ptrColor.light.getHexColor() + ptrColor.medium.getHexColor();
+
+        // check if we have already created and cached this buffer, if not create it
+        if (!drawPointerImage.cache[cacheKey]) {
+            // create a pointer buffer
+            ptrBuffer = createBuffer(size, size);
+            ptrCtx = ptrBuffer.getContext('2d');
+
+            switch (ptrType.type) {
+            case 'type2':
+                grad = ptrCtx.createLinearGradient(0, size * 0.471962, 0, size * 0.130841);
+                grad.addColorStop(0, lblColor.getRgbaColor());
+                grad.addColorStop(0.36, lblColor.getRgbaColor());
+                grad.addColorStop(0.361, ptrColor.light.getRgbaColor());
+                grad.addColorStop(1, ptrColor.light.getRgbaColor());
+                ptrCtx.fillStyle = grad;
+                ptrCtx.beginPath();
+                ptrCtx.moveTo(size * 0.518691, size * 0.471962);
+                ptrCtx.lineTo(size * 0.509345, size * 0.462616);
+                ptrCtx.lineTo(size * 0.509345, size * 0.341121);
+                ptrCtx.lineTo(size * 0.504672, size * 0.130841);
+                ptrCtx.lineTo(size * 0.495327, size * 0.130841);
+                ptrCtx.lineTo(size * 0.490654, size * 0.341121);
+                ptrCtx.lineTo(size * 0.490654, size * 0.462616);
+                ptrCtx.lineTo(size * 0.481308, size * 0.471962);
+                ptrCtx.closePath();
+                ptrCtx.fill();
+                break;
+
+            case 'type3':
+                ptrCtx.beginPath();
+                ptrCtx.rect(size * 0.495327, size * 0.130841, size * 0.009345, size * 0.373831);
+                ptrCtx.closePath();
+                ptrCtx.fillStyle = ptrColor.light.getRgbaColor();
+                ptrCtx.fill();
+                break;
+
+            case 'type4':
+                grad = ptrCtx.createLinearGradient(0.467289 * size, 0, 0.528036 * size, 0);
+                grad.addColorStop(0, ptrColor.dark.getRgbaColor());
+                grad.addColorStop(0.51, ptrColor.dark.getRgbaColor());
+                grad.addColorStop(0.52, ptrColor.light.getRgbaColor());
+                grad.addColorStop(1, ptrColor.light.getRgbaColor());
+                ptrCtx.fillStyle = grad;
+                ptrCtx.beginPath();
+                ptrCtx.moveTo(size * 0.5, size * 0.126168);
+                ptrCtx.lineTo(size * 0.514018, size * 0.135514);
+                ptrCtx.lineTo(size * 0.532710, size * 0.5);
+                ptrCtx.lineTo(size * 0.523364, size * 0.602803);
+                ptrCtx.lineTo(size * 0.476635, size * 0.602803);
+                ptrCtx.lineTo(size * 0.467289, size * 0.5);
+                ptrCtx.lineTo(size * 0.485981, size * 0.135514);
+                ptrCtx.lineTo(size * 0.5, size * 0.126168);
+                ptrCtx.closePath();
+                ptrCtx.fill();
+                break;
+
+            case 'type5':
+                grad = ptrCtx.createLinearGradient(0.471962 * size, 0, 0.528036 * size, 0);
+                grad.addColorStop(0, ptrColor.light.getRgbaColor());
+                grad.addColorStop(0.5, ptrColor.light.getRgbaColor());
+                grad.addColorStop(0.5, ptrColor.medium.getRgbaColor());
+                grad.addColorStop(1, ptrColor.medium.getRgbaColor());
+                ptrCtx.fillStyle = grad;
+                ptrCtx.beginPath();
+                ptrCtx.moveTo(size * 0.5, size * 0.495327);
+                ptrCtx.lineTo(size * 0.528037, size * 0.495327);
+                ptrCtx.lineTo(size * 0.5, size * 0.149532);
+                ptrCtx.lineTo(size * 0.471962, size * 0.495327);
+                ptrCtx.lineTo(size * 0.5, size * 0.495327);
+                ptrCtx.closePath();
+                ptrCtx.fill();
+
+                ptrCtx.lineWidth = 1;
+                ptrCtx.lineCap = 'square';
+                ptrCtx.lineJoin = 'miter';
+                ptrCtx.strokeStyle = ptrColor.dark.getRgbaColor();
+                ptrCtx.stroke();
+                break;
+
+            case 'type6':
+                ptrCtx.fillStyle = ptrColor.medium.getRgbaColor();
+                ptrCtx.beginPath();
+                ptrCtx.moveTo(size * 0.481308, size * 0.485981);
+                ptrCtx.lineTo(size * 0.481308, size * 0.392523);
+                ptrCtx.lineTo(size * 0.485981, size * 0.317757);
+                ptrCtx.lineTo(size * 0.495327, size * 0.130841);
+                ptrCtx.lineTo(size * 0.504672, size * 0.130841);
+                ptrCtx.lineTo(size * 0.514018, size * 0.317757);
+                ptrCtx.lineTo(size * 0.518691, size * 0.387850);
+                ptrCtx.lineTo(size * 0.518691, size * 0.485981);
+                ptrCtx.lineTo(size * 0.504672, size * 0.485981);
+                ptrCtx.lineTo(size * 0.504672, size * 0.387850);
+                ptrCtx.lineTo(size * 0.5, size * 0.317757);
+                ptrCtx.lineTo(size * 0.495327, size * 0.392523);
+                ptrCtx.lineTo(size * 0.495327, size * 0.485981);
+                ptrCtx.lineTo(size * 0.481308, size * 0.485981);
+                ptrCtx.closePath();
+                ptrCtx.fill();
+                break;
+
+            case 'type7':
+                grad = ptrCtx.createLinearGradient(0.481308 * size, 0, 0.518691 * size, 0);
+                grad.addColorStop(0, ptrColor.dark.getRgbaColor());
+                grad.addColorStop(1, ptrColor.medium.getRgbaColor());
+                ptrCtx.fillStyle = grad;
+                ptrCtx.beginPath();
+                ptrCtx.moveTo(size * 0.490654, size * 0.130841);
+                ptrCtx.lineTo(size * 0.481308, size * 0.5);
+                ptrCtx.lineTo(size * 0.518691, size * 0.5);
+                ptrCtx.lineTo(size * 0.504672, size * 0.130841);
+                ptrCtx.lineTo(size * 0.490654, size * 0.130841);
+                ptrCtx.closePath();
+                ptrCtx.fill();
+                break;
+
+            case 'type8':
+                grad = ptrCtx.createLinearGradient(0.471962 * size, 0, 0.528036 * size, 0);
+                grad.addColorStop(0, ptrColor.light.getRgbaColor());
+                grad.addColorStop(0.5, ptrColor.light.getRgbaColor());
+                grad.addColorStop(0.5, ptrColor.medium.getRgbaColor());
+                grad.addColorStop(1, ptrColor.medium.getRgbaColor());
+                ptrCtx.fillStyle = grad;
+                ptrCtx.strokeStyle = ptrColor.dark.getRgbaColor();
+                ptrCtx.beginPath();
+                ptrCtx.moveTo(size * 0.5, size * 0.532710);
+                ptrCtx.lineTo(size * 0.532710, size * 0.5);
+                ptrCtx.bezierCurveTo(size * 0.532710, size * 0.5, size * 0.509345, size * 0.457943, size * 0.5, size * 0.149532);
+                ptrCtx.bezierCurveTo(size * 0.490654, size * 0.457943, size * 0.467289, size * 0.5, size * 0.467289, size * 0.5);
+                ptrCtx.lineTo(size * 0.5, size * 0.532710);
+                ptrCtx.closePath();
+                ptrCtx.fill();
+                ptrCtx.stroke();
+                break;
+
+            case 'type9':
+                grad = ptrCtx.createLinearGradient(0.471962 * size, 0, 0.528036 * size, 0);
+                grad.addColorStop(0, 'rgb(50, 50, 50)');
+                grad.addColorStop(0.5, '#666666');
+                grad.addColorStop(1, 'rgb(50, 50, 50)');
+                ptrCtx.fillStyle = grad;
+                ptrCtx.strokeStyle = '#2E2E2E';
+                ptrCtx.beginPath();
+                ptrCtx.moveTo(size * 0.495327, size * 0.233644);
+                ptrCtx.lineTo(size * 0.504672, size * 0.233644);
+                ptrCtx.lineTo(size * 0.514018, size * 0.439252);
+                ptrCtx.lineTo(size * 0.485981, size * 0.439252);
+                ptrCtx.lineTo(size * 0.495327, size * 0.233644);
+                ptrCtx.closePath();
+                ptrCtx.moveTo(size * 0.490654, size * 0.130841);
+                ptrCtx.lineTo(size * 0.471962, size * 0.471962);
+                ptrCtx.lineTo(size * 0.471962, size * 0.528037);
+                ptrCtx.bezierCurveTo(size * 0.471962, size * 0.528037, size * 0.476635, size * 0.602803, size * 0.476635, size * 0.602803);
+                ptrCtx.bezierCurveTo(size * 0.476635, size * 0.607476, size * 0.481308, size * 0.607476, size * 0.5, size * 0.607476);
+                ptrCtx.bezierCurveTo(size * 0.518691, size * 0.607476, size * 0.523364, size * 0.607476, size * 0.523364, size * 0.602803);
+                ptrCtx.bezierCurveTo(size * 0.523364, size * 0.602803, size * 0.528037, size * 0.528037, size * 0.528037, size * 0.528037);
+                ptrCtx.lineTo(size * 0.528037, size * 0.471962);
+                ptrCtx.lineTo(size * 0.509345, size * 0.130841);
+                ptrCtx.lineTo(size * 0.490654, size * 0.130841);
+                ptrCtx.closePath();
+                ptrCtx.fill();
+
+                ptrCtx.beginPath();
+                ptrCtx.moveTo(size * 0.495327, size * 0.219626);
+                ptrCtx.lineTo(size * 0.504672, size * 0.219626);
+                ptrCtx.lineTo(size * 0.504672, size * 0.135514);
+                ptrCtx.lineTo(size * 0.495327, size * 0.135514);
+                ptrCtx.lineTo(size * 0.495327, size * 0.219626);
+                ptrCtx.closePath();
+
+                ptrCtx.fillStyle = ptrColor.medium.getRgbaColor();
+                ptrCtx.fill();
+                break;
+
+            case 'type10':
+                // POINTER_TYPE10
+                ptrCtx.beginPath();
+                ptrCtx.moveTo(size * 0.5, size * 0.149532);
+                ptrCtx.bezierCurveTo(size * 0.5, size * 0.149532, size * 0.443925, size * 0.490654, size * 0.443925, size * 0.5);
+                ptrCtx.bezierCurveTo(size * 0.443925, size * 0.532710, size * 0.467289, size * 0.556074, size * 0.5, size * 0.556074);
+                ptrCtx.bezierCurveTo(size * 0.532710, size * 0.556074, size * 0.556074, size * 0.532710, size * 0.556074, size * 0.5);
+                ptrCtx.bezierCurveTo(size * 0.556074, size * 0.490654, size * 0.5, size * 0.149532, size * 0.5, size * 0.149532);
+                ptrCtx.closePath();
+                grad = ptrCtx.createLinearGradient(0.471962 * size, 0, 0.528036 * size, 0);
+                grad.addColorStop(0, ptrColor.light.getRgbaColor());
+                grad.addColorStop(0.5, ptrColor.light.getRgbaColor());
+                grad.addColorStop(0.5, ptrColor.medium.getRgbaColor());
+                grad.addColorStop(1, ptrColor.medium.getRgbaColor());
+                ptrCtx.fillStyle = grad;
+                ptrCtx.strokeStyle = ptrColor.medium.getRgbaColor();
+                ptrCtx.lineWidth = 1;
+                ptrCtx.lineCap = 'square';
+                ptrCtx.lineJoin = 'miter';
+                ptrCtx.fill();
+                ptrCtx.stroke();
+                break;
+
+            case 'type11':
+                // POINTER_TYPE11
+                ptrCtx.beginPath();
+                ptrCtx.moveTo(0.5 * size, 0.168224 * size);
+                ptrCtx.lineTo(0.485981 * size, 0.5 * size);
+                ptrCtx.bezierCurveTo(0.485981 * size, 0.5 * size, 0.481308 * size, 0.584112 * size, 0.5 * size, 0.584112 * size);
+                ptrCtx.bezierCurveTo(0.514018 * size, 0.584112 * size, 0.509345 * size, 0.5 * size, 0.509345 * size, 0.5 * size);
+                ptrCtx.lineTo(0.5 * size, 0.168224 * size);
+                ptrCtx.closePath();
+                grad = ptrCtx.createLinearGradient(0, 0.168224 * size, 0, 0.584112 * size);
+                grad.addColorStop(0, ptrColor.medium.getRgbaColor());
+                grad.addColorStop(1, ptrColor.dark.getRgbaColor());
+                ptrCtx.fillStyle = grad;
+                ptrCtx.strokeStyle = ptrColor.dark.getRgbaColor();
+                ptrCtx.fill();
+                ptrCtx.stroke();
+                break;
+
+            case 'type12':
+                // POINTER_TYPE12
+                ptrCtx.beginPath();
+                ptrCtx.moveTo(0.5 * size, 0.168224 * size);
+                ptrCtx.lineTo(0.485981 * size, 0.5 * size);
+                ptrCtx.lineTo(0.5 * size, 0.504672 * size);
+                ptrCtx.lineTo(0.509345 * size, 0.5 * size);
+                ptrCtx.lineTo(0.5 * size, 0.168224 * size);
+                ptrCtx.closePath();
+                grad = ptrCtx.createLinearGradient(0, 0.168224 * size, 0, 0.504672 * size);
+                grad.addColorStop(0, ptrColor.medium.getRgbaColor());
+                grad.addColorStop(1, ptrColor.dark.getRgbaColor());
+                ptrCtx.fillStyle = grad;
+                ptrCtx.strokeStyle = ptrColor.dark.getRgbaColor();
+                ptrCtx.fill();
+                ptrCtx.stroke();
+                break;
+
+            case 'type13':
+                // POINTER_TYPE13
+            case 'type14':
+                // POINTER_TYPE14 (same shape as 13)
+                ptrCtx.beginPath();
+                ptrCtx.moveTo(0.485981 * size, 0.168224 * size);
+                ptrCtx.lineTo(0.5 * size, 0.130841 * size);
+                ptrCtx.lineTo(0.509345 * size, 0.168224 * size);
+                ptrCtx.lineTo(0.509345 * size, 0.509345 * size);
+                ptrCtx.lineTo(0.485981 * size, 0.509345 * size);
+                ptrCtx.lineTo(0.485981 * size, 0.168224 * size);
+                ptrCtx.closePath();
+                if (ptrType.type === 'type13') {
+                    // TYPE13
+                    grad = ptrCtx.createLinearGradient(0, 0.5 * size, 0, 0.130841 * size);
+                    grad.addColorStop(0, lblColor.getRgbaColor());
+                    grad.addColorStop(0.85, lblColor.getRgbaColor());
+                    grad.addColorStop(0.85, ptrColor.medium.getRgbaColor());
+                    grad.addColorStop(1, ptrColor.medium.getRgbaColor());
+                    ptrCtx.fillStyle = grad;
+                } else {
+                    // TYPE14
+                    grad = ptrCtx.createLinearGradient(0.485981 * size, 0, 0.509345 * size, 0);
+                    grad.addColorStop(0, ptrColor.veryDark.getRgbaColor());
+                    grad.addColorStop(0.5, ptrColor.light.getRgbaColor());
+                    grad.addColorStop(1, ptrColor.veryDark.getRgbaColor());
+                    ptrCtx.fillStyle = grad;
+                }
+                ptrCtx.fill();
+                break;
+
+            case 'type15':
+                // POINTER TYPE15 - Classic with crescent
+            case 'type16':
+                // POINTER TYPE16 - Classic without crescent
+                ptrCtx.beginPath();
+                ptrCtx.moveTo(size * 0.509345, size * 0.457943);
+                ptrCtx.lineTo(size * 0.5015, size * 0.13);
+                ptrCtx.lineTo(size * 0.4985, size * 0.13);
+                ptrCtx.lineTo(size * 0.490654, size * 0.457943);
+                ptrCtx.bezierCurveTo(size * 0.490654, size * 0.457943, size * 0.490654, size * 0.457943, size * 0.490654, size * 0.457943);
+                ptrCtx.bezierCurveTo(size * 0.471962, size * 0.462616, size * 0.457943, size * 0.481308, size * 0.457943, size * 0.5);
+                ptrCtx.bezierCurveTo(size * 0.457943, size * 0.518691, size * 0.471962, size * 0.537383, size * 0.490654, size * 0.542056);
+                ptrCtx.bezierCurveTo(size * 0.490654, size * 0.542056, size * 0.490654, size * 0.542056, size * 0.490654, size * 0.542056);
+                if (ptrType.type === 'type15') {
+                    ptrCtx.lineTo(size * 0.490654, size * 0.57);
+                    ptrCtx.bezierCurveTo(size * 0.46, size * 0.58, size * 0.46, size * 0.62, size * 0.490654, size * 0.63);
+                    ptrCtx.bezierCurveTo(size * 0.47, size * 0.62, size * 0.48, size * 0.59, size * 0.5, size * 0.59);
+                    ptrCtx.bezierCurveTo(size * 0.53, size * 0.59, size * 0.52, size * 0.62, size * 0.509345, size * 0.63);
+                    ptrCtx.bezierCurveTo(size * 0.54, size * 0.62, size * 0.54, size * 0.58, size * 0.509345, size * 0.57);
+                    ptrCtx.lineTo(size * 0.509345, size * 0.57);
+                } else {
+                    ptrCtx.lineTo(size * 0.490654, size * 0.621495);
+                    ptrCtx.lineTo(size * 0.509345, size * 0.621495);
+                }
+                ptrCtx.lineTo(size * 0.509345, size * 0.542056);
+                ptrCtx.bezierCurveTo(size * 0.509345, size * 0.542056, size * 0.509345, size * 0.542056, size * 0.509345, size * 0.542056);
+                ptrCtx.bezierCurveTo(size * 0.528037, size * 0.537383, size * 0.542056, size * 0.518691, size * 0.542056, size * 0.5);
+                ptrCtx.bezierCurveTo(size * 0.542056, size * 0.481308, size * 0.528037, size * 0.462616, size * 0.509345, size * 0.457943);
+                ptrCtx.bezierCurveTo(size * 0.509345, size * 0.457943, size * 0.509345, size * 0.457943, size * 0.509345, size * 0.457943);
+                ptrCtx.closePath();
+                if (ptrType.type === 'type15') {
+                    grad = ptrCtx.createLinearGradient(0, 0, 0, size * 0.63);
+                } else {
+                    grad = ptrCtx.createLinearGradient(0, 0, 0, size * 0.621495);
+                }
+                grad.addColorStop(0, ptrColor.medium.getRgbaColor());
+                grad.addColorStop(0.388888, ptrColor.medium.getRgbaColor());
+                grad.addColorStop(0.5, ptrColor.light.getRgbaColor());
+                grad.addColorStop(0.611111, ptrColor.medium.getRgbaColor());
+                grad.addColorStop(1, ptrColor.medium.getRgbaColor());
+                ptrCtx.fillStyle = grad;
+                ptrCtx.strokeStyle = ptrColor.dark.getRgbaColor();
+                ptrCtx.fill();
+                ptrCtx.stroke();
+                // Draw the rings
+                ptrCtx.beginPath();
+                radius = size * 0.065420 / 2;
+                ptrCtx.arc(size * 0.5, size * 0.5, radius, 0, TWO_PI);
+                grad = ptrCtx.createLinearGradient(size * 0.5 - radius, size * 0.5 + radius, 0, size * 0.5 + radius);
+                grad.addColorStop(0, '#e6b35c');
+                grad.addColorStop(0.01, '#e6b35c');
+                grad.addColorStop(0.99, '#c48200');
+                grad.addColorStop(1, '#c48200');
+                ptrCtx.fillStyle = grad;
+                ptrCtx.closePath();
+                ptrCtx.fill();
+                ptrCtx.beginPath();
+                radius = size * 0.046728 / 2;
+                ptrCtx.arc(size * 0.5, size * 0.5, radius, 0, TWO_PI);
+                grad = ptrCtx.createRadialGradient(size * 0.5, size * 0.5, 0, size * 0.5, size * 0.5, radius);
+                grad.addColorStop(0, '#c5c5c5');
+                grad.addColorStop(0.19, '#c5c5c5');
+                grad.addColorStop(0.22, '#000000');
+                grad.addColorStop(0.8, '#000000');
+                grad.addColorStop(0.99, '#707070');
+                grad.addColorStop(1, '#707070');
+                ptrCtx.fillStyle = grad;
+                ptrCtx.closePath();
+                ptrCtx.fill();
+                break;
+
+            case 'type1':
+            /* falls through */
+            default:
+                grad = ptrCtx.createLinearGradient(0, size * 0.471962, 0, size * 0.130841);
+                grad.addColorStop(0, ptrColor.veryDark.getRgbaColor());
+                grad.addColorStop(0.3, ptrColor.medium.getRgbaColor());
+                grad.addColorStop(0.59, ptrColor.medium.getRgbaColor());
+                grad.addColorStop(1, ptrColor.veryDark.getRgbaColor());
+                ptrCtx.fillStyle = grad;
+                ptrCtx.beginPath();
+                ptrCtx.moveTo(size * 0.518691, size * 0.471962);
+                ptrCtx.bezierCurveTo(size * 0.514018, size * 0.457943, size * 0.509345, size * 0.415887, size * 0.509345, size * 0.401869);
+                ptrCtx.bezierCurveTo(size * 0.504672, size * 0.383177, size * 0.5, size * 0.130841, size * 0.5, size * 0.130841);
+                ptrCtx.bezierCurveTo(size * 0.5, size * 0.130841, size * 0.490654, size * 0.383177, size * 0.490654, size * 0.397196);
+                ptrCtx.bezierCurveTo(size * 0.490654, size * 0.415887, size * 0.485981, size * 0.457943, size * 0.481308, size * 0.471962);
+                ptrCtx.bezierCurveTo(size * 0.471962, size * 0.481308, size * 0.467289, size * 0.490654, size * 0.467289, size * 0.5);
+                ptrCtx.bezierCurveTo(size * 0.467289, size * 0.518691, size * 0.481308, size * 0.532710, size * 0.5, size * 0.532710);
+                ptrCtx.bezierCurveTo(size * 0.518691, size * 0.532710, size * 0.532710, size * 0.518691, size * 0.532710, size * 0.5);
+                ptrCtx.bezierCurveTo(size * 0.532710, size * 0.490654, size * 0.528037, size * 0.481308, size * 0.518691, size * 0.471962);
+                ptrCtx.closePath();
+                ptrCtx.fill();
+                break;
+            }
+            // cache buffer
+            drawPointerImage.cache[cacheKey] = ptrBuffer;
+        }
+        ctx.drawImage(drawPointerImage.cache[cacheKey], 0, 0);
+        return this;
+    };
+    drawPointerImage.cache = {};
+
+    var drawRadialFrameImage = function (ctx, frameDesign, centerX, centerY, imageWidth, imageHeight) {
+        var radFBuffer, radFCtx,
+            grad, outerX, innerX, fractions, colors,
+            cacheKey = imageWidth.toString() + imageHeight + frameDesign.design;
+
+        // check if we have already created and cached this buffer, if not create it
+        if (!drawRadialFrameImage.cache[cacheKey]) {
+            // Setup buffer
+            radFBuffer = createBuffer(imageWidth, imageHeight);
+            radFCtx = radFBuffer.getContext('2d');
+
+            // outer gray frame
+            radFCtx.fillStyle = '#848484';
+            radFCtx.strokeStyle = 'rgba(132, 132, 132, 0.5)';
+            radFCtx.beginPath();
+            radFCtx.arc(centerX, centerY, imageWidth / 2, 0, TWO_PI, true);
+            radFCtx.closePath();
+            radFCtx.fill();
+            radFCtx.stroke();
+
+            radFCtx.beginPath();
+            radFCtx.arc(centerX, centerY, imageWidth * 0.990654 / 2, 0, TWO_PI, true);
+            radFCtx.closePath();
+
+            // main gradient frame
+            switch (frameDesign.design) {
+            case 'metal':
+                grad = radFCtx.createLinearGradient(0, imageWidth * 0.004672, 0, imageHeight * 0.990654);
+                grad.addColorStop(0, '#fefefe');
+                grad.addColorStop(0.07, 'rgb(210, 210, 210)');
+                grad.addColorStop(0.12, 'rgb(179, 179, 179)');
+                grad.addColorStop(1, 'rgb(213, 213, 213)');
+                radFCtx.fillStyle = grad;
+                radFCtx.fill();
+                break;
+
+            case 'brass':
+                grad = radFCtx.createLinearGradient(0, imageWidth * 0.004672, 0, imageHeight * 0.990654);
+                grad.addColorStop(0, 'rgb(249, 243, 155)');
+                grad.addColorStop(0.05, 'rgb(246, 226, 101)');
+                grad.addColorStop(0.10, 'rgb(240, 225, 132)');
+                grad.addColorStop(0.50, 'rgb(90, 57, 22)');
+                grad.addColorStop(0.90, 'rgb(249, 237, 139)');
+                grad.addColorStop(0.95, 'rgb(243, 226, 108)');
+                grad.addColorStop(1, 'rgb(202, 182, 113)');
+                radFCtx.fillStyle = grad;
+                radFCtx.fill();
+                break;
+
+            case 'steel':
+                grad = radFCtx.createLinearGradient(0, imageWidth * 0.004672, 0, imageHeight * 0.990654);
+                grad.addColorStop(0, 'rgb(231, 237, 237)');
+                grad.addColorStop(0.05, 'rgb(189, 199, 198)');
+                grad.addColorStop(0.10, 'rgb(192, 201, 200)');
+                grad.addColorStop(0.50, 'rgb(23, 31, 33)');
+                grad.addColorStop(0.90, 'rgb(196, 205, 204)');
+                grad.addColorStop(0.95, 'rgb(194, 204, 203)');
+                grad.addColorStop(1, 'rgb(189, 201, 199)');
+                radFCtx.fillStyle = grad;
+                radFCtx.fill();
+                break;
+
+            case 'gold':
+                grad = radFCtx.createLinearGradient(0, imageWidth * 0.004672, 0, imageHeight * 0.990654);
+                grad.addColorStop(0, 'rgb(255, 255, 207)');
+                grad.addColorStop(0.15, 'rgb(255, 237, 96)');
+                grad.addColorStop(0.22, 'rgb(254, 199, 57)');
+                grad.addColorStop(0.3, 'rgb(255, 249, 203)');
+                grad.addColorStop(0.38, 'rgb(255, 199, 64)');
+                grad.addColorStop(0.44, 'rgb(252, 194, 60)');
+                grad.addColorStop(0.51, 'rgb(255, 204, 59)');
+                grad.addColorStop(0.6, 'rgb(213, 134, 29)');
+                grad.addColorStop(0.68, 'rgb(255, 201, 56)');
+                grad.addColorStop(0.75, 'rgb(212, 135, 29)');
+                grad.addColorStop(1, 'rgb(247, 238, 101)');
+                radFCtx.fillStyle = grad;
+                radFCtx.fill();
+                break;
+
+            case 'anthracite':
+                grad = radFCtx.createLinearGradient(0, 0.004672 * imageHeight, 0, 0.995326 * imageHeight);
+                grad.addColorStop(0, 'rgb(118, 117, 135)');
+                grad.addColorStop(0.06, 'rgb(74, 74, 82)');
+                grad.addColorStop(0.12, 'rgb(50, 50, 54)');
+                grad.addColorStop(1, 'rgb(79, 79, 87)');
+                radFCtx.fillStyle = grad;
+                radFCtx.fill();
+                break;
+
+            case 'tiltedGray':
+                grad = radFCtx.createLinearGradient(0.233644 * imageWidth, 0.084112 * imageHeight, 0.81258 * imageWidth, 0.910919 * imageHeight);
+                grad.addColorStop(0, '#ffffff');
+                grad.addColorStop(0.07, 'rgb(210, 210, 210)');
+                grad.addColorStop(0.16, 'rgb(179, 179, 179)');
+                grad.addColorStop(0.33, '#ffffff');
+                grad.addColorStop(0.55, '#c5c5c5');
+                grad.addColorStop(0.79, '#ffffff');
+                grad.addColorStop(1, '#666666');
+                radFCtx.fillStyle = grad;
+                radFCtx.fill();
+                break;
+
+            case 'tiltedBlack':
+                grad = radFCtx.createLinearGradient(0.228971 * imageWidth, 0.079439 * imageHeight, 0.802547 * imageWidth, 0.898591 * imageHeight);
+                grad.addColorStop(0, '#666666');
+                grad.addColorStop(0.21, '#000000');
+                grad.addColorStop(0.47, '#666666');
+                grad.addColorStop(0.99, '#000000');
+                grad.addColorStop(1, '#000000');
+                radFCtx.fillStyle = grad;
+                radFCtx.fill();
+                break;
+
+            case 'glossyMetal':
+                grad = radFCtx.createRadialGradient(0.5 * imageWidth, 0.5 * imageHeight, 0, 0.5 * imageWidth, 0.5 * imageWidth, 0.5 * imageWidth);
+                grad.addColorStop(0, 'rgb(207, 207, 207)');
+                grad.addColorStop(0.96, 'rgb(205, 204, 205)');
+                grad.addColorStop(1, 'rgb(244, 244, 244)');
+                radFCtx.fillStyle = grad;
+                radFCtx.fill();
+                radFCtx.beginPath();
+                radFCtx.arc(0.5 * imageWidth, 0.5 * imageHeight, 0.973962 * imageWidth / 2, 0, TWO_PI);
+                radFCtx.closePath();
+                grad = radFCtx.createLinearGradient(0, imageHeight - 0.971962 * imageHeight, 0, 0.971962 * imageHeight);
+                grad.addColorStop(0, 'rgb(249, 249, 249)');
+                grad.addColorStop(0.23, 'rgb(200, 195, 191)');
+                grad.addColorStop(0.36, '#ffffff');
+                grad.addColorStop(0.59, 'rgb(29, 29, 29)');
+                grad.addColorStop(0.76, 'rgb(200, 194, 192)');
+                grad.addColorStop(1, 'rgb(209, 209, 209)');
+                radFCtx.fillStyle = grad;
+                radFCtx.fill();
+
+                radFCtx.beginPath();
+                radFCtx.arc(0.5 * imageWidth, 0.5 * imageHeight, 0.869158 * imageWidth / 2, 0, TWO_PI);
+                radFCtx.closePath();
+                radFCtx.fillStyle = '#f6f6f6';
+                radFCtx.fill();
+
+                radFCtx.beginPath();
+                radFCtx.arc(0.5 * imageWidth, 0.5 * imageHeight, 0.85 * imageWidth / 2, 0, TWO_PI);
+                radFCtx.closePath();
+                radFCtx.fillStyle = '#333333';
+                radFCtx.fill();
+                break;
+
+            case 'blackMetal':
+                fractions = [0,
+                             0.125,
+                             0.347222,
+                             0.5,
+                             0.680555,
+                             0.875,
+                             1];
+
+                colors = [ new RgbaColor(254, 254, 254, 1),
+                           new RgbaColor(0, 0, 0, 1),
+                           new RgbaColor(153, 153, 153, 1),
+                           new RgbaColor(0, 0, 0, 1),
+                           new RgbaColor(153, 153, 153, 1),
+                           new RgbaColor(0, 0, 0, 1),
+                           new RgbaColor(254, 254, 254, 1)];
+
+                radFCtx.save();
+                radFCtx.arc(centerX, centerY, imageWidth * 0.990654 / 2, 0, TWO_PI, true);
+                radFCtx.clip();
+                outerX = imageWidth * 0.495327;
+                innerX = imageWidth * 0.420560;
+                grad = new ConicalGradient(fractions, colors);
+                grad.fillCircle(radFCtx, centerX, centerY, innerX, outerX);
+                // fade outer edge
+                radFCtx.strokeStyle = '#848484';
+                radFCtx.strokeStyle = 'rgba(132, 132, 132, 0.8)';
+                radFCtx.beginPath();
+                radFCtx.lineWidth = imageWidth / 90;
+                radFCtx.arc(centerX, centerY, imageWidth / 2, 0, TWO_PI, true);
+                radFCtx.closePath();
+                radFCtx.stroke();
+                radFCtx.restore();
+                break;
+
+            case 'shinyMetal':
+                fractions = [0,
+                             0.125,
+                             0.25,
+                             0.347222,
+                             0.5,
+                             0.652777,
+                             0.75,
+                             0.875,
+                             1];
+
+                colors = [ new RgbaColor(254, 254, 254, 1),
+                           new RgbaColor(210, 210, 210, 1),
+                           new RgbaColor(179, 179, 179, 1),
+                           new RgbaColor(238, 238, 238, 1),
+                           new RgbaColor(160, 160, 160, 1),
+                           new RgbaColor(238, 238, 238, 1),
+                           new RgbaColor(179, 179, 179, 1),
+                           new RgbaColor(210, 210, 210, 1),
+                           new RgbaColor(254, 254, 254, 1)];
+
+                radFCtx.save();
+                radFCtx.arc(centerX, centerY, imageWidth * 0.990654 / 2, 0, TWO_PI, true);
+                radFCtx.clip();
+                outerX = imageWidth * 0.495327;
+                innerX = imageWidth * 0.420560;
+                grad = new ConicalGradient(fractions, colors);
+                grad.fillCircle(radFCtx, centerX, centerY, innerX, outerX);
+                // fade outer edge
+                radFCtx.strokeStyle = '#848484';
+                radFCtx.strokeStyle = 'rgba(132, 132, 132, 0.8)';
+                radFCtx.beginPath();
+                radFCtx.lineWidth = imageWidth / 90;
+                radFCtx.arc(centerX, centerY, imageWidth / 2, 0, TWO_PI, true);
+                radFCtx.closePath();
+                radFCtx.stroke();
+                radFCtx.restore();
+                break;
+
+            case 'chrome':
+                fractions = [0,
+                             0.09,
+                             0.12,
+                             0.16,
+                             0.25,
+                             0.29,
+                             0.33,
+                             0.38,
+                             0.48,
+                             0.52,
+                             0.63,
+                             0.68,
+                             0.8,
+                             0.83,
+                             0.87,
+                             0.97,
+                             1];
+
+                colors = [ new RgbaColor(255, 255, 255, 1),
+                           new RgbaColor(255, 255, 255, 1),
+                           new RgbaColor(136, 136, 138, 1),
+                           new RgbaColor(164, 185, 190, 1),
+                           new RgbaColor(158, 179, 182, 1),
+                           new RgbaColor(112, 112, 112, 1),
+                           new RgbaColor(221, 227, 227, 1),
+                           new RgbaColor(155, 176, 179, 1),
+                           new RgbaColor(156, 176, 177, 1),
+                           new RgbaColor(254, 255, 255, 1),
+                           new RgbaColor(255, 255, 255, 1),
+                           new RgbaColor(156, 180, 180, 1),
+                           new RgbaColor(198, 209, 211, 1),
+                           new RgbaColor(246, 248, 247, 1),
+                           new RgbaColor(204, 216, 216, 1),
+                           new RgbaColor(164, 188, 190, 1),
+                           new RgbaColor(255, 255, 255, 1)];
+
+                radFCtx.save();
+                radFCtx.arc(centerX, centerY, imageWidth * 0.990654 / 2, 0, TWO_PI, true);
+                radFCtx.clip();
+                outerX = imageWidth * 0.495327;
+                innerX = imageWidth * 0.420560;
+                grad = new ConicalGradient(fractions, colors);
+                grad.fillCircle(radFCtx, centerX, centerY, innerX, outerX);
+                // fade outer edge
+                radFCtx.strokeStyle = '#848484';
+                radFCtx.strokeStyle = 'rgba(132, 132, 132, 0.8)';
+                radFCtx.beginPath();
+                radFCtx.lineWidth = imageWidth / 90;
+                radFCtx.arc(centerX, centerY, imageWidth / 2, 0, TWO_PI, true);
+                radFCtx.closePath();
+                radFCtx.stroke();
+                radFCtx.restore();
+
+                break;
+            }
+
+            // inner bright frame
+            radFCtx.fillStyle = 'rgb(191, 191, 191)';
+            radFCtx.beginPath();
+            radFCtx.arc(centerX, centerY, imageWidth * 0.841121 / 2, 0, TWO_PI, true);
+            radFCtx.closePath();
+            radFCtx.fill();
+
+            // clip out center so it is transparent if the background is not visible
+            radFCtx.globalCompositeOperation = 'destination-out';
+            // Background ellipse
+            radFCtx.beginPath();
+            radFCtx.arc(centerX, centerY, imageWidth * 0.83 / 2, 0, TWO_PI, true);
+            radFCtx.closePath();
+            radFCtx.fill();
+
+            // cache the buffer
+            drawRadialFrameImage.cache[cacheKey] = radFBuffer;
+        }
+        ctx.drawImage(drawRadialFrameImage.cache[cacheKey], 0, 0);
+        return this;
+    };
+    drawRadialFrameImage.cache = {};
+
+    var drawLinearFrameImage = function (ctx, frameDesign, imageWidth, imageHeight, vertical) {
+        var frameWidth,
+            linFBuffer, linFCtx,
+            OUTER_FRAME_CORNER_RADIUS,
+            FRAME_MAIN_CORNER_RADIUS,
+            SUBTRACT_CORNER_RADIUS,
+            grad,
+            fractions = [],
+            colors = [],
+            cacheKey = imageWidth.toString() + imageHeight + frameDesign.design + vertical;
+
+        // check if we have already created and cached this buffer, if not create it
+        if (!drawLinearFrameImage.cache[cacheKey]) {
+            frameWidth = Math.sqrt(imageWidth * imageWidth + imageHeight * imageHeight) * 0.04;
+            frameWidth = Math.ceil(Math.min(frameWidth, (vertical ? imageWidth : imageHeight) * 0.1));
+
+            // Setup buffer
+            linFBuffer = createBuffer(imageWidth, imageHeight);
+            linFCtx = linFBuffer.getContext('2d');
+
+            // Calculate corner radii
+            if (vertical) {
+                OUTER_FRAME_CORNER_RADIUS = Math.ceil(imageWidth * 0.05);
+                FRAME_MAIN_CORNER_RADIUS = OUTER_FRAME_CORNER_RADIUS - 1;
+                SUBTRACT_CORNER_RADIUS = Math.floor(imageWidth * 0.028571);
+            } else {
+                OUTER_FRAME_CORNER_RADIUS = Math.ceil(imageHeight * 0.05);
+                FRAME_MAIN_CORNER_RADIUS = OUTER_FRAME_CORNER_RADIUS - 1;
+                SUBTRACT_CORNER_RADIUS = Math.floor(imageHeight * 0.028571);
+            }
+
+            roundedRectangle(linFCtx, 0, 0, imageWidth, imageHeight, OUTER_FRAME_CORNER_RADIUS);
+            linFCtx.fillStyle = '#838383';
+            linFCtx.fill();
+
+            roundedRectangle(linFCtx, 1, 1, imageWidth - 2, imageHeight - 2, FRAME_MAIN_CORNER_RADIUS);
+
+            // main gradient frame
+            switch (frameDesign.design) {
+            case 'metal':
+                grad = linFCtx.createLinearGradient(0, imageWidth * 0.004672, 0, imageHeight * 0.990654);
+                grad.addColorStop(0, '#fefefe');
+                grad.addColorStop(0.07, 'rgb(210, 210, 210)');
+                grad.addColorStop(0.12, 'rgb(179, 179, 179)');
+                grad.addColorStop(1, 'rgb(213, 213, 213)');
+                linFCtx.fillStyle = grad;
+                linFCtx.fill();
+                break;
+
+            case 'brass':
+                grad = linFCtx.createLinearGradient(0, imageWidth * 0.004672, 0, imageHeight * 0.990654);
+                grad.addColorStop(0, 'rgb(249, 243, 155)');
+                grad.addColorStop(0.05, 'rgb(246, 226, 101)');
+                grad.addColorStop(0.10, 'rgb(240, 225, 132)');
+                grad.addColorStop(0.50, 'rgb(90, 57, 22)');
+                grad.addColorStop(0.90, 'rgb(249, 237, 139)');
+                grad.addColorStop(0.95, 'rgb(243, 226, 108)');
+                grad.addColorStop(1, 'rgb(202, 182, 113)');
+                linFCtx.fillStyle = grad;
+                linFCtx.fill();
+                break;
+
+            case 'steel':
+                grad = linFCtx.createLinearGradient(0, imageWidth * 0.004672, 0, imageHeight * 0.990654);
+                grad.addColorStop(0, 'rgb(231, 237, 237)');
+                grad.addColorStop(0.05, 'rgb(189, 199, 198)');
+                grad.addColorStop(0.10, 'rgb(192, 201, 200)');
+                grad.addColorStop(0.50, 'rgb(23, 31, 33)');
+                grad.addColorStop(0.90, 'rgb(196, 205, 204)');
+                grad.addColorStop(0.95, 'rgb(194, 204, 203)');
+                grad.addColorStop(1, 'rgb(189, 201, 199)');
+                linFCtx.fillStyle = grad;
+                linFCtx.fill();
+                break;
+
+            case 'gold':
+                grad = linFCtx.createLinearGradient(0, imageWidth * 0.004672, 0, imageHeight * 0.990654);
+                grad.addColorStop(0, 'rgb(255, 255, 207)');
+                grad.addColorStop(0.15, 'rgb(255, 237, 96)');
+                grad.addColorStop(0.22, 'rgb(254, 199, 57)');
+                grad.addColorStop(0.3, 'rgb(255, 249, 203)');
+                grad.addColorStop(0.38, 'rgb(255, 199, 64)');
+                grad.addColorStop(0.44, 'rgb(252, 194, 60)');
+                grad.addColorStop(0.51, 'rgb(255, 204, 59)');
+                grad.addColorStop(0.6, 'rgb(213, 134, 29)');
+                grad.addColorStop(0.68, 'rgb(255, 201, 56)');
+                grad.addColorStop(0.75, 'rgb(212, 135, 29)');
+                grad.addColorStop(1, 'rgb(247, 238, 101)');
+                linFCtx.fillStyle = grad;
+                linFCtx.fill();
+                break;
+
+            case 'anthracite':
+                grad = linFCtx.createLinearGradient(0, 0.004672 * imageHeight, 0, 0.995326 * imageHeight);
+                grad.addColorStop(0, 'rgb(118, 117, 135)');
+                grad.addColorStop(0.06, 'rgb(74, 74, 82)');
+                grad.addColorStop(0.12, 'rgb(50, 50, 54)');
+                grad.addColorStop(1, 'rgb(79, 79, 87)');
+                linFCtx.fillStyle = grad;
+                linFCtx.fill();
+                break;
+
+            case 'tiltedGray':
+                grad = linFCtx.createLinearGradient(0.233644 * imageWidth, 0.084112 * imageHeight, 0.81258 * imageWidth, 0.910919 * imageHeight);
+                grad.addColorStop(0, '#ffffff');
+                grad.addColorStop(0.07, 'rgb(210, 210, 210)');
+                grad.addColorStop(0.16, 'rgb(179, 179, 179)');
+                grad.addColorStop(0.33, '#ffffff');
+                grad.addColorStop(0.55, '#c5c5c5');
+                grad.addColorStop(0.79, '#ffffff');
+                grad.addColorStop(1, '#666666');
+                linFCtx.fillStyle = grad;
+                linFCtx.fill();
+                break;
+
+            case 'tiltedBlack':
+                grad = linFCtx.createLinearGradient(0.228971 * imageWidth, 0.079439 * imageHeight, 0.802547 * imageWidth, 0.898591 * imageHeight);
+                grad.addColorStop(0, '#666666');
+                grad.addColorStop(0.21, '#000000');
+                grad.addColorStop(0.47, '#666666');
+                grad.addColorStop(0.99, '#000000');
+                grad.addColorStop(1, '#000000');
+                linFCtx.fillStyle = grad;
+                linFCtx.fill();
+                break;
+
+            case 'glossyMetal':
+        
+                roundedRectangle(linFCtx, 1, 1, imageWidth - 2, imageHeight - 2, OUTER_FRAME_CORNER_RADIUS);
+                linFCtx.clip();
+                grad = linFCtx.createLinearGradient(0, 1, 0, imageHeight - 2);
+                grad.addColorStop(0, 'rgb(249, 249, 249)');
+                grad.addColorStop(0.2, 'rgb(200, 195, 191)');
+                grad.addColorStop(0.3, '#ffffff');
+                grad.addColorStop(0.6, 'rgb(29, 29, 29)');
+                grad.addColorStop(0.8, 'rgb(200, 194, 192)');
+                grad.addColorStop(1, 'rgb(209, 209, 209)');
+                linFCtx.fillStyle = grad;
+                linFCtx.fill();
+
+                // Inner frame bright
+                roundedRectangle(linFCtx, frameWidth - 2, frameWidth - 2, imageWidth - (frameWidth - 2) * 2, imageHeight - (frameWidth - 2) * 2, SUBTRACT_CORNER_RADIUS);
+                linFCtx.clip();
+                linFCtx.fillStyle = '#f6f6f6';
+                linFCtx.fill();
+
+                // Inner frame dark
+                roundedRectangle(linFCtx, frameWidth - 1, frameWidth - 1, imageWidth - (frameWidth - 1) * 2, imageHeight - (frameWidth - 1) * 2, SUBTRACT_CORNER_RADIUS);
+                linFCtx.clip();
+                linFCtx.fillStyle = '#333333';
+                break;
+
+            case 'blackMetal':
+                fractions = [0,
+                             0.125,
+                             0.347222,
+                             0.5,
+                             0.680555,
+                             0.875,
+                             1];
+
+                colors = [ new RgbaColor('#FFFFFF'),
+                           new RgbaColor('#000000'),
+                           new RgbaColor('#999999'),
+                           new RgbaColor('#000000'),
+                           new RgbaColor('#999999'),
+                           new RgbaColor('#000000'),
+                           new RgbaColor('#FFFFFF')];
+                // Set the clip
+                linFCtx.beginPath();
+                roundedRectangle(linFCtx, 1, 1, imageWidth - 2, imageHeight - 2, OUTER_FRAME_CORNER_RADIUS);
+                linFCtx.closePath();
+                linFCtx.clip();
+                grad = new ConicalGradient(fractions, colors);
+                grad.fillRect(linFCtx, imageWidth / 2, imageHeight / 2, imageWidth, imageHeight, frameWidth, frameWidth);
+                break;
+
+            case 'shinyMetal':
+                fractions = [0,
+                             0.125,
+                             0.25,
+                             0.347222,
+                             0.5,
+                             0.652777,
+                             0.75,
+                             0.875,
+                             1];
+
+                colors = [ new RgbaColor('#FFFFFF'),
+                           new RgbaColor('#D2D2D2'),
+                           new RgbaColor('#B3B3B3'),
+                           new RgbaColor('#EEEEEE'),
+                           new RgbaColor('#A0A0A0'),
+                           new RgbaColor('#EEEEEE'),
+                           new RgbaColor('#B3B3B3'),
+                           new RgbaColor('#D2D2D2'),
+                           new RgbaColor('#FFFFFF')];
+                // Set the clip
+                linFCtx.beginPath();
+                roundedRectangle(linFCtx, 1, 1, imageWidth - 2, imageHeight - 2, OUTER_FRAME_CORNER_RADIUS);
+                linFCtx.closePath();
+                linFCtx.clip();
+                grad = new ConicalGradient(fractions, colors);
+                grad.fillRect(linFCtx, imageWidth / 2, imageHeight / 2, imageWidth, imageHeight, frameWidth, frameWidth);
+                break;
+
+            case 'chrome':
+                fractions = [0,0.09,0.12, 0.16,0.25,0.29,0.33,0.38,0.48,0.52,0.63,0.68, 0.8,0.83, 0.87,0.97,1];
+
+                colors = [ new RgbaColor('#FFFFFF'), new RgbaColor('#FFFFFF'),new RgbaColor('#888890'), new RgbaColor('#A4B9BE'),new RgbaColor('#9EB3B6'), new RgbaColor('#707070'),new RgbaColor('#DDE3E3'),new RgbaColor('#9BB0B3'), new RgbaColor('#9CB0B1'),new RgbaColor('#FEFFFF'),new RgbaColor('#FFFFFF'),new RgbaColor('#9CB4B4'),new RgbaColor('#C6D1D3'),new RgbaColor('#F6F8F7'),new RgbaColor('#CCD8D8'),new RgbaColor('#A4BCBE'), new RgbaColor('#FFFFFF')];
+                // Set the clip
+                linFCtx.beginPath();
+                roundedRectangle(linFCtx, 1, 1, imageWidth - 2, imageHeight - 2, OUTER_FRAME_CORNER_RADIUS);
+                linFCtx.closePath();
+                linFCtx.clip();
+                grad = new ConicalGradient(fractions, colors);
+                grad.fillRect(linFCtx, imageWidth / 2, imageHeight / 2, imageWidth, imageHeight, frameWidth, frameWidth);
+                break;
+            }
+
+            roundedRectangle(linFCtx, frameWidth, frameWidth, imageWidth - (frameWidth) * 2, imageHeight - (frameWidth) * 2, SUBTRACT_CORNER_RADIUS);
+            linFCtx.fillStyle = 'rgb(192, 192, 192)';
+
+            // clip out the center of the frame for transparent backgrounds
+            linFCtx.globalCompositeOperation = 'destination-out';
+            roundedRectangle(linFCtx, frameWidth, frameWidth, imageWidth - frameWidth * 2, imageHeight - frameWidth * 2, SUBTRACT_CORNER_RADIUS);
+            linFCtx.fill();
+
+            // cache the buffer
+            drawLinearFrameImage.cache[cacheKey] = linFBuffer;
+        }
+        ctx.drawImage(drawLinearFrameImage.cache[cacheKey], 0, 0);
+        return this;
+    };
+    drawLinearFrameImage.cache = {};
+
+    var drawRadialBackgroundImage = function (ctx, backgroundColor, centerX, centerY, imageWidth, imageHeight) {
+        var radBBuffer, radBCtx,
+            grad, fractions, colors,
+            backgroundOffsetX = imageWidth * 0.831775 / 2,
+            mono, textureColor, texture,
+            radius, turnRadius, stepSize,
+            end, i,
+            cacheKey = imageWidth.toString() + imageHeight + backgroundColor.name;
+
+        // check if we have already created and cached this buffer, if not create it
+        if (!drawRadialBackgroundImage.cache[cacheKey]) {
+            // Setup buffer
+            radBBuffer = createBuffer(imageWidth, imageHeight);
+            radBCtx = radBBuffer.getContext('2d');
+
+            // Background ellipse
+            radBCtx.beginPath();
+            radBCtx.arc(centerX, centerY, backgroundOffsetX, 0, TWO_PI, true);
+            radBCtx.closePath();
+
+            // If the backgroundColor is a texture fill it with the texture instead of the gradient
+            if (backgroundColor.name === 'CARBON' || backgroundColor.name === 'PUNCHED_SHEET' ||
+                backgroundColor.name === 'BRUSHED_METAL' || backgroundColor.name === 'BRUSHED_STAINLESS') {
+
+                if (backgroundColor.name === 'CARBON') {
+                    radBCtx.fillStyle = radBCtx.createPattern(carbonBuffer, 'repeat');
+                    radBCtx.fill();
+                }
+
+                if (backgroundColor.name === 'PUNCHED_SHEET') {
+                    radBCtx.fillStyle = radBCtx.createPattern(punchedSheetBuffer, 'repeat');
+                    radBCtx.fill();
+                }
+
+                // Add another inner shadow to make the look more realistic
+                grad = radBCtx.createLinearGradient(backgroundOffsetX, 0, imageWidth - backgroundOffsetX, 0);
+                grad.addColorStop(0, 'rgba(0, 0, 0, 0.25)');
+                grad.addColorStop(0.5, 'rgba(0, 0, 0, 0)');
+                grad.addColorStop(1, 'rgba(0, 0, 0, 0.25)');
+                radBCtx.fillStyle = grad;
+                radBCtx.beginPath();
+                radBCtx.arc(centerX, centerY, backgroundOffsetX, 0, TWO_PI, true);
+                radBCtx.closePath();
+                radBCtx.fill();
+
+                if (backgroundColor.name === 'BRUSHED_METAL' || backgroundColor.name === 'BRUSHED_STAINLESS') {
+                    mono = (backgroundColor.name === 'BRUSHED_METAL' ? true : false);
+                    textureColor = parseInt(backgroundColor.gradientStop.getHexColor().substr(-6), 16);
+                    texture = brushedMetalTexture(textureColor, 5, 0.1, mono, 0.5);
+                    radBCtx.fillStyle = radBCtx.createPattern(texture.fill(0, 0, imageWidth, imageHeight), 'no-repeat');
+                    radBCtx.fill();
+                }
+            } else if (backgroundColor.name === 'STAINLESS' || backgroundColor.name === 'TURNED') {
+                // Define the fractions of the conical gradient paint
+                fractions = [0,
+                             0.03,
+                             0.10,
+                             0.14,
+                             0.24,
+                             0.33,
+                             0.38,
+                             0.5,
+                             0.62,
+                             0.67,
+                             0.76,
+                             0.81,
+                             0.85,
+                             0.97,
+                             1];
+
+                // Define the colors of the conical gradient paint
+                colors = [new RgbaColor('#FDFDFD'),
+                          new RgbaColor('#FDFDFD'),
+                          new RgbaColor('#B2B2B4'),
+                          new RgbaColor('#ACACAE'),
+                          new RgbaColor('#FDFDFD'),
+                          new RgbaColor('#8E8E8E'),
+                          new RgbaColor('#8E8E8E'),
+                          new RgbaColor('#FDFDFD'),
+                          new RgbaColor('#8E8E8E'),
+                          new RgbaColor('#8E8E8E'),
+                          new RgbaColor('#FDFDFD'),
+                          new RgbaColor('#ACACAE'),
+                          new RgbaColor('#B2B2B4'),
+                          new RgbaColor('#FDFDFD'),
+                          new RgbaColor('#FDFDFD')];
+
+                grad = new ConicalGradient(fractions, colors);
+                grad.fillCircle(radBCtx, centerX, centerY, 0, backgroundOffsetX);
+
+                if (backgroundColor.name === 'TURNED') {
+                    // Define the turning radius
+                    radius = backgroundOffsetX;
+                    turnRadius = radius * 0.55;
+                    // Step size proporational to radius
+                    stepSize = RAD_FACTOR * (500 / radius);
+                    // Save before we start
+                    radBCtx.save();
+                    // restrict the turnings to the desired area
+                    radBCtx.beginPath();
+                    radBCtx.arc(centerX, centerY, radius, 0, TWO_PI);
+                    radBCtx.closePath();
+                    radBCtx.clip();
+                    // set the style for the turnings
+                    radBCtx.lineWidth = 0.5;
+                    end = TWO_PI - stepSize * 0.3;
+                    // Step the engine round'n'round
+                    for (i = 0 ; i < end; i += stepSize) {
+                        // draw a 'turn'
+                        radBCtx.strokeStyle = 'rgba(240, 240, 255, 0.25)';
+                        radBCtx.beginPath();
+                        radBCtx.arc(centerX + turnRadius, centerY, turnRadius, 0, TWO_PI);
+                        radBCtx.stroke();
+                        // rotate the 'piece' a fraction to draw 'shadow'
+                        radBCtx.translate(centerX, centerY);
+                        radBCtx.rotate(stepSize * 0.3);
+                        radBCtx.translate(-centerX, -centerY);
+                        // draw a 'turn'
+                        radBCtx.strokeStyle = 'rgba(25, 10, 10, 0.1)';
+                        radBCtx.beginPath();
+                        radBCtx.arc(centerX + turnRadius, centerY, turnRadius, 0, TWO_PI);
+                        radBCtx.stroke();
+                        // now rotate on to the next 'scribe' position minus the 'fraction'
+                        radBCtx.translate(centerX, centerY);
+                        radBCtx.rotate(stepSize - stepSize * 0.3);
+                        radBCtx.translate(-centerX, -centerY);
+                    }
+                    // Restore canvas now we are done
+                    radBCtx.restore();
+                }
+            } else {
+                grad = radBCtx.createLinearGradient(0, imageWidth * 0.084112, 0, backgroundOffsetX * 2);
+                grad.addColorStop(0, backgroundColor.gradientStart.getRgbaColor());
+                grad.addColorStop(0.4, backgroundColor.gradientFraction.getRgbaColor());
+                grad.addColorStop(1, backgroundColor.gradientStop.getRgbaColor());
+                radBCtx.fillStyle = grad;
+                radBCtx.fill();
+            }
+            // Inner shadow
+            grad = radBCtx.createRadialGradient(centerX, centerY, 0, centerX, centerY, backgroundOffsetX);
+            grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+            grad.addColorStop(0.7, 'rgba(0, 0, 0, 0)');
+            grad.addColorStop(0.71, 'rgba(0, 0, 0, 0)');
+            grad.addColorStop(0.86, 'rgba(0, 0, 0, 0.03)');
+            grad.addColorStop(0.92, 'rgba(0, 0, 0, 0.07)');
+            grad.addColorStop(0.97, 'rgba(0, 0, 0, 0.15)');
+            grad.addColorStop(1, 'rgba(0, 0, 0, 0.3)');
+            radBCtx.fillStyle = grad;
+
+            radBCtx.beginPath();
+            radBCtx.arc(centerX, centerY, backgroundOffsetX, 0, TWO_PI, true);
+            radBCtx.closePath();
+            radBCtx.fill();
+
+            // cache the buffer
+            drawRadialBackgroundImage.cache[cacheKey] = radBBuffer;
+        }
+        ctx.drawImage(drawRadialBackgroundImage.cache[cacheKey], 0, 0);
+        return this;
+    };
+    drawRadialBackgroundImage.cache = {};
+
+    var drawRadialCustomImage = function (ctx, img, centerX, centerY, imageWidth, imageHeight) {
+        var drawWidth = imageWidth * 0.831775,
+            drawHeight = imageHeight * 0.831775,
+            x = (imageWidth - drawWidth) / 2,
+            y = (imageHeight - drawHeight) / 2;
+
+        if (img !== null && img.height > 0 && img.width > 0) {
+            ctx.save();
+            // Set the clipping area
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, imageWidth * 0.831775 / 2, 0, TWO_PI, true);
+            ctx.clip();
+            // Add the image
+            ctx.drawImage(img, x, y, drawWidth, drawHeight);
+            ctx.restore();
+        }
+        return this;
+    };
+
+    var drawLinearBackgroundImage = function (ctx, backgroundColor, imageWidth, imageHeight, vertical) {
+        var i, end, grad, fractions, colors,
+            frameWidth,
+            linBBuffer, linBCtx, linBColor,
+            radius,
+            turnRadius, centerX, centerY, stepSize,
+            mono, textureColor, texture,
+            cacheKey = imageWidth.toString() + imageHeight + vertical + backgroundColor.name;
+
+        // check if we have already created and cached this buffer, if not create it
+        if (!drawLinearBackgroundImage.cache[cacheKey]) {
+            frameWidth = Math.sqrt(imageWidth * imageWidth + imageHeight * imageHeight) * 0.04;
+            frameWidth = Math.ceil(Math.min(frameWidth, (vertical ? imageWidth : imageHeight) * 0.1)) - 1;
+
+            var CORNER_RADIUS = Math.floor((vertical ? imageWidth : imageHeight) * 0.028571);
+            // Setup buffer
+            linBBuffer = createBuffer(imageWidth, imageHeight);
+            linBCtx = linBBuffer.getContext('2d');
+            linBColor = backgroundColor;
+            linBCtx.lineWidth = 0;
+
+            roundedRectangle(linBCtx, frameWidth, frameWidth, imageWidth - frameWidth * 2, imageHeight - frameWidth * 2, CORNER_RADIUS);
+
+            // If the backgroundColor is a texture fill it with the texture instead of the gradient
+            if (backgroundColor.name === 'CARBON' || backgroundColor.name === 'PUNCHED_SHEET' ||
+                backgroundColor.name === 'STAINLESS' || backgroundColor.name === 'BRUSHED_METAL' ||
+                backgroundColor.name === 'BRUSHED_STAINLESS' || backgroundColor.name === 'TURNED') {
+                if (backgroundColor.name === 'CARBON') {
+                    linBCtx.fillStyle = linBCtx.createPattern(carbonBuffer, 'repeat');
+                    linBCtx.fill();
+                }
+
+                if (backgroundColor.name === 'PUNCHED_SHEET') {
+                    linBCtx.fillStyle = linBCtx.createPattern(punchedSheetBuffer, 'repeat');
+                    linBCtx.fill();
+                }
+
+                if (backgroundColor.name === 'STAINLESS' || backgroundColor.name === 'TURNED') {
+                    // Define the fraction of the conical gradient paint
+                    fractions = [0,
+                                 0.03,
+                                 0.10,
+                                 0.14,
+                                 0.24,
+                                 0.33,
+                                 0.38,
+                                 0.5,
+                                 0.62,
+                                 0.67,
+                                 0.76,
+                                 0.81,
+                                 0.85,
+                                 0.97,
+                                 1];
+
+                    // Define the colors of the conical gradient paint
+                    colors = [new RgbaColor('#FDFDFD'),
+                              new RgbaColor('#FDFDFD'),
+                              new RgbaColor('#B2B2B4'),
+                              new RgbaColor('#ACACAE'),
+                              new RgbaColor('#FDFDFD'),
+                              new RgbaColor('#8E8E8E'),
+                              new RgbaColor('#8E8E8E'),
+                              new RgbaColor('#FDFDFD'),
+                              new RgbaColor('#8E8E8E'),
+                              new RgbaColor('#8E8E8E'),
+                              new RgbaColor('#FDFDFD'),
+                              new RgbaColor('#ACACAE'),
+                              new RgbaColor('#B2B2B4'),
+                              new RgbaColor('#FDFDFD'),
+                              new RgbaColor('#FDFDFD')];
+                    grad = new ConicalGradient(fractions, colors);
+                    // Set a clip as we will be drawing outside the required area
+                    linBCtx.clip();
+                    grad.fillRect(linBCtx, imageWidth / 2, imageHeight / 2, imageWidth - frameWidth * 2, imageHeight - frameWidth * 2, imageWidth / 2, imageHeight / 2);
+                    // Add an additional inner shadow to fade out brightness at the top
+                    grad = linBCtx.createLinearGradient(0, frameWidth, 0, imageHeight - frameWidth * 2);
+                    grad.addColorStop(0, 'rgba(0, 0, 0, 0.25)');
+                    grad.addColorStop(0.1, 'rgba(0, 0, 0, 0.05)');
+                    grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                    linBCtx.fillStyle = grad;
+                    linBCtx.fill();
+
+                    if (backgroundColor.name === 'TURNED') {
+                        // Define the turning radius
+                        radius = Math.sqrt((imageWidth - frameWidth * 2) * (imageWidth - frameWidth * 2) + (imageHeight - frameWidth * 2) * (imageHeight - frameWidth * 2)) / 2;
+                        turnRadius = radius * 0.55;
+                        centerX = imageWidth / 2;
+                        centerY = imageHeight / 2;
+                        // Step size proporational to radius
+                        stepSize = TWO_PI / 360 * (400 / radius);
+
+                        // Save before we start
+                        linBCtx.save();
+
+                        // Set a clip as we will be drawing outside the required area
+                        roundedRectangle(linBCtx, frameWidth, frameWidth, imageWidth - frameWidth * 2, imageHeight - frameWidth * 2, CORNER_RADIUS);
+                        linBCtx.clip();
+
+                        // set the style for the turnings
+                        linBCtx.lineWidth = 0.5;
+                        end = TWO_PI - stepSize * 0.3;
+                        // Step the engine round'n'round
+                        for (i = 0; i < end; i += stepSize) {
+                            // draw a 'turn'
+                            linBCtx.strokeStyle = 'rgba(240, 240, 255, 0.25)';
+                            linBCtx.beginPath();
+                            linBCtx.arc(centerX + turnRadius, centerY, turnRadius, 0, TWO_PI);
+                            linBCtx.stroke();
+                            // rotate the 'piece'
+                            linBCtx.translate(centerX, centerY);
+                            linBCtx.rotate(stepSize * 0.3);
+                            linBCtx.translate(-centerX, -centerY);
+                            // draw a 'turn'
+                            linBCtx.strokeStyle = 'rgba(25, 10, 10, 0.1)';
+                            linBCtx.beginPath();
+                            linBCtx.arc(centerX + turnRadius, centerY, turnRadius, 0, TWO_PI);
+                            linBCtx.stroke();
+                            linBCtx.translate(centerX, centerY);
+                            linBCtx.rotate(-stepSize * 0.3);
+                            linBCtx.translate(-centerX, -centerY);
+
+                            // rotate the 'piece'
+                            linBCtx.translate(centerX, centerY);
+                            linBCtx.rotate(stepSize);
+                            linBCtx.translate(-centerX, -centerY);
+                        }
+                        // Restore canvas now we are done
+                        linBCtx.restore();
+                    }
+                }
+                // Add an additional inner shadow to make the look more realistic
+                grad = linBCtx.createLinearGradient(frameWidth, frameWidth, imageWidth - frameWidth * 2, imageHeight - frameWidth * 2);
+                grad.addColorStop(0, 'rgba(0, 0, 0, 0.25)');
+                grad.addColorStop(0.5, 'rgba(0, 0, 0, 0)');
+                grad.addColorStop(1, 'rgba(0, 0, 0, 0.25)');
+                linBCtx.fillStyle = grad;
+                roundedRectangle(linBCtx, frameWidth, frameWidth, imageWidth - frameWidth * 2, imageHeight - frameWidth * 2, CORNER_RADIUS);
+                linBCtx.fill();
+
+                if (backgroundColor.name === 'BRUSHED_METAL' || backgroundColor.name === 'BRUSHED_STAINLESS') {
+                    mono = (backgroundColor.name === 'BRUSHED_METAL' ? true : false);
+                    textureColor = parseInt(backgroundColor.gradientStop.getHexColor().substr(-6), 16);
+                    texture = brushedMetalTexture(textureColor, 5, 0.1, mono, 0.5);
+                    linBCtx.fillStyle = linBCtx.createPattern(texture.fill(0, 0, imageWidth, imageHeight), 'no-repeat');
+                    linBCtx.fill();
+                }
+            } else {
+                grad = linBCtx.createLinearGradient(0, frameWidth, 0, imageHeight - frameWidth * 2);
+                grad.addColorStop(0, backgroundColor.gradientStart.getRgbaColor());
+                grad.addColorStop(0.4, backgroundColor.gradientFraction.getRgbaColor());
+                grad.addColorStop(1, backgroundColor.gradientStop.getRgbaColor());
+                linBCtx.fillStyle = grad;
+                linBCtx.fill();
+            }
+            // Add a simple inner shadow
+            colors = [ 'rgba(0, 0, 0, 0.30)',
+                       'rgba(0, 0, 0, 0.20)',
+                       'rgba(0, 0, 0, 0.13)',
+                       'rgba(0, 0, 0, 0.09)',
+                       'rgba(0, 0, 0, 0.06)',
+                       'rgba(0, 0, 0, 0.04)',
+                       'rgba(0, 0, 0, 0.03)'
+                     ];
+            for (i = 0 ; i < 7 ; i++) {
+                linBCtx.strokeStyle = colors[i];
+                roundedRectangle(linBCtx, frameWidth + i, frameWidth + i, imageWidth - frameWidth * 2 - (2 * i), imageHeight - frameWidth * 2 - (2 * i), CORNER_RADIUS);
+                linBCtx.stroke();
+            }
+            // cache the buffer
+            drawLinearBackgroundImage.cache[cacheKey] = linBBuffer;
+        }
+        ctx.drawImage(drawLinearBackgroundImage.cache[cacheKey], 0, 0);
+        return this;
+    };
+    drawLinearBackgroundImage.cache = {};
+
+    var drawRadialForegroundImage = function (ctx, foregroundType, imageWidth, imageHeight, withCenterKnob, knob, style, gaugeType, orientation) {
+        var radFgBuffer, radFgCtx,
+            knobSize = Math.ceil(imageHeight * 0.084112),
+            knobX = imageWidth * 0.5 - knobSize / 2,
+            knobY = imageHeight * 0.5 - knobSize / 2,
+            shadowOffset = imageWidth * 0.008,
+            gradHighlight, gradHighlight2,
+            cacheKey = foregroundType.type + imageWidth + imageHeight + withCenterKnob + (knob !== undefined ? knob.type : '-') +
+                       (style !== undefined ? style.style : '-') + (orientation !== undefined ? orientation.type : '-');
+
+        // check if we have already created and cached this buffer, if so return it and exit
+        if (!drawRadialForegroundImage.cache[cacheKey]) {
+            // Setup buffer
+            radFgBuffer = createBuffer(imageWidth, imageHeight);
+            radFgCtx = radFgBuffer.getContext('2d');
+
+            // center post
+            if (withCenterKnob) {
+                // Set the pointer shadow params
+                radFgCtx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+                radFgCtx.shadowOffsetX = radFgCtx.shadowOffsetY = shadowOffset;
+                radFgCtx.shadowBlur = shadowOffset * 2;
+
+                if (gaugeType === steelseries.GaugeType.TYPE5) {
+                    if (steelseries.Orientation.WEST === orientation) {
+                        knobX = imageWidth * 0.733644 - knobSize / 2;
+                        radFgCtx.drawImage(createKnobImage(knobSize, knob, style), knobX, knobY);
+                    } else if (steelseries.Orientation.EAST === orientation) {
+                        knobX = imageWidth * (1 - 0.733644) - knobSize / 2;
+                        radFgCtx.drawImage(createKnobImage(knobSize, knob, style), knobX, knobY);
+                    } else {
+                        knobY = imageHeight * 0.733644 - knobSize / 2;
+                        radFgCtx.drawImage(createKnobImage(knobSize, knob, style), knobX, imageHeight * 0.6857);
+                    }
+                } else {
+                    radFgCtx.drawImage(createKnobImage(knobSize, knob, style), knobX, knobY);
+                }
+                // Undo shadow drawing
+                radFgCtx.shadowOffsetX = radFgCtx.shadowOffsetY = 0;
+                radFgCtx.shadowBlur = 0;
+            }
+
+            // highlight
+            switch (foregroundType.type) {
+            case 'type2':
+                radFgCtx.beginPath();
+                radFgCtx.moveTo(imageWidth * 0.135514, imageHeight * 0.696261);
+                radFgCtx.bezierCurveTo(imageWidth * 0.214953, imageHeight * 0.588785, imageWidth * 0.317757, imageHeight * 0.5, imageWidth * 0.462616, imageHeight * 0.425233);
+                radFgCtx.bezierCurveTo(imageWidth * 0.612149, imageHeight * 0.345794, imageWidth * 0.733644, imageHeight * 0.317757, imageWidth * 0.873831, imageHeight * 0.322429);
+                radFgCtx.bezierCurveTo(imageWidth * 0.766355, imageHeight * 0.112149, imageWidth * 0.528037, imageHeight * 0.023364, imageWidth * 0.313084, imageHeight * 0.130841);
+                radFgCtx.bezierCurveTo(imageWidth * 0.098130, imageHeight * 0.238317, imageWidth * 0.028037, imageHeight * 0.485981, imageWidth * 0.135514, imageHeight * 0.696261);
+                radFgCtx.closePath();
+                gradHighlight = radFgCtx.createLinearGradient(0.313084 * imageWidth, 0.135514 * imageHeight, 0.495528 * imageWidth, 0.493582 * imageHeight);
+                gradHighlight.addColorStop(0, 'rgba(255, 255, 255, 0.275)');
+                gradHighlight.addColorStop(1, 'rgba(255, 255, 255, 0.015)');
+                break;
+
+            case 'type3':
+                radFgCtx.beginPath();
+                radFgCtx.moveTo(imageWidth * 0.084112, imageHeight * 0.509345);
+                radFgCtx.bezierCurveTo(imageWidth * 0.210280, imageHeight * 0.556074, imageWidth * 0.462616, imageHeight * 0.560747, imageWidth * 0.5, imageHeight * 0.560747);
+                radFgCtx.bezierCurveTo(imageWidth * 0.537383, imageHeight * 0.560747, imageWidth * 0.794392, imageHeight * 0.560747, imageWidth * 0.915887, imageHeight * 0.509345);
+                radFgCtx.bezierCurveTo(imageWidth * 0.915887, imageHeight * 0.275700, imageWidth * 0.738317, imageHeight * 0.084112, imageWidth * 0.5, imageHeight * 0.084112);
+                radFgCtx.bezierCurveTo(imageWidth * 0.261682, imageHeight * 0.084112, imageWidth * 0.084112, imageHeight * 0.275700, imageWidth * 0.084112, imageHeight * 0.509345);
+                radFgCtx.closePath();
+                gradHighlight = radFgCtx.createLinearGradient(0, 0.093457 * imageHeight, 0, 0.556073 * imageHeight);
+                gradHighlight.addColorStop(0, 'rgba(255, 255, 255, 0.275)');
+                gradHighlight.addColorStop(1, 'rgba(255, 255, 255, 0.015)');
+                break;
+
+            case 'type4':
+                radFgCtx.beginPath();
+                radFgCtx.moveTo(imageWidth * 0.677570, imageHeight * 0.242990);
+                radFgCtx.bezierCurveTo(imageWidth * 0.771028, imageHeight * 0.308411, imageWidth * 0.822429, imageHeight * 0.411214, imageWidth * 0.813084, imageHeight * 0.528037);
+                radFgCtx.bezierCurveTo(imageWidth * 0.799065, imageHeight * 0.654205, imageWidth * 0.719626, imageHeight * 0.757009, imageWidth * 0.593457, imageHeight * 0.799065);
+                radFgCtx.bezierCurveTo(imageWidth * 0.485981, imageHeight * 0.831775, imageWidth * 0.369158, imageHeight * 0.808411, imageWidth * 0.285046, imageHeight * 0.728971);
+                radFgCtx.bezierCurveTo(imageWidth * 0.275700, imageHeight * 0.719626, imageWidth * 0.252336, imageHeight * 0.714953, imageWidth * 0.233644, imageHeight * 0.728971);
+                radFgCtx.bezierCurveTo(imageWidth * 0.214953, imageHeight * 0.747663, imageWidth * 0.219626, imageHeight * 0.771028, imageWidth * 0.228971, imageHeight * 0.775700);
+                radFgCtx.bezierCurveTo(imageWidth * 0.331775, imageHeight * 0.878504, imageWidth * 0.476635, imageHeight * 0.915887, imageWidth * 0.616822, imageHeight * 0.869158);
+                radFgCtx.bezierCurveTo(imageWidth * 0.771028, imageHeight * 0.822429, imageWidth * 0.873831, imageHeight * 0.691588, imageWidth * 0.887850, imageHeight * 0.532710);
+                radFgCtx.bezierCurveTo(imageWidth * 0.897196, imageHeight * 0.387850, imageWidth * 0.836448, imageHeight * 0.257009, imageWidth * 0.719626, imageHeight * 0.182242);
+                radFgCtx.bezierCurveTo(imageWidth * 0.705607, imageHeight * 0.172897, imageWidth * 0.682242, imageHeight * 0.163551, imageWidth * 0.663551, imageHeight * 0.186915);
+                radFgCtx.bezierCurveTo(imageWidth * 0.654205, imageHeight * 0.205607, imageWidth * 0.668224, imageHeight * 0.238317, imageWidth * 0.677570, imageHeight * 0.242990);
+                radFgCtx.closePath();
+                gradHighlight = radFgCtx.createRadialGradient((0.5) * imageWidth, ((0.5) * imageHeight), 0, ((0.5) * imageWidth), ((0.5) * imageHeight), 0.387850 * imageWidth);
+                gradHighlight.addColorStop(0, 'rgba(255, 255, 255, 0)');
+                gradHighlight.addColorStop(0.82, 'rgba(255, 255, 255, 0)');
+                gradHighlight.addColorStop(0.83, 'rgba(255, 255, 255, 0)');
+                gradHighlight.addColorStop(1, 'rgba(255, 255, 255, 0.15)');
+
+                radFgCtx.beginPath();
+                radFgCtx.moveTo(imageWidth * 0.261682, imageHeight * 0.224299);
+                radFgCtx.bezierCurveTo(imageWidth * 0.285046, imageHeight * 0.238317, imageWidth * 0.252336, imageHeight * 0.285046, imageWidth * 0.242990, imageHeight * 0.317757);
+                radFgCtx.bezierCurveTo(imageWidth * 0.242990, imageHeight * 0.350467, imageWidth * 0.271028, imageHeight * 0.383177, imageWidth * 0.271028, imageHeight * 0.397196);
+                radFgCtx.bezierCurveTo(imageWidth * 0.275700, imageHeight * 0.415887, imageWidth * 0.261682, imageHeight * 0.457943, imageWidth * 0.238317, imageHeight * 0.509345);
+                radFgCtx.bezierCurveTo(imageWidth * 0.224299, imageHeight * 0.542056, imageWidth * 0.177570, imageHeight * 0.612149, imageWidth * 0.158878, imageHeight * 0.612149);
+                radFgCtx.bezierCurveTo(imageWidth * 0.144859, imageHeight * 0.612149, imageWidth * 0.088785, imageHeight * 0.546728, imageWidth * 0.130841, imageHeight * 0.369158);
+                radFgCtx.bezierCurveTo(imageWidth * 0.140186, imageHeight * 0.336448, imageWidth * 0.214953, imageHeight * 0.200934, imageWidth * 0.261682, imageHeight * 0.224299);
+                radFgCtx.closePath();
+                gradHighlight2 = radFgCtx.createLinearGradient(0.130841 * imageWidth, 0.369158 * imageHeight, 0.273839 * imageWidth, 0.412877 * imageHeight);
+                gradHighlight2.addColorStop(0, 'rgba(255, 255, 255, 0.275)');
+                gradHighlight2.addColorStop(1, 'rgba(255, 255, 255, 0.015)');
+                radFgCtx.fillStyle = gradHighlight2;
+                radFgCtx.fill();
+                break;
+
+            case 'type5':
+                radFgCtx.beginPath();
+                radFgCtx.moveTo(imageWidth * 0.084112, imageHeight * 0.5);
+                radFgCtx.bezierCurveTo(imageWidth * 0.084112, imageHeight * 0.271028, imageWidth * 0.271028, imageHeight * 0.084112, imageWidth * 0.5, imageHeight * 0.084112);
+                radFgCtx.bezierCurveTo(imageWidth * 0.700934, imageHeight * 0.084112, imageWidth * 0.864485, imageHeight * 0.224299, imageWidth * 0.906542, imageHeight * 0.411214);
+                radFgCtx.bezierCurveTo(imageWidth * 0.911214, imageHeight * 0.439252, imageWidth * 0.911214, imageHeight * 0.518691, imageWidth * 0.845794, imageHeight * 0.537383);
+                radFgCtx.bezierCurveTo(imageWidth * 0.794392, imageHeight * 0.546728, imageWidth * 0.551401, imageHeight * 0.411214, imageWidth * 0.392523, imageHeight * 0.457943);
+                radFgCtx.bezierCurveTo(imageWidth * 0.168224, imageHeight * 0.509345, imageWidth * 0.135514, imageHeight * 0.775700, imageWidth * 0.093457, imageHeight * 0.593457);
+                radFgCtx.bezierCurveTo(imageWidth * 0.088785, imageHeight * 0.560747, imageWidth * 0.084112, imageHeight * 0.532710, imageWidth * 0.084112, imageHeight * 0.5);
+                radFgCtx.closePath();
+                gradHighlight = radFgCtx.createLinearGradient(0, 0.084112 * imageHeight, 0, 0.644859 * imageHeight);
+                gradHighlight.addColorStop(0, 'rgba(255, 255, 255, 0.275)');
+                gradHighlight.addColorStop(1, 'rgba(255, 255, 255, 0.015)');
+                break;
+
+            case 'type1':
+            /* falls through */
+            default:
+                radFgCtx.beginPath();
+                radFgCtx.moveTo(imageWidth * 0.084112, imageHeight * 0.509345);
+                radFgCtx.bezierCurveTo(imageWidth * 0.205607, imageHeight * 0.448598, imageWidth * 0.336448, imageHeight * 0.415887, imageWidth * 0.5, imageHeight * 0.415887);
+                radFgCtx.bezierCurveTo(imageWidth * 0.672897, imageHeight * 0.415887, imageWidth * 0.789719, imageHeight * 0.443925, imageWidth * 0.915887, imageHeight * 0.509345);
+                radFgCtx.bezierCurveTo(imageWidth * 0.915887, imageHeight * 0.275700, imageWidth * 0.738317, imageHeight * 0.084112, imageWidth * 0.5, imageHeight * 0.084112);
+                radFgCtx.bezierCurveTo(imageWidth * 0.261682, imageHeight * 0.084112, imageWidth * 0.084112, imageHeight * 0.275700, imageWidth * 0.084112, imageHeight * 0.509345);
+                radFgCtx.closePath();
+                gradHighlight = radFgCtx.createLinearGradient(0, 0.088785 * imageHeight, 0, 0.490654 * imageHeight);
+                gradHighlight.addColorStop(0, 'rgba(255, 255, 255, 0.275)');
+                gradHighlight.addColorStop(1, 'rgba(255, 255, 255, 0.015)');
+                break;
+            }
+            radFgCtx.fillStyle = gradHighlight;
+            radFgCtx.fill();
+
+            // cache the buffer
+            drawRadialForegroundImage.cache[cacheKey] = radFgBuffer;
+        }
+        ctx.drawImage(drawRadialForegroundImage.cache[cacheKey], 0, 0);
+        return this;
+    };
+    drawRadialForegroundImage.cache = {};
+
+    var drawLinearForegroundImage = function (ctx, imageWidth, imageHeight, vertical) {
+        var linFgBuffer, linFgCtx,
+            foregroundGradient,
+            frameWidth, fgOffset, fgOffset2,
+            cacheKey = imageWidth.toString() + imageHeight + vertical;
+
+        // check if we have already created and cached this buffer, if not create it
+        if (!drawLinearForegroundImage.cache[cacheKey]) {
+            // Setup buffer
+            linFgBuffer = createBuffer(imageWidth, imageHeight);
+            linFgCtx = linFgBuffer.getContext('2d');
+
+            frameWidth = Math.sqrt(imageWidth * imageWidth + imageHeight * imageHeight) * 0.04;
+            frameWidth = Math.min(frameWidth, (vertical ? imageWidth : imageHeight) * 0.1);
+            fgOffset = frameWidth * 1.3;
+            fgOffset2 = fgOffset * 1.33;
+
+            linFgCtx.beginPath();
+            linFgCtx.moveTo(fgOffset, imageHeight - fgOffset);
+            linFgCtx.lineTo(imageWidth - fgOffset, imageHeight - fgOffset);
+            linFgCtx.bezierCurveTo(imageWidth - fgOffset, imageHeight - fgOffset, imageWidth - fgOffset2, imageHeight * 0.7, imageWidth - fgOffset2, imageHeight * 0.5);
+            linFgCtx.bezierCurveTo(imageWidth - fgOffset2, fgOffset2, imageWidth - fgOffset, fgOffset, imageWidth - frameWidth, fgOffset);
+            linFgCtx.lineTo(fgOffset, fgOffset);
+            linFgCtx.bezierCurveTo(fgOffset, fgOffset, fgOffset2, imageHeight * 0.285714, fgOffset2, imageHeight * 0.5);
+            linFgCtx.bezierCurveTo(fgOffset2, imageHeight * 0.7, fgOffset, imageHeight - fgOffset, frameWidth, imageHeight - fgOffset);
+            linFgCtx.closePath();
+
+            foregroundGradient = linFgCtx.createLinearGradient(0, (imageHeight - frameWidth), 0, frameWidth);
+            foregroundGradient.addColorStop(0, 'rgba(255, 255, 255, 0)');
+            foregroundGradient.addColorStop(0.06, 'rgba(255, 255, 255, 0)');
+            foregroundGradient.addColorStop(0.07, 'rgba(255, 255, 255, 0)');
+            foregroundGradient.addColorStop(0.12, 'rgba(255, 255, 255, 0)');
+            foregroundGradient.addColorStop(0.17, 'rgba(255, 255, 255, 0.013546)');
+            foregroundGradient.addColorStop(0.1701, 'rgba(255, 255, 255, 0)');
+            foregroundGradient.addColorStop(0.79, 'rgba(255, 255, 255, 0)');
+            foregroundGradient.addColorStop(0.8, 'rgba(255, 255, 255, 0)');
+            foregroundGradient.addColorStop(0.84, 'rgba(255, 255, 255, 0.082217)');
+            foregroundGradient.addColorStop(0.93, 'rgba(255, 255, 255, 0.288702)');
+            foregroundGradient.addColorStop(0.94, 'rgba(255, 255, 255, 0.298039)');
+            foregroundGradient.addColorStop(0.96, 'rgba(255, 255, 255, 0.119213)');
+            foregroundGradient.addColorStop(0.97, 'rgba(255, 255, 255, 0)');
+            foregroundGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            linFgCtx.fillStyle = foregroundGradient;
+            linFgCtx.fill();
+
+            // cache the buffer
+            drawLinearForegroundImage.cache[cacheKey] = linFgBuffer;
+        }
+        ctx.drawImage(drawLinearForegroundImage.cache[cacheKey], 0, 0);
+        return this;
+    };
+    drawLinearForegroundImage.cache = {};
+
+    var createKnobImage = function (size, knob, style) {
+        var knobBuffer, knobCtx,
+            maxPostCenterX = size / 2,
+            maxPostCenterY = size / 2,
+            grad,
+            cacheKey = size.toString() + knob.type + style.style;
+
+        // check if we have already created and cached this buffer, if not create it
+        if (!createKnobImage.cache[cacheKey]) {
+            knobBuffer = createBuffer(size * 1.18889, size * 1.18889);
+            knobCtx = knobBuffer.getContext('2d');
+
+            switch (knob.type) {
+            case 'metalKnob':
+                // METALKNOB_FRAME
+                knobCtx.beginPath();
+                knobCtx.moveTo(0, size * 0.5);
+                knobCtx.bezierCurveTo(0, size * 0.222222, size * 0.222222, 0, size * 0.5, 0);
+                knobCtx.bezierCurveTo(size * 0.777777, 0, size, size * 0.222222, size, size * 0.5);
+                knobCtx.bezierCurveTo(size, size * 0.777777, size * 0.777777, size, size * 0.5, size);
+                knobCtx.bezierCurveTo(size * 0.222222, size, 0, size * 0.777777, 0, size * 0.5);
+                knobCtx.closePath();
+                grad = knobCtx.createLinearGradient(0, 0, 0, size);
+                grad.addColorStop(0, 'rgb(92, 95, 101)');
+                grad.addColorStop(0.47, 'rgb(46, 49, 53)');
+                grad.addColorStop(1, 'rgb(22, 23, 26)');
+                knobCtx.fillStyle = grad;
+                knobCtx.fill();
+
+                // METALKNOB_MAIN
+                knobCtx.beginPath();
+                knobCtx.moveTo(size * 0.055555, size * 0.5);
+                knobCtx.bezierCurveTo(size * 0.055555, size * 0.277777, size * 0.277777, size * 0.055555, size * 0.5, size * 0.055555);
+                knobCtx.bezierCurveTo(size * 0.722222, size * 0.055555, size * 0.944444, size * 0.277777, size * 0.944444, size * 0.5);
+                knobCtx.bezierCurveTo(size * 0.944444, size * 0.722222, size * 0.722222, size * 0.944444, size * 0.5, size * 0.944444);
+                knobCtx.bezierCurveTo(size * 0.277777, size * 0.944444, size * 0.055555, size * 0.722222, size * 0.055555, size * 0.5);
+                knobCtx.closePath();
+                grad = knobCtx.createLinearGradient(0, 0.055555 * size, 0, 0.944443 * size);
+                switch (style.style) {
+                case 'black':
+                    grad.addColorStop(0, 'rgb(43, 42, 47)');
+                    grad.addColorStop(1, 'rgb(26, 27, 32)');
+                    break;
+
+                case 'brass':
+                    grad.addColorStop(0, 'rgb(150, 110, 54)');
+                    grad.addColorStop(1, 'rgb(124, 95, 61)');
+                    break;
+
+                case 'silver':
+                /* falls through */
+                default:
+                    grad.addColorStop(0, 'rgb(204, 204, 204)');
+                    grad.addColorStop(1, 'rgb(87, 92, 98)');
+                    break;
+                }
+                knobCtx.fillStyle = grad;
+                knobCtx.fill();
+
+                // METALKNOB_LOWERHL
+                knobCtx.beginPath();
+                knobCtx.moveTo(size * 0.777777, size * 0.833333);
+                knobCtx.bezierCurveTo(size * 0.722222, size * 0.722222, size * 0.611111, size * 0.666666, size * 0.5, size * 0.666666);
+                knobCtx.bezierCurveTo(size * 0.388888, size * 0.666666, size * 0.277777, size * 0.722222, size * 0.222222, size * 0.833333);
+                knobCtx.bezierCurveTo(size * 0.277777, size * 0.888888, size * 0.388888, size * 0.944444, size * 0.5, size * 0.944444);
+                knobCtx.bezierCurveTo(size * 0.611111, size * 0.944444, size * 0.722222, size * 0.888888, size * 0.777777, size * 0.833333);
+                knobCtx.closePath();
+                grad = knobCtx.createRadialGradient((0.555555) * size, ((0.944444) * size), 0, ((0.555555) * size), ((0.944444) * size), 0.388888 * size);
+                grad.addColorStop(0, 'rgba(255, 255, 255, 0.6)');
+                grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                knobCtx.fillStyle = grad;
+                knobCtx.fill();
+
+                // METALKNOB_UPPERHL
+                knobCtx.beginPath();
+                knobCtx.moveTo(size * 0.944444, size * 0.277777);
+                knobCtx.bezierCurveTo(size * 0.833333, size * 0.111111, size * 0.666666, 0, size * 0.5, 0);
+                knobCtx.bezierCurveTo(size * 0.333333, 0, size * 0.166666, size * 0.111111, size * 0.055555, size * 0.277777);
+                knobCtx.bezierCurveTo(size * 0.166666, size * 0.333333, size * 0.333333, size * 0.388888, size * 0.5, size * 0.388888);
+                knobCtx.bezierCurveTo(size * 0.666666, size * 0.388888, size * 0.833333, size * 0.333333, size * 0.944444, size * 0.277777);
+                knobCtx.closePath();
+                grad = knobCtx.createRadialGradient(0.5 * size, 0, 0, ((0.5) * size), 0, 0.583333 * size);
+                grad.addColorStop(0, 'rgba(255, 255, 255, 0.749019)');
+                grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                knobCtx.fillStyle = grad;
+                knobCtx.fill();
+
+                // METALKNOB_INNERFRAME
+                knobCtx.beginPath();
+                knobCtx.moveTo(size * 0.277777, size * 0.555555);
+                knobCtx.bezierCurveTo(size * 0.277777, size * 0.388888, size * 0.388888, size * 0.277777, size * 0.5, size * 0.277777);
+                knobCtx.bezierCurveTo(size * 0.611111, size * 0.277777, size * 0.777777, size * 0.388888, size * 0.777777, size * 0.555555);
+                knobCtx.bezierCurveTo(size * 0.777777, size * 0.666666, size * 0.611111, size * 0.777777, size * 0.5, size * 0.777777);
+                knobCtx.bezierCurveTo(size * 0.388888, size * 0.777777, size * 0.277777, size * 0.666666, size * 0.277777, size * 0.555555);
+                knobCtx.closePath();
+                grad = knobCtx.createLinearGradient(0, 0.277777 * size, 0, 0.722221 * size);
+                grad.addColorStop(0, '#000000');
+                grad.addColorStop(1, 'rgb(204, 204, 204)');
+                knobCtx.fillStyle = grad;
+                knobCtx.fill();
+
+                // METALKNOB_INNERBACKGROUND
+                knobCtx.beginPath();
+                knobCtx.moveTo(size * 0.333333, size * 0.555555);
+                knobCtx.bezierCurveTo(size * 0.333333, size * 0.444444, size * 0.388888, size * 0.333333, size * 0.5, size * 0.333333);
+                knobCtx.bezierCurveTo(size * 0.611111, size * 0.333333, size * 0.722222, size * 0.444444, size * 0.722222, size * 0.555555);
+                knobCtx.bezierCurveTo(size * 0.722222, size * 0.611111, size * 0.611111, size * 0.722222, size * 0.5, size * 0.722222);
+                knobCtx.bezierCurveTo(size * 0.388888, size * 0.722222, size * 0.333333, size * 0.611111, size * 0.333333, size * 0.555555);
+                knobCtx.closePath();
+                grad = knobCtx.createLinearGradient(0, 0.333333 * size, 0, 0.666666 * size);
+                grad.addColorStop(0, 'rgb(10, 9, 1)');
+                grad.addColorStop(1, 'rgb(42, 41, 37)');
+                knobCtx.fillStyle = grad;
+                knobCtx.fill();
+                break;
+
+            case 'standardKnob':
+                grad = knobCtx.createLinearGradient(0, 0, 0, size);
+                grad.addColorStop(0, 'rgb(180, 180, 180)');
+                grad.addColorStop(0.46, 'rgb(63, 63, 63)');
+                grad.addColorStop(1, 'rgb(40, 40, 40)');
+                knobCtx.fillStyle = grad;
+                knobCtx.beginPath();
+                knobCtx.arc(maxPostCenterX, maxPostCenterY, size / 2, 0, TWO_PI, true);
+                knobCtx.closePath();
+                knobCtx.fill();
+                grad = knobCtx.createLinearGradient(0, size - size * 0.77, 0, size - size * 0.77 + size * 0.77);
+                switch (style.style) {
+                case 'black':
+                    grad.addColorStop(0, 'rgb(191, 191, 191)');
+                    grad.addColorStop(0.5, 'rgb(45, 44, 49)');
+                    grad.addColorStop(1, 'rgb(125, 126, 128)');
+                    break;
+
+                case 'brass':
+                    grad.addColorStop(0, 'rgb(223, 208, 174)');
+                    grad.addColorStop(0.5, 'rgb(123, 95, 63)');
+                    grad.addColorStop(1, 'rgb(207, 190, 157)');
+                    break;
+
+                case 'silver':
+                /* falls through */
+                default:
+                    grad.addColorStop(0, 'rgb(215, 215, 215)');
+                    grad.addColorStop(0.5, 'rgb(116, 116, 116)');
+                    grad.addColorStop(1, 'rgb(215, 215, 215)');
+                    break;
+                }
+                knobCtx.fillStyle = grad;
+                knobCtx.beginPath();
+                knobCtx.arc(maxPostCenterX, maxPostCenterY, size * 0.77 / 2, 0, TWO_PI, true);
+                knobCtx.closePath();
+                knobCtx.fill();
+
+                grad = knobCtx.createRadialGradient(maxPostCenterX, maxPostCenterY, 0, maxPostCenterX, maxPostCenterY, size * 0.77 / 2);
+                grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+                grad.addColorStop(0.75, 'rgba(0, 0, 0, 0)');
+                grad.addColorStop(0.76, 'rgba(0, 0, 0, 0.01)');
+                grad.addColorStop(1, 'rgba(0, 0, 0, 0.2)');
+                knobCtx.fillStyle = grad;
+                knobCtx.beginPath();
+                knobCtx.arc(maxPostCenterX, maxPostCenterY, size * 0.77 / 2, 0, TWO_PI, true);
+                knobCtx.closePath();
+                knobCtx.fill();
+                break;
+            }
+
+            // cache the buffer
+            createKnobImage.cache[cacheKey] = knobBuffer;
+        }
+        return createKnobImage.cache[cacheKey];
+    };
+    createKnobImage.cache = {};
+
+    var createLedImage = function (size, state, ledColor) {
+        var ledBuffer, ledCtx,
+            // Bug in Chrome browser, radialGradients do not draw correctly if the center is not an integer value
+            ledCenterX = 2 * Math.round(size / 4),
+            ledCenterY = 2 * Math.round(size / 4),
+            grad,
+            cacheKey = size.toString() + state + ledColor.outerColor_ON;
+
+        // check if we have already created and cached this buffer, if not create it
+        if (!createLedImage.cache[cacheKey]) {
+            ledBuffer = createBuffer(size, size);
+            ledCtx = ledBuffer.getContext('2d');
+
+            switch (state) {
+            case 0: // LED OFF
+                // OFF Gradient
+                grad = ledCtx.createRadialGradient(ledCenterX, ledCenterY, 0, ledCenterX, ledCenterY, size * 0.5 / 2);
+                grad.addColorStop(0, ledColor.innerColor1_OFF);
+                grad.addColorStop(0.2, ledColor.innerColor2_OFF);
+                grad.addColorStop(1, ledColor.outerColor_OFF);
+                ledCtx.fillStyle = grad;
+
+                ledCtx.beginPath();
+                ledCtx.arc(ledCenterX, ledCenterY, size * 0.5 / 2, 0, TWO_PI, true);
+                ledCtx.closePath();
+                ledCtx.fill();
+
+                // InnerShadow
+                grad = ledCtx.createRadialGradient(ledCenterX, ledCenterY, 0, ledCenterX, ledCenterY, size * 0.5 / 2);
+                grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+                grad.addColorStop(0.8, 'rgba(0, 0, 0, 0)');
+                grad.addColorStop(1, 'rgba(0, 0, 0, 0.4)');
+                ledCtx.fillStyle = grad;
+
+                ledCtx.beginPath();
+                ledCtx.arc(ledCenterX, ledCenterY, size * 0.5 / 2, 0, TWO_PI, true);
+                ledCtx.closePath();
+                ledCtx.fill();
+
+                // LightReflex
+                grad = ledCtx.createLinearGradient(0, 0.35 * size, 0, 0.35 * size + 0.15 * size);
+                grad.addColorStop(0, 'rgba(255, 255, 255, 0.4)');
+                grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                ledCtx.fillStyle = grad;
+
+                ledCtx.beginPath();
+                ledCtx.arc(ledCenterX, 0.35 * size + 0.2 * size / 2, size * 0.2, 0, TWO_PI, true);
+                ledCtx.closePath();
+                ledCtx.fill();
+                break;
+
+            case 1: // LED ON
+                // ON Gradient
+                grad = ledCtx.createRadialGradient(ledCenterX, ledCenterY, 0, ledCenterX, ledCenterY, size * 0.5 / 2);
+                grad.addColorStop(0, ledColor.innerColor1_ON);
+                grad.addColorStop(0.2, ledColor.innerColor2_ON);
+                grad.addColorStop(1, ledColor.outerColor_ON);
+                ledCtx.fillStyle = grad;
+
+                ledCtx.beginPath();
+                ledCtx.arc(ledCenterX, ledCenterY, size * 0.5 / 2, 0, TWO_PI, true);
+                ledCtx.closePath();
+                ledCtx.fill();
+
+                // InnerShadow
+                grad = ledCtx.createRadialGradient(ledCenterX, ledCenterY, 0, ledCenterX, ledCenterY, size * 0.5 / 2);
+                grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+                grad.addColorStop(0.8, 'rgba(0, 0, 0, 0)');
+                grad.addColorStop(1, 'rgba(0, 0, 0, 0.4)');
+                ledCtx.fillStyle = grad;
+
+                ledCtx.beginPath();
+                ledCtx.arc(ledCenterX, ledCenterY, size * 0.5 / 2, 0, TWO_PI, true);
+                ledCtx.closePath();
+                ledCtx.fill();
+
+                // LightReflex
+                grad = ledCtx.createLinearGradient(0, 0.35 * size, 0, 0.35 * size + 0.15 * size);
+                grad.addColorStop(0, 'rgba(255, 255, 255, 0.4)');
+                grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                ledCtx.fillStyle = grad;
+
+                ledCtx.beginPath();
+                ledCtx.arc(ledCenterX, 0.35 * size + 0.2 * size / 2, size * 0.2, 0, TWO_PI, true);
+                ledCtx.closePath();
+                ledCtx.fill();
+
+                // Corona
+                grad = ledCtx.createRadialGradient(ledCenterX, ledCenterY, 0, ledCenterX, ledCenterY, size / 2);
+                grad.addColorStop(0, setAlpha(ledColor.coronaColor, 0));
+                grad.addColorStop(0.6, setAlpha(ledColor.coronaColor, 0.4));
+                grad.addColorStop(0.7, setAlpha(ledColor.coronaColor, 0.25));
+                grad.addColorStop(0.8, setAlpha(ledColor.coronaColor, 0.15));
+                grad.addColorStop(0.85, setAlpha(ledColor.coronaColor, 0.05));
+                grad.addColorStop(1, setAlpha(ledColor.coronaColor, 0));
+                ledCtx.fillStyle = grad;
+
+                ledCtx.beginPath();
+                ledCtx.arc(ledCenterX, ledCenterY, size / 2, 0, TWO_PI, true);
+                ledCtx.closePath();
+                ledCtx.fill();
+                break;
+            }
+            // cache the buffer
+            createLedImage.cache[cacheKey] = ledBuffer;
+        }
+        return createLedImage.cache[cacheKey];
+    };
+    createLedImage.cache = {};
+
+    var createLcdBackgroundImage = function (width, height, lcdColor) {
+        var lcdBuffer, lcdCtx,
+            xB = 0,
+            yB = 0,
+            wB = width,
+            hB = height,
+            rB = Math.min(width, height) * 0.095,
+            grad,
+            xF = 1,
+            yF = 1,
+            wF = width - 2,
+            hF = height - 2,
+            rF = rB - 1,
+            cacheKey = width.toString() + height + JSON.stringify(lcdColor);
+
+        // check if we have already created and cached this buffer, if not create it
+        if (!createLcdBackgroundImage.cache[cacheKey]) {
+            lcdBuffer = createBuffer(width, height);
+            lcdCtx = lcdBuffer.getContext('2d');
+            // background
+            grad = lcdCtx.createLinearGradient(0, yB, 0, yB + hB);
+            grad.addColorStop(0, '#4c4c4c');
+            grad.addColorStop(0.08, '#666666');
+            grad.addColorStop(0.92, '#666666');
+            grad.addColorStop(1, '#e6e6e6');
+            lcdCtx.fillStyle = grad;
+            roundedRectangle(lcdCtx, xB, yB, wB, hB, rB);
+            lcdCtx.fill();
+
+            // foreground
+            grad = lcdCtx.createLinearGradient(0, yF, 0, yF + hF);
+            grad.addColorStop(0, lcdColor.gradientStartColor);
+            grad.addColorStop(0.03, lcdColor.gradientFraction1Color);
+            grad.addColorStop(0.49, lcdColor.gradientFraction2Color);
+            grad.addColorStop(0.5, lcdColor.gradientFraction3Color);
+            grad.addColorStop(1, lcdColor.gradientStopColor);
+            lcdCtx.fillStyle = grad;
+            roundedRectangle(lcdCtx, xF, yF, wF, hF, rF);
+            lcdCtx.fill();
+            // cache the buffer
+            createLcdBackgroundImage.cache[cacheKey] = lcdBuffer;
+        }
+        return createLcdBackgroundImage.cache[cacheKey];
+    };
+    createLcdBackgroundImage.cache = {};
+
+    var createMeasuredValueImage = function (size, indicatorColor, radial, vertical) {
+        var indicatorBuffer, indicatorCtx,
+            cacheKey = size.toString() + indicatorColor + radial + vertical;
+
+        // check if we have already created and cached this buffer, if so return it and exit
+        if (!createMeasuredValueImage.cache[cacheKey]) {
+            indicatorBuffer = doc.createElement('canvas');
+            indicatorCtx = indicatorBuffer.getContext('2d');
+            indicatorBuffer.width = size;
+            indicatorBuffer.height = size;
+            indicatorCtx.fillStyle = indicatorColor;
+            if (radial) {
+                indicatorCtx.beginPath();
+                indicatorCtx.moveTo(size * 0.5, size);
+                indicatorCtx.lineTo(0, 0);
+                indicatorCtx.lineTo(size, 0);
+                indicatorCtx.closePath();
+                indicatorCtx.fill();
+            } else {
+                if (vertical) {
+                    indicatorCtx.beginPath();
+                    indicatorCtx.moveTo(size, size * 0.5);
+                    indicatorCtx.lineTo(0, 0);
+                    indicatorCtx.lineTo(0, size);
+                    indicatorCtx.closePath();
+                    indicatorCtx.fill();
+                } else {
+                    indicatorCtx.beginPath();
+                    indicatorCtx.moveTo(size * 0.5, 0);
+                    indicatorCtx.lineTo(size, size);
+                    indicatorCtx.lineTo(0, size);
+                    indicatorCtx.closePath();
+                    indicatorCtx.fill();
+                }
+            }
+            // cache the buffer
+            createMeasuredValueImage.cache[cacheKey] = indicatorBuffer;
+        }
+        return createMeasuredValueImage.cache[cacheKey];
+    };
+    createMeasuredValueImage.cache = {};
+
+    var createTrendIndicator = function (width, onSection, colors) {
+        var height = width * 2,
+            trendBuffer, trendCtx,
+            fill,
+            cacheKey = onSection.state + width + JSON.stringify(colors),
+
+            drawUpArrow = function () {
+                // draw up arrow (red)
+                var ledColor = colors[0];
+
+                if (onSection.state === 'up') {
+                    fill = trendCtx.createRadialGradient(0.5 * width, 0.2 * height, 0, 0.5 * width, 0.2 * height, 0.5 * width);
+                    fill.addColorStop(0, ledColor.innerColor1_ON);
+                    fill.addColorStop(0.2, ledColor.innerColor2_ON);
+                    fill.addColorStop(1, ledColor.outerColor_ON);
+                } else {
+                    fill = trendCtx.createLinearGradient(0, 0, 0, 0.5 * height);
+                    fill.addColorStop(0, '#323232');
+                    fill.addColorStop(1, '#5c5c5c');
+                }
+                trendCtx.fillStyle = fill;
+                trendCtx.beginPath();
+                trendCtx.moveTo(0.5 * width, 0);
+                trendCtx.lineTo(width, 0.2 * height);
+                trendCtx.lineTo(0.752 * width, 0.2 * height);
+                trendCtx.lineTo(0.752 * width, 0.37 * height);
+                trendCtx.lineTo(0.252 * width, 0.37 * height);
+                trendCtx.lineTo(0.252 * width, 0.2 * height);
+                trendCtx.lineTo(0, 0.2 * height);
+                trendCtx.closePath();
+                trendCtx.fill();
+                if (onSection.state !== 'up') {
+                    // Inner shadow
+                    trendCtx.strokeStyle = 'rgba(0, 0, 0, 0.4)';
+                    trendCtx.beginPath();
+                    trendCtx.moveTo(0, 0.2 * height);
+                    trendCtx.lineTo(0.5 * width, 0);
+                    trendCtx.lineTo(width, 0.2 * height);
+                    trendCtx.moveTo(0.252 * width, 0.2 * height);
+                    trendCtx.lineTo(0.252 * width, 0.37 * height);
+                    trendCtx.stroke();
+                    // Inner highlight
+                    trendCtx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                    trendCtx.beginPath();
+                    trendCtx.moveTo(0.252 * width, 0.37 * height);
+                    trendCtx.lineTo(0.752 * width, 0.37 * height);
+                    trendCtx.lineTo(0.752 * width, 0.2 * height);
+                    trendCtx.lineTo(width, 0.2 * height);
+                    trendCtx.stroke();
+                } else {
+                    // draw halo
+                    fill = trendCtx.createRadialGradient(0.5 * width, 0.2 * height, 0, 0.5 * width, 0.2 * height, 0.7 * width);
+                    fill.addColorStop(0, setAlpha(ledColor.coronaColor, 0));
+                    fill.addColorStop(0.5, setAlpha(ledColor.coronaColor, 0.3));
+                    fill.addColorStop(0.7, setAlpha(ledColor.coronaColor, 0.2));
+                    fill.addColorStop(0.8, setAlpha(ledColor.coronaColor, 0.1));
+                    fill.addColorStop(0.85, setAlpha(ledColor.coronaColor, 0.05));
+                    fill.addColorStop(1, setAlpha(ledColor.coronaColor, 0));
+                    trendCtx.fillStyle = fill;
+
+                    trendCtx.beginPath();
+                    trendCtx.arc(0.5 * width, 0.2 * height, 0.7 * width, 0, TWO_PI, true);
+                    trendCtx.closePath();
+                    trendCtx.fill();
+                }
+            },
+
+            drawEquals = function () {
+                // draw equal symbol
+                var ledColor = colors[1];
+
+                trendCtx.beginPath();
+                if (onSection.state === 'steady') {
+                    fill = ledColor.outerColor_ON;
+                    trendCtx.fillStyle = fill;
+                    trendCtx.rect(0.128 * width, 0.41 * height, 0.744 * width, 0.074 * height);
+                    trendCtx.rect(0.128 * width, 0.516 * height, 0.744 * width, 0.074 * height);
+                    trendCtx.closePath();
+                    trendCtx.fill();
+                } else {
+                    fill = trendCtx.createLinearGradient(0, 0.41 * height, 0, 0.41 * height + 0.074 * height);
+                    fill.addColorStop(0, '#323232');
+                    fill.addColorStop(1, '#5c5c5c');
+                    trendCtx.fillStyle = fill;
+                    trendCtx.rect(0.128 * width, 0.41 * height, 0.744 * width, 0.074 * height);
+                    trendCtx.closePath();
+                    trendCtx.fill();
+                    fill = trendCtx.createLinearGradient(0, 0.516 * height, 0, 0.516 * height + 0.074 * height);
+                    fill.addColorStop(0, '#323232');
+                    fill.addColorStop(1, '#5c5c5c');
+                    trendCtx.fillStyle = fill;
+                    trendCtx.rect(0.128 * width, 0.516 * height, 0.744 * width, 0.074 * height);
+                    trendCtx.closePath();
+                    trendCtx.fill();
+                }
+                if (onSection.state !== 'steady') {
+                    // inner shadow
+                    trendCtx.strokeStyle = 'rgba(0, 0, 0, 0.4)';
+                    trendCtx.beginPath();
+                    trendCtx.moveTo(0.128 * width, 0.41 * height + 0.074 * height);
+                    trendCtx.lineTo(0.128 * width, 0.41 * height);
+                    trendCtx.lineTo(0.128 * width + 0.744 * width, 0.41 * height);
+                    trendCtx.stroke();
+                    trendCtx.beginPath();
+                    trendCtx.moveTo(0.128 * width, 0.516 * height + 0.074 * height);
+                    trendCtx.lineTo(0.128 * width, 0.516 * height);
+                    trendCtx.lineTo(0.128 * width + 0.744 * width, 0.516 * height);
+                    trendCtx.stroke();
+                    // inner highlight
+                    trendCtx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                    trendCtx.beginPath();
+                    trendCtx.moveTo(0.128 * width + 0.744 * width, 0.41 * height);
+                    trendCtx.lineTo(0.128 * width + 0.744 * width, 0.41 * height + 0.074 * height);
+                    trendCtx.lineTo(0.128 * width, 0.41 * height + 0.074 * height);
+                    trendCtx.stroke();
+                    trendCtx.beginPath();
+                    trendCtx.moveTo(0.128 * width + 0.744 * width, 0.516 * height);
+                    trendCtx.lineTo(0.128 * width + 0.744 * width, 0.516 * height + 0.074 * height);
+                    trendCtx.lineTo(0.128 * width, 0.516 * height + 0.074 * height);
+                    trendCtx.stroke();
+                } else {
+                    // draw halo
+                    fill = trendCtx.createRadialGradient(0.5 * width, 0.5 * height, 0, 0.5 * width, 0.5 * height, 0.7 * width);
+                    fill.addColorStop(0, setAlpha(ledColor.coronaColor, 0));
+                    fill.addColorStop(0.5, setAlpha(ledColor.coronaColor, 0.3));
+                    fill.addColorStop(0.7, setAlpha(ledColor.coronaColor, 0.2));
+                    fill.addColorStop(0.8, setAlpha(ledColor.coronaColor, 0.1));
+                    fill.addColorStop(0.85, setAlpha(ledColor.coronaColor, 0.05));
+                    fill.addColorStop(1, setAlpha(ledColor.coronaColor, 0));
+                    trendCtx.fillStyle = fill;
+                    trendCtx.beginPath();
+                    trendCtx.arc(0.5 * width, 0.5 * height, 0.7 * width, 0, TWO_PI, true);
+                    trendCtx.closePath();
+                    trendCtx.fill();
+                }
+            },
+
+            drawDownArrow = function () {
+                // draw down arrow
+                var ledColor = colors[2];
+                if (onSection.state === 'down') {
+                    fill = trendCtx.createRadialGradient(0.5 * width, 0.8 * height, 0, 0.5 * width, 0.8 * height, 0.5 * width);
+                    fill.addColorStop(0, ledColor.innerColor1_ON);
+                    fill.addColorStop(0.2, ledColor.innerColor2_ON);
+                    fill.addColorStop(1, ledColor.outerColor_ON);
+                } else {
+                    fill = trendCtx.createLinearGradient(0, 0.63 * height, 0, height);
+                    fill.addColorStop(0, '#323232');
+                    fill.addColorStop(1, '#5c5c5c');
+                }
+                trendCtx.beginPath();
+                trendCtx.fillStyle = fill;
+                trendCtx.moveTo(0.5 * width, height);
+                trendCtx.lineTo(width, 0.8 * height);
+                trendCtx.lineTo(0.725 * width, 0.8 * height);
+                trendCtx.lineTo(0.725 * width, 0.63 * height);
+                trendCtx.lineTo(0.252 * width, 0.63 * height);
+                trendCtx.lineTo(0.252 * width, 0.8 * height);
+                trendCtx.lineTo(0, 0.8 * height);
+                trendCtx.closePath();
+                trendCtx.fill();
+                if (onSection.state !== 'down') {
+                    // Inner shadow
+                    trendCtx.strokeStyle = 'rgba(0, 0, 0, 0.4)';
+                    trendCtx.beginPath();
+                    trendCtx.moveTo(0, 0.8 * height);
+                    trendCtx.lineTo(0.252 * width, 0.8 * height);
+                    trendCtx.moveTo(0.252 * width, 0.63 * height);
+                    trendCtx.lineTo(0.752 * width, 0.63 * height);
+                    trendCtx.stroke();
+                    trendCtx.beginPath();
+                    trendCtx.moveTo(0.752 * width, 0.8 * height);
+                    trendCtx.lineTo(width, 0.8 * height);
+                    trendCtx.stroke();
+                    // Inner highlight
+                    trendCtx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                    trendCtx.beginPath();
+                    trendCtx.moveTo(0, 0.8 * height);
+                    trendCtx.lineTo(0.5 * width, height);
+                    trendCtx.lineTo(width, 0.8 * height);
+                    trendCtx.stroke();
+                    trendCtx.beginPath();
+                    trendCtx.moveTo(0.752 * width, 0.8 * height);
+                    trendCtx.lineTo(0.752 * width, 0.63 * height);
+                    trendCtx.stroke();
+                } else {
+                    // draw halo
+                    fill = trendCtx.createRadialGradient(0.5 * width, 0.8 * height, 0, 0.5 * width, 0.8 * height, 0.7 * width);
+                    fill.addColorStop(0, setAlpha(ledColor.coronaColor, 0));
+                    fill.addColorStop(0.5, setAlpha(ledColor.coronaColor, 0.3));
+                    fill.addColorStop(0.7, setAlpha(ledColor.coronaColor, 0.2));
+                    fill.addColorStop(0.8, setAlpha(ledColor.coronaColor, 0.1));
+                    fill.addColorStop(0.85, setAlpha(ledColor.coronaColor, 0.05));
+                    fill.addColorStop(1, setAlpha(ledColor.coronaColor, 0));
+                    trendCtx.fillStyle = fill;
+                    trendCtx.beginPath();
+                    trendCtx.arc(0.5 * width, 0.8 * height, 0.7 * width, 0, TWO_PI, true);
+                    trendCtx.closePath();
+                    trendCtx.fill();
+                }
+            };
+
+        // Check if we have already cached this indicator, if not create it
+        if (!createTrendIndicator.cache[cacheKey]) {
+            // create oversized buffer for the glow
+            trendBuffer = createBuffer(width * 2, width * 4);
+            trendCtx = trendBuffer.getContext('2d');
+            trendCtx.translate(width * 0.5, width * 0.5);
+            // Must draw the active section last so the 'glow' is on top
+            switch (onSection.state) {
+            case 'up':
+                drawDownArrow();
+                drawEquals();
+                drawUpArrow();
+                break;
+            case 'steady':
+                drawDownArrow();
+                drawUpArrow();
+                drawEquals();
+                break;
+            case 'down':
+            /* falls through */
+            default:
+                drawUpArrow();
+                drawEquals();
+                drawDownArrow();
+                break;
+            }
+            // cache the buffer
+            createTrendIndicator.cache[cacheKey] = trendBuffer;
+        }
+        return createTrendIndicator.cache[cacheKey];
+    };
+    createTrendIndicator.cache = {};
+
+    var drawTitleImage = function (ctx, imageWidth, imageHeight, titleString, unitString, backgroundColor, vertical, radial, altPos, gaugeType) {
+        gaugeType = (undefined === gaugeType ? gaugeType = steelseries.GaugeType.TYPE1 : gaugeType);
+        ctx.save();
+        ctx.textAlign = (radial ? 'center' : 'left');
+        ctx.textBaseline = 'middle';
+        ctx.strokeStyle = backgroundColor.labelColor.getRgbaColor();
+        ctx.fillStyle = backgroundColor.labelColor.getRgbaColor();
+
+        if (radial) {
+            ctx.font = 0.046728 * imageWidth + 'px ' + stdFontName;
+            ctx.fillText(titleString, imageWidth / 2, imageHeight * 0.3, imageWidth * 0.3);
+            ctx.fillText(unitString, imageWidth / 2, imageHeight * 0.38, imageWidth * 0.3);
+        } else {
+            // linear
+            if (vertical) {
+                ctx.font = 0.1 * imageWidth + 'px ' + stdFontName;
+                ctx.save();
+                ctx.translate(0.671428 * imageWidth, 0.1375 * imageHeight);
+                ctx.rotate(1.570796);
+                ctx.fillText(titleString, 0, 0);
+                ctx.translate(-0.671428 * imageWidth, -0.1375 * imageHeight);
+                ctx.restore();
+                ctx.font = 0.071428 * imageWidth + 'px ' + stdFontName;
+                if (altPos) {
+                    // LCD visible
+                    if (gaugeType.type === 'type2') {
+                        ctx.textAlign = 'right';
+                        ctx.fillText(unitString, 0.36 * imageWidth, imageHeight * 0.79, imageWidth * 0.25);
+                    } else {
+                        ctx.fillText(unitString, 0.63 * imageWidth, imageHeight * 0.85, imageWidth * 0.2);
+                    }
+                } else {
+                    // LCD hidden
+                    ctx.textAlign = 'center';
+                    if (gaugeType.type === 'type2') {
+                        ctx.fillText(unitString, imageWidth / 2, imageHeight * 0.92, imageWidth * 0.2);
+                    } else {
+                        ctx.fillText(unitString, imageWidth / 2, imageHeight * 0.89, imageWidth * 0.2);
+                    }
+                }
+            } else { //linear horizontal
+                ctx.font = 0.035 * imageWidth + 'px ' + stdFontName;
+                ctx.fillText(titleString, imageWidth * 0.15, imageHeight * 0.25, imageWidth * 0.3);
+                ctx.font = 0.025 * imageWidth + 'px ' + stdFontName;
+                ctx.fillText(unitString, imageWidth * 0.0625, imageHeight * 0.7, imageWidth * 0.07);
+            }
+        }
+        ctx.restore();
+    };
+
+    //*****************************************   T E X T U R E S   ****************************************************
+    var carbonBuffer = drawToBuffer(12, 12, function (ctx) {
+            var imageWidth = ctx.canvas.width,
+                imageHeight = ctx.canvas.height,
+                offsetX = 0,
+                offsetY = 0,
+                grad;
+
+            ctx.save();
+
+            // RULB
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(0, 0, imageWidth * 0.5, imageHeight * 0.5);
+            ctx.closePath();
+            ctx.restore();
+
+            grad = ctx.createLinearGradient(0, offsetY * imageHeight, 0, 0.5 * imageHeight + offsetY * imageHeight);
+            grad.addColorStop(0, 'rgb(35, 35, 35)');
+            grad.addColorStop(1, 'rgb(23, 23, 23)');
+            ctx.fillStyle = grad;
+            ctx.fill();
+
+            // RULF
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(imageWidth * 0.083333, 0, imageWidth * 0.333333, imageHeight * 0.416666);
+            ctx.closePath();
+            ctx.restore();
+            offsetX = 0.083333;
+            offsetY = 0;
+            grad = ctx.createLinearGradient(0, offsetY * imageHeight, 0, 0.416666 * imageHeight + offsetY * imageHeight);
+            grad.addColorStop(0, 'rgb(38, 38, 38)');
+            grad.addColorStop(1, 'rgb(30, 30, 30)');
+            ctx.fillStyle = grad;
+            ctx.fill();
+
+            // RLRB
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(imageWidth * 0.5, imageHeight * 0.5, imageWidth * 0.5, imageHeight * 0.5);
+            ctx.closePath();
+            ctx.restore();
+            offsetX = 0.5;
+            offsetY = 0.5;
+            grad = ctx.createLinearGradient(0, offsetY * imageHeight, 0, 0.5 * imageHeight + offsetY * imageHeight);
+            grad.addColorStop(0, 'rgb(35, 35, 35)');
+            grad.addColorStop(1, 'rgb(23, 23, 23)');
+            ctx.fillStyle = grad;
+            ctx.fill();
+
+            // RLRF
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(imageWidth * 0.583333, imageHeight * 0.5, imageWidth * 0.333333, imageHeight * 0.416666);
+            ctx.closePath();
+            ctx.restore();
+            offsetX = 0.583333;
+            offsetY = 0.5;
+            grad = ctx.createLinearGradient(0, offsetY * imageHeight, 0, 0.416666 * imageHeight + offsetY * imageHeight);
+            grad.addColorStop(0, 'rgb(38, 38, 38)');
+            grad.addColorStop(1, 'rgb(30, 30, 30)');
+            ctx.fillStyle = grad;
+            ctx.fill();
+
+            // RURB
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(imageWidth * 0.5, 0, imageWidth * 0.5, imageHeight * 0.5);
+            ctx.closePath();
+            ctx.restore();
+            offsetX = 0.5;
+            offsetY = 0;
+            grad = ctx.createLinearGradient(0, offsetY * imageHeight, 0, 0.5 * imageHeight + offsetY * imageHeight);
+            grad.addColorStop(0, '#303030');
+            grad.addColorStop(1, 'rgb(40, 40, 40)');
+            ctx.fillStyle = grad;
+            ctx.fill();
+
+            // RURF
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(imageWidth * 0.583333, imageHeight * 0.083333, imageWidth * 0.333333, imageHeight * 0.416666);
+            ctx.closePath();
+            ctx.restore();
+            offsetX = 0.583333;
+            offsetY = 0.083333;
+            grad = ctx.createLinearGradient(0, offsetY * imageHeight, 0, 0.416666 * imageHeight + offsetY * imageHeight);
+            grad.addColorStop(0, 'rgb(53, 53, 53)');
+            grad.addColorStop(1, 'rgb(45, 45, 45)');
+            ctx.fillStyle = grad;
+            ctx.fill();
+
+            // RLLB
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(0, imageHeight * 0.5, imageWidth * 0.5, imageHeight * 0.5);
+            ctx.closePath();
+            ctx.restore();
+            offsetX = 0;
+            offsetY = 0.5;
+            grad = ctx.createLinearGradient(0, offsetY * imageHeight, 0, 0.5 * imageHeight + offsetY * imageHeight);
+            grad.addColorStop(0, '#303030');
+            grad.addColorStop(1, '#282828');
+            ctx.fillStyle = grad;
+            ctx.fill();
+
+            // RLLF
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(imageWidth * 0.083333, imageHeight * 0.583333, imageWidth * 0.333333, imageHeight * 0.416666);
+            ctx.closePath();
+            ctx.restore();
+            offsetX = 0.083333;
+            offsetY = 0.583333;
+            grad = ctx.createLinearGradient(0, offsetY * imageHeight, 0, 0.416666 * imageHeight + offsetY * imageHeight);
+            grad.addColorStop(0, '#353535');
+            grad.addColorStop(1, '#2d2d2d');
+            ctx.fillStyle = grad;
+            ctx.fill();
+
+            ctx.restore();
+        });
+
+    var punchedSheetBuffer = drawToBuffer(15, 15, function (ctx) {
+        var imageWidth = ctx.canvas.width,
+            imageHeight = ctx.canvas.height,
+            grad;
+
+        ctx.save();
+
+        // BACK
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(0, 0, imageWidth, imageHeight);
+        ctx.closePath();
+        ctx.restore();
+        ctx.fillStyle = '#1D2123';
+        ctx.fill();
+
+        // ULB
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(0, imageHeight * 0.266666);
+        ctx.bezierCurveTo(0, imageHeight * 0.4, imageWidth * 0.066666, imageHeight * 0.466666, imageWidth * 0.2, imageHeight * 0.466666);
+        ctx.bezierCurveTo(imageWidth * 0.333333, imageHeight * 0.466666, imageWidth * 0.4, imageHeight * 0.4, imageWidth * 0.4, imageHeight * 0.266666);
+        ctx.bezierCurveTo(imageWidth * 0.4, imageHeight * 0.133333, imageWidth * 0.333333, imageHeight * 0.066666, imageWidth * 0.2, imageHeight * 0.066666);
+        ctx.bezierCurveTo(imageWidth * 0.066666, imageHeight * 0.066666, 0, imageHeight * 0.133333, 0, imageHeight * 0.266666);
+        ctx.closePath();
+        grad = ctx.createLinearGradient(0, 0.066666 * imageHeight, 0, 0.466666 * imageHeight);
+        grad.addColorStop(0, '#000000');
+        grad.addColorStop(1, '#444444');
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        // ULF
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(0, imageHeight * 0.2);
+        ctx.bezierCurveTo(0, imageHeight * 0.333333, imageWidth * 0.066666, imageHeight * 0.4, imageWidth * 0.2, imageHeight * 0.4);
+        ctx.bezierCurveTo(imageWidth * 0.333333, imageHeight * 0.4, imageWidth * 0.4, imageHeight * 0.333333, imageWidth * 0.4, imageHeight * 0.2);
+        ctx.bezierCurveTo(imageWidth * 0.4, imageHeight * 0.066666, imageWidth * 0.333333, 0, imageWidth * 0.2, 0);
+        ctx.bezierCurveTo(imageWidth * 0.066666, 0, 0, imageHeight * 0.066666, 0, imageHeight * 0.2);
+        ctx.closePath();
+        ctx.fillStyle = '#050506';
+        ctx.fill();
+
+        // LRB
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(imageWidth * 0.466666, imageHeight * 0.733333);
+        ctx.bezierCurveTo(imageWidth * 0.466666, imageHeight * 0.866666, imageWidth * 0.533333, imageHeight * 0.933333, imageWidth * 0.666666, imageHeight * 0.933333);
+        ctx.bezierCurveTo(imageWidth * 0.8, imageHeight * 0.933333, imageWidth * 0.866666, imageHeight * 0.866666, imageWidth * 0.866666, imageHeight * 0.733333);
+        ctx.bezierCurveTo(imageWidth * 0.866666, imageHeight * 0.6, imageWidth * 0.8, imageHeight * 0.533333, imageWidth * 0.666666, imageHeight * 0.533333);
+        ctx.bezierCurveTo(imageWidth * 0.533333, imageHeight * 0.533333, imageWidth * 0.466666, imageHeight * 0.6, imageWidth * 0.466666, imageHeight * 0.733333);
+        ctx.closePath();
+        grad = ctx.createLinearGradient(0, 0.533333 * imageHeight, 0, 0.933333 * imageHeight);
+        grad.addColorStop(0, '#000000');
+        grad.addColorStop(1, '#444444');
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        // LRF
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(imageWidth * 0.466666, imageHeight * 0.666666);
+        ctx.bezierCurveTo(imageWidth * 0.466666, imageHeight * 0.8, imageWidth * 0.533333, imageHeight * 0.866666, imageWidth * 0.666666, imageHeight * 0.866666);
+        ctx.bezierCurveTo(imageWidth * 0.8, imageHeight * 0.866666, imageWidth * 0.866666, imageHeight * 0.8, imageWidth * 0.866666, imageHeight * 0.666666);
+        ctx.bezierCurveTo(imageWidth * 0.866666, imageHeight * 0.533333, imageWidth * 0.8, imageHeight * 0.466666, imageWidth * 0.666666, imageHeight * 0.466666);
+        ctx.bezierCurveTo(imageWidth * 0.533333, imageHeight * 0.466666, imageWidth * 0.466666, imageHeight * 0.533333, imageWidth * 0.466666, imageHeight * 0.666666);
+        ctx.closePath();
+        ctx.fillStyle = '#050506';
+        ctx.fill();
+
+        ctx.restore();
+    });
+
+    var brushedMetalTexture = function (color, radius, amount, monochrome, shine) {
+
+        this.fill = function (startX, startY, endX, endY) {
+            var i, x, y,                        // loop counters
+                sinArr,
+                width, height,
+                outCanvas, outCanvasContext,    // output canvas
+                inPixels, outPixels,            // pixel arrays
+                //alpha = color & 0xff000000;
+                alpha = 255,
+                red = (color >> 16) & 0xff,
+                green = (color >> 8) & 0xff,
+                blue = color & 0xff,
+                n = 0,
+                variation = 255 * amount,
+                totR, totG, totB,
+                indx, tr, tg, tb, f;
+
+            startX = Math.floor(startX);
+            startY = Math.floor(startY);
+            endX = Math.ceil(endX);
+            endY = Math.ceil(endY);
+
+            width = endX - startX;
+            height = endY - startY;
+
+            // Create output canvas
+            outCanvas = createBuffer(width, height);
+            outCanvasContext = outCanvas.getContext('2d');
+
+            // Create pixel arrays
+            inPixels = outCanvasContext.createImageData(width, height);
+            outPixels = outCanvasContext.createImageData(width, height);
+
+            // Precreate sin() values
+            if (shine !== 0) {
+                sinArr = [];
+                for (i = 0; i < width; i++) {
+                    sinArr[i] = (255 * shine * Math.sin(i / width * PI)) | 0;
+                }
+            }
+
+            for (y = 0; y < height; y++) {
+                // The pixel array is addressed as 4 elements per pixel [r,g,b,a]
+                if (radius !== 0) {
+                    totR = totG = totB = 0;
+                }
+                for (x = 0; x < width; x ++) {
+                    indx = (y * width * 4) + (x * 4);
+                    tr = red;
+                    tg = green;
+                    tb = blue;
+                    if (shine !== 0) {
+                        f = sinArr[x];
+                        tr += f;
+                        tg += f;
+                        tb += f;
+                    }
+
+                    if (monochrome) {
+                        n = ((2 * Math.random() - 1) * variation) | 0;
+                        inPixels.data[indx]   = clamp(tr + n);
+                        inPixels.data[indx + 1] = clamp(tg + n);
+                        inPixels.data[indx + 2] = clamp(tb + n);
+                        inPixels.data[indx + 3] = alpha;
+                    } else {
+                        inPixels.data[indx]   = random(tr, variation);
+                        inPixels.data[indx + 1] = random(tg, variation);
+                        inPixels.data[indx + 2] = random(tb, variation);
+                        inPixels.data[indx + 3] = alpha;
+                    }
+                }
+            }
+
+            if (radius > 0) {
+                horizontalBlur(inPixels, outPixels, width, height, radius, alpha);
+                outCanvasContext.putImageData(outPixels, startX, startY);
+            } else {
+                outCanvasContext.putImageData(inPixels, startX, startY);
+            }
+            return outCanvas;
+        };
+
+        function random(x, vari) {
+            x += ((2 * Math.random() - 1) * vari) | 0;
+            return (x < 0 ? 0 : (x > 255 ? 255 : x));
+        }
+
+        function clamp(C) {
+            return (C < 0 ? 0 : (C > 255 ? 255 : C));
+        }
+
+        function horizontalBlur(inPix, outPix, width, height, radius, alpha) {
+            var x, y,       // loop counters
+                i, mul, indx,
+                totR, totG, totB;
+
+            if (radius >= width) {
+                radius = width - 1;
+            }
+            mul = 1 / (radius * 2 + 1);
+            indx = 0;
+            for (y = 0; y < height; y++) {
+                totR = totG = totB = 0;
+                for (x = 0; x < radius ; x++) {
+                    i = (indx + x) * 4;
+                    totR += inPix.data[i];
+                    totG += inPix.data[i + 1];
+                    totB += inPix.data[i + 2];
+                }
+                for (x = 0; x < width; x++) {
+                    if (x > radius) {
+                        i = (indx - radius - 1) * 4;
+                        totR -= inPix.data[i];
+                        totG -= inPix.data[i + 1];
+                        totB -= inPix.data[i + 2];
+                    }
+                    if (x + radius < width) {
+                        i = (indx + radius) * 4;
+                        totR += inPix.data[i];
+                        totG += inPix.data[i + 1];
+                        totB += inPix.data[i + 2];
+                    }
+                    i = indx * 4;
+                    outPix.data[i] = (totR * mul) | 0;
+                    outPix.data[i + 1] = (totG * mul) | 0;
+                    outPix.data[i + 2] = (totB * mul) | 0;
+                    outPix.data[i + 3] = alpha;
+                    indx++;
+                }
+            }
+        }
+
+        return this;
+    };
+
+    //********************************************   T O O L S   *******************************************************
+    var RgbaColor = function (r, g, b, a) {
+        var red, green, blue, alpha;
+
+        if (arguments.length === 1) {
+            // hexadecimal input #112233
+            b = parseInt(r.substr(5, 2), 16);
+            g = parseInt(r.substr(3, 2), 16);
+            r = parseInt(r.substr(1, 2), 16);
+            a = 1;
+        } else if (arguments.length === 3) {
+            a = 1;
+        }
+
+        function validateColors() {
+            red = range(r, 255);
+            green = range(g, 255);
+            blue = range(b, 255);
+            alpha = range(a, 1);
+        }
+
+        validateColors();
+
+        this.getRed = function () {
+            return red;
+        };
+
+        this.setRed = function (r) {
+            red = range(r, 255);
+        };
+
+        this.getGreen = function () {
+            return green;
+        };
+
+        this.setGreen = function (g) {
+            green = range(g, 255);
+        };
+
+        this.getBlue = function () {
+            return blue;
+        };
+
+        this.setBlue = function (b) {
+            blue = range(b, 255);
+        };
+
+        this.getAlpha = function () {
+            return alpha;
+        };
+
+        this.setAlpha = function (a) {
+            alpha = range(a, 1);
+        };
+
+        this.getRgbaColor = function () {
+            return 'rgba(' + red + ', ' + green + ', ' + blue + ', ' + alpha + ')';
+        };
+
+        this.getRgbColor = function () {
+            return 'rgb(' + red + ', ' + green + ', ' + blue + ')';
+        };
+
+        this.getHexColor = function () {
+            return '#' + red.toString(16) + green.toString(16) + blue.toString(16);
+        };
+    };
+
+    var ConicalGradient = function (fractions, colors) {
+        var limit = fractions.length - 1,
+            i;
+
+        // Pre-multipy fractions array into range -PI to PI
+        for (i = 0; i <= limit; i++) {
+            fractions[i] = TWO_PI * fractions[i] - PI;
+        }
+
+        this.fillCircle = function (ctx, centerX, centerY, innerX, outerX) {
+            var angle,
+                radius = Math.ceil(outerX),
+                diameter = radius * 2,
+                pixels, alpha,
+                x, y, dx, dy, dy2, distance,
+                indx, pixColor,
+                buffer, bufferCtx;
+            // Create pixel array
+            pixels = ctx.createImageData(diameter, diameter);
+            alpha = 255;
+
+            for (y = 0; y < diameter; y++) {
+                dy = radius - y;
+                dy2 = dy * dy;
+                for (x = 0; x < diameter; x++) {
+                    dx = x - radius;
+                    distance = Math.sqrt((dx * dx) + dy2);
+                    if (distance <= radius && distance >= innerX) { // pixels are transparent by default, so only paint the ones we need
+                        angle = Math.atan2(dx, dy);
+                        for (i = 0; i < limit; i++) {
+                            if (angle >= fractions[i] && angle < fractions[i + 1]) {
+                                pixColor = getColorFromFraction(colors[i], colors[i + 1], fractions[i + 1] - fractions[i], angle - fractions[i], true);
+                            }
+                        }
+                        // The pixel array is addressed as 4 elements per pixel [r,g,b,a]
+                        indx = ((diameter - y) * diameter * 4) + (x * 4);  // plot is 180 rotated from orginal method, so apply a simple invert (diameter - y)
+                        pixels.data[indx]     = pixColor[0];
+                        pixels.data[indx + 1] = pixColor[1];
+                        pixels.data[indx + 2] = pixColor[2];
+                        pixels.data[indx + 3] = alpha;
+                    }
+                }
+            }
+
+            // Create a new buffer to apply the raw data so we can rotate it
+            buffer = createBuffer(diameter, diameter);
+            bufferCtx = buffer.getContext('2d');
+            bufferCtx.putImageData(pixels, 0, 0);
+            // Apply the image buffer
+            ctx.drawImage(buffer, centerX - radius, centerY - radius);
+        };
+
+        this.fillRect = function (ctx, centerX, centerY, width, height, thicknessX, thicknessY) {
+            var angle,
+                width2,
+                height2,
+                pixels, alpha,
+                x, y, dx, dy,
+                indx,
+                pixColor,
+                buffer, bufferCtx;
+
+            width = Math.ceil(width);
+            height = Math.ceil(height);
+            width2 = width / 2;
+            height2 = height / 2;
+            thicknessX = Math.ceil(thicknessX);
+            thicknessY = Math.ceil(thicknessY);
+
+            // Create pixel array
+            pixels = ctx.createImageData(width, height);
+            alpha = 255;
+
+            for (y = 0; y < height; y++) {
+                dy = height2 - y;
+                for (x = 0; x < width; x++) {
+                    if (y > thicknessY && y <= height - thicknessY) {
+                        // we are in the range where we only draw the sides
+                        if (x > thicknessX && x < width - thicknessX) {
+                            // we are in the empty 'middle', jump to the next edge
+                            x = width - thicknessX;
+                        }
+                    }
+                    dx = x - width2;
+                    angle = Math.atan2(dx, dy);
+                    for (i = 0; i < limit; i++) {
+                        if (angle >= fractions[i] && angle < fractions[i + 1]) {
+                            pixColor = getColorFromFraction(colors[i], colors[i + 1], fractions[i + 1] - fractions[i], angle - fractions[i], true);
+                        }
+                    }
+                    // The pixel array is addressed as 4 elements per pixel [r,g,b,a]
+                    indx = ((height - y) * width * 4) + (x * 4); // plot is 180 rotated from orginal method, so apply a simple invert (height - y)
+                    pixels.data[indx]     = pixColor[0];
+                    pixels.data[indx + 1] = pixColor[0];
+                    pixels.data[indx + 2] = pixColor[0];
+                    pixels.data[indx + 3] = alpha;
+                }
+            }
+            // Create a new buffer to apply the raw data so we can clip it when drawing to canvas
+            buffer = createBuffer(width, height);
+            bufferCtx = buffer.getContext('2d');
+            bufferCtx.putImageData(pixels, 0, 0);
+
+            // draw the buffer back to the canvas
+            ctx.drawImage(buffer, centerX - width2, centerY - height2);
+        };
+    };
+
+    var GradientWrapper = function (start, end, fractions, colors) {
+
+        this.getColorAt = function (fraction) {
+            var lowerLimit = 0,
+                lowerIndex = 0,
+                upperLimit = 1,
+                upperIndex = 1,
+                i,
+                interpolationFraction;
+
+            fraction = (fraction < 0 ? 0 : (fraction > 1 ? 1 : fraction));
+
+            for (i = 0; i < fractions.length; i++) {
+                if (fractions[i] < fraction && lowerLimit < fractions[i]) {
+                    lowerLimit = fractions[i];
+                    lowerIndex = i;
+                }
+                if (fractions[i] === fraction) {
+                    return colors[i];
+                }
+                if (fractions[i] > fraction && upperLimit >= fractions[i]) {
+                    upperLimit = fractions[i];
+                    upperIndex = i;
+                }
+            }
+            interpolationFraction = (fraction - lowerLimit) / (upperLimit - lowerLimit);
+            return getColorFromFraction(colors[lowerIndex], colors[upperIndex], 1, interpolationFraction);
+        };
+
+        this.getStart = function () {
+            return start;
+        };
+
+        this.getEnd = function () {
+            return end;
+        };
+    };
+
+    function setAlpha(hex, alpha) {
+        var hexColor = ('#' === hex.charAt(0)) ? hex.substring(1, 7) : hex,
+            red = parseInt((hexColor).substring(0, 2), 16),
+            green = parseInt((hexColor).substring(2, 4), 16),
+            blue = parseInt((hexColor).substring(4, 6), 16),
+            color = 'rgba(' + red + ',' + green + ',' + blue + ',' + alpha + ')';
+
+        return color;
+    }
+
+    function getColorFromFraction(sourceColor, destinationColor, range, fraction, returnRawData) {
+        var INT_TO_FLOAT = 1 / 255,
+            sourceRed = sourceColor.getRed(),
+            sourceGreen = sourceColor.getGreen(),
+            sourceBlue = sourceColor.getBlue(),
+            sourceAlpha = sourceColor.getAlpha(),
+
+            deltaRed = destinationColor.getRed() - sourceRed,
+            deltaGreen = destinationColor.getGreen() - sourceGreen,
+            deltaBlue = destinationColor.getBlue() - sourceBlue,
+            deltaAlpha = destinationColor.getAlpha() * INT_TO_FLOAT - sourceAlpha * INT_TO_FLOAT,
+
+            fractionRed = deltaRed / range * fraction,
+            fractionGreen = deltaGreen / range * fraction,
+            fractionBlue = deltaBlue / range * fraction,
+            fractionAlpha = deltaAlpha / range * fraction;
+
+        returnRawData = returnRawData || false;
+        if (returnRawData) {
+            return [(sourceRed + fractionRed).toFixed(0), (sourceGreen + fractionGreen).toFixed(0), (sourceBlue + fractionBlue).toFixed(0), sourceAlpha + fractionAlpha];
+        } else {
+            return new RgbaColor((sourceRed + fractionRed).toFixed(0), (sourceGreen + fractionGreen).toFixed(0), (sourceBlue + fractionBlue).toFixed(0), sourceAlpha + fractionAlpha);
+        }
+    }
+
+    function section(start, stop, color) {
+        return {start : start,
+                stop : stop,
+                color : color};
+    }
+
+    Math.log10 = function (value) {
+        return (Math.log(value) / Math.LN10);
+    };
+
+    function calcNiceNumber(range, round) {
+        var exponent = Math.floor(Math.log10(range)),   // exponent of range
+            fraction = range / Math.pow(10, exponent),  // fractional part of range
+            niceFraction;                               // nice, rounded fraction
+
+        if (round) {
+            if (1.5 > fraction) {
+                niceFraction = 1;
+            } else if (3 > fraction) {
+                niceFraction = 2;
+            } else if (7 > fraction) {
+                niceFraction = 5;
+            } else {
+                niceFraction = 10;
+            }
+        } else {
+            if (1 >= fraction) {
+                niceFraction = 1;
+            } else if (2 >= fraction) {
+                niceFraction = 2;
+            } else if (5 >= fraction) {
+                niceFraction = 5;
+            } else {
+                niceFraction = 10;
+            }
+        }
+        return niceFraction * Math.pow(10, exponent);
+    }
+
+    function roundedRectangle(ctx, x, y, w, h, radius) {
+        var r = x + w,
+            b = y + h;
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(r - radius, y);
+        ctx.quadraticCurveTo(r, y, r, y + radius);
+        ctx.lineTo(r, y + h - radius);
+        ctx.quadraticCurveTo(r, b, r - radius, b);
+        ctx.lineTo(x + radius, b);
+        ctx.quadraticCurveTo(x, b, x, b - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+    }
+
+    function createBuffer(width, height) {
+        var buffer = doc.createElement('canvas');
+        buffer.width = width;
+        buffer.height = height;
+        return buffer;
+    }
+
+    function drawToBuffer(width, height, drawFunction) {
+        var buffer = doc.createElement('canvas');
+        buffer.width = width;
+        buffer.height = height;
+        drawFunction(buffer.getContext('2d'));
+        return buffer;
+    }
+
+    function getColorValues(color) {
+        var colorData,
+            lookupBuffer = drawToBuffer(1, 1, function (ctx) {
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.rect(0, 0, 1, 1);
+                ctx.fill();
+            });
+        colorData = lookupBuffer.getContext('2d').getImageData(0, 0, 2, 2).data;
+
+        /*
+        for (var i = 0; i < data.length; i += 4) {
+            var red = data[i];       // red
+            var green = data[i + 1]; // green
+            var blue = data[i + 2];  // blue
+            //var alpha = data[i + 3]; // alpha
+            console.log(red + ', ' + green + ', ' + blue);
+        }
+        */
+
+        return [colorData[0], colorData[1], colorData[2], colorData[3]];
+    }
+
+    function customColorDef(color) {
+        var VERY_DARK,
+            DARK,
+            LIGHT,
+            LIGHTER,
+            VERY_LIGHT,
+            values = getColorValues(color),
+            rgbaCol = new RgbaColor(values[0], values[1], values[2], values[3]);
+
+        VERY_DARK = darker(rgbaCol, 0.32);
+        DARK = darker(rgbaCol, 0.62);
+        LIGHT = lighter(rgbaCol, 0.84);
+        LIGHTER = lighter(rgbaCol, 0.94);
+        VERY_LIGHT = lighter(rgbaCol, 1);
+
+        return new ColorDef(VERY_DARK, DARK, rgbaCol, LIGHT, LIGHTER, VERY_LIGHT);
+    }
+
+    function rgbToHsl(red, green, blue) {
+        var min, max, hue, saturation, lightness, delta;
+
+        red /= 255;
+        green /= 255;
+        blue /= 255;
+
+        max = Math.max(red, green, blue);
+        min = Math.min(red, green, blue);
+        lightness = (max + min) / 2;
+
+        if (max === min) {
+            hue = saturation = 0; // achromatic
+        } else {
+            delta = max - min;
+            saturation = lightness > 0.5 ? delta / (2 - max - min) : delta / (max + min);
+            switch (max) {
+            case red:
+                hue = (green - blue) / delta + (green < blue ? 6 : 0);
+                break;
+            case green:
+                hue = (blue - red) / delta + 2;
+                break;
+            case blue:
+                hue = (red - green) / delta + 4;
+                break;
+            }
+            hue /= 6;
+        }
+        return [hue, saturation, lightness];
+    }
+
+    function hsbToRgb(hue, saturation, brightness) {
+        var r, g, b,
+            i = Math.floor(hue * 6),
+            f = hue * 6 - i,
+            p = brightness * (1 - saturation),
+            q = brightness * (1 - f * saturation),
+            t = brightness * (1 - (1 - f) * saturation);
+
+        switch (i % 6) {
+        case 0:
+            r = brightness;
+            g = t;
+            b = p;
+            break;
+        case 1:
+            r = q;
+            g = brightness;
+            b = p;
+            break;
+        case 2:
+            r = p;
+            g = brightness;
+            b = t;
+            break;
+        case 3:
+            r = p;
+            g = q;
+            b = brightness;
+            break;
+        case 4:
+            r = t;
+            g = p;
+            b = brightness;
+            break;
+        case 5:
+            r = brightness;
+            g = p;
+            b = q;
+            break;
+        }
+
+        return [Math.floor(r * 255), Math.floor(g * 255), Math.floor(b * 255)];
+    }
+
+    function rgbToHsb(r, g, b) {
+        var min, max, hue, saturation, brightness, delta;
+
+        r = r / 255;
+        g = g / 255;
+        b = b / 255;
+        max = Math.max(r, g, b);
+        min = Math.min(r, g, b);
+        brightness = max;
+        delta = max - min;
+        saturation = max === 0 ? 0 : delta / max;
+
+        if (max === min) {
+            hue = 0; // achromatic
+        } else {
+            switch (max) {
+            case r:
+                hue = (g - b) / delta + (g < b ? 6 : 0);
+                break;
+            case g:
+                hue = (b - r) / delta + 2;
+                break;
+            case b:
+                hue = (r - g) / delta + 4;
+                break;
+            }
+            hue /= 6;
+        }
+        return [hue, saturation, brightness];
+    }
+
+    function range(value, limit) {
+        return (value < 0 ? 0 : (value > limit ? limit : value));
+    }
+
+    function darker(color, fraction) {
+        var red = Math.floor(color.getRed() * (1 - fraction)),
+            green = Math.floor(color.getGreen() * (1 - fraction)),
+            blue = Math.floor(color.getBlue() * (1 - fraction));
+
+        red = range(red, 255);
+        green = range(green, 255);
+        blue = range(blue, 255);
+
+        return new RgbaColor(red, green, blue, color.getAlpha());
+    }
+
+    function lighter(color, fraction) {
+        var red = Math.round(color.getRed() * (1 + fraction)),
+            green = Math.round(color.getGreen() * (1 + fraction)),
+            blue = Math.round(color.getBlue() * (1 + fraction));
+
+        red = range(red, 255);
+        green = range(green, 255);
+        blue = range(blue, 255);
+
+        return new RgbaColor(red, green, blue, color.getAlpha());
+    }
+
+    function wrap(value, lower, upper) {
+        var distance, times;
+        if (upper <= lower) {
+            throw 'Rotary bounds are of negative or zero size';
+        }
+
+        distance = upper - lower;
+        times = Math.floor((value - lower) / distance);
+
+        return value - (times * distance);
+    }
+
+    function getShortestAngle(from, to) {
+        return wrap((to - from), -180, 180);
+    }
+
+    // shim layer
+    var requestAnimFrame = (function () {
+        return  window.requestAnimationFrame   ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame    ||
+            window.oRequestAnimationFrame      ||
+            window.msRequestAnimationFrame     ||
+            function (callback) {
+                window.setTimeout(callback, 1000 / 16);
+            };
+    }());
+
+    function getCanvasContext(elementOrId) {
+        var element = (typeof elementOrId === 'string' || elementOrId instanceof String) ?
+            doc.getElementById(elementOrId) : elementOrId;
+        return element.getContext('2d');
+    }
+
+
+    //****************************************   C O N S T A N T S   ***************************************************
+    var BackgroundColorDef;
+    (function () {
+        BackgroundColorDef = function (gradientStart, gradientFraction, gradientStop, labelColor, symbolColor, name) {
+            this.gradientStart = gradientStart;
+            this.gradientFraction = gradientFraction;
+            this.gradientStop = gradientStop;
+            this.labelColor = labelColor;
+            this.symbolColor = symbolColor;
+            this.name = name;
+        };
+    }());
+
+    var LcdColorDef;
+    (function () {
+        LcdColorDef = function (gradientStartColor, gradientFraction1Color, gradientFraction2Color, gradientFraction3Color, gradientStopColor, textColor) {
+            this.gradientStartColor = gradientStartColor;
+            this.gradientFraction1Color = gradientFraction1Color;
+            this.gradientFraction2Color = gradientFraction2Color;
+            this.gradientFraction3Color = gradientFraction3Color;
+            this.gradientStopColor = gradientStopColor;
+            this.textColor = textColor;
+        };
+    }());
+
+    var ColorDef;
+    (function () {
+        ColorDef = function (veryDark, dark, medium, light, lighter, veryLight) {
+            this.veryDark = veryDark;
+            this.dark = dark;
+            this.medium = medium;
+            this.light = light;
+            this.lighter = lighter;
+            this.veryLight = veryLight;
+        };
+    }());
+
+    var LedColorDef;
+    (function () {
+        LedColorDef = function (innerColor1_ON, innerColor2_ON, outerColor_ON, coronaColor, innerColor1_OFF, innerColor2_OFF, outerColor_OFF) {
+            this.innerColor1_ON = innerColor1_ON;
+            this.innerColor2_ON = innerColor2_ON;
+            this.outerColor_ON = outerColor_ON;
+            this.coronaColor = coronaColor;
+            this.innerColor1_OFF = innerColor1_OFF;
+            this.innerColor2_OFF = innerColor2_OFF;
+            this.outerColor_OFF = outerColor_OFF;
+        };
+    }());
+
+    var GaugeTypeDef;
+    (function () {
+        GaugeTypeDef = function (type) {
+            this.type = type;
+        };
+    }());
+
+    var OrientationDef;
+    (function () {
+        OrientationDef = function (type) {
+            this.type = type;
+        };
+    }());
+
+    var KnobTypeDef;
+    (function () {
+        KnobTypeDef = function (type) {
+            this.type = type;
+        };
+    }());
+
+    var KnobStyleDef;
+    (function () {
+        KnobStyleDef = function (style) {
+            this.style = style;
+        };
+    }());
+
+    var FrameDesignDef;
+    (function () {
+        FrameDesignDef = function (design) {
+            this.design = design;
+        };
+    }());
+
+    var PointerTypeDef;
+    (function () {
+        PointerTypeDef = function (type) {
+            this.type = type;
+        };
+    }());
+
+    var ForegroundTypeDef;
+    (function () {
+        ForegroundTypeDef = function (type) {
+            this.type = type;
+        };
+    }());
+
+    var LabelNumberFormatDef;
+    (function () {
+        LabelNumberFormatDef = function (format) {
+            this.format = format;
+        };
+    }());
+
+    var TickLabelOrientationDef;
+    (function () {
+        TickLabelOrientationDef = function (type) {
+            this.type = type;
+        };
+    }());
+
+    var TrendStateDef;
+    (function () {
+        TrendStateDef = function (state) {
+            this.state = state;
+        };
+    }());
+
+    //*************************   I m p l e m e n t a t i o n s   o f   d e f i n i t i o n s   ************************
+    var backgroundColor = {
+        DARK_GRAY: new BackgroundColorDef(new RgbaColor(0, 0, 0, 1), new RgbaColor(51, 51, 51, 1), new RgbaColor(153, 153, 153, 1), new RgbaColor(255, 255, 255, 1), new RgbaColor(180, 180, 180, 1), 'DARK_GRAY'),
+        SATIN_GRAY: new BackgroundColorDef(new RgbaColor(45, 57, 57, 1), new RgbaColor(45, 57, 57, 1), new RgbaColor(45, 57, 57, 1), new RgbaColor(167, 184, 180, 1), new RgbaColor(137, 154, 150, 1), 'SATIN_GRAY'),
+        LIGHT_GRAY: new BackgroundColorDef(new RgbaColor(130, 130, 130, 1), new RgbaColor(181, 181, 181, 1), new RgbaColor(253, 253, 253, 1), new RgbaColor(0, 0, 0, 1), new RgbaColor(80, 80, 80, 1), 'LIGHT_GRAY'),
+        WHITE: new BackgroundColorDef(new RgbaColor(255, 255, 255, 1), new RgbaColor(255, 255, 255, 1), new RgbaColor(255, 255, 255, 1), new RgbaColor(0, 0, 0, 1), new RgbaColor(80, 80, 80, 1), 'WHITE'),
+        BLACK: new BackgroundColorDef(new RgbaColor(0, 0, 0, 1), new RgbaColor(0, 0, 0, 1), new RgbaColor(0, 0, 0, 1), new RgbaColor(255, 255, 255, 1), new RgbaColor(150, 150, 150, 1), 'BLACK'),
+        BEIGE: new BackgroundColorDef(new RgbaColor(178, 172, 150, 1), new RgbaColor(204, 205, 184, 1), new RgbaColor(231, 231, 214, 1), new RgbaColor(0, 0, 0, 1), new RgbaColor(80, 80, 80, 1), 'BEIGE'),
+        BROWN: new BackgroundColorDef(new RgbaColor(245, 225, 193, 1), new RgbaColor(245, 225, 193, 1), new RgbaColor(255, 250, 240, 1), new RgbaColor(109, 73, 47, 1), new RgbaColor(89, 53, 27, 1), 'BROWN'),
+        RED: new BackgroundColorDef(new RgbaColor(198, 93, 95, 1), new RgbaColor(212, 132, 134, 1), new RgbaColor(242, 218, 218, 1), new RgbaColor(0, 0, 0, 1), new RgbaColor(90, 0, 0, 1), 'RED'),
+        GREEN: new BackgroundColorDef(new RgbaColor(65, 120, 40, 1), new RgbaColor(129, 171, 95, 1), new RgbaColor(218, 237, 202, 1), new RgbaColor(0, 0, 0, 1), new RgbaColor(0, 90, 0, 1), 'GREEN'),
+        BLUE: new BackgroundColorDef(new RgbaColor(45, 83, 122, 1), new RgbaColor(115, 144, 170, 1), new RgbaColor(227, 234, 238, 1), new RgbaColor(0, 0, 0, 1), new RgbaColor(0, 0, 90, 1), 'BLUE'),
+        ANTHRACITE: new BackgroundColorDef(new RgbaColor(50, 50, 54, 1), new RgbaColor(47, 47, 51, 1), new RgbaColor(69, 69, 74, 1), new RgbaColor(250, 250, 250, 1), new RgbaColor(180, 180, 180, 1), 'ANTHRACITE'),
+        MUD: new BackgroundColorDef(new RgbaColor(80, 86, 82, 1), new RgbaColor(70, 76, 72, 1), new RgbaColor(57, 62, 58, 1), new RgbaColor(255, 255, 240, 1), new RgbaColor(225, 225, 210, 1), 'MUD'),
+        PUNCHED_SHEET: new BackgroundColorDef(new RgbaColor(50, 50, 54, 1), new RgbaColor(47, 47, 51, 1), new RgbaColor(69, 69, 74, 1), new RgbaColor(255, 255, 255, 1), new RgbaColor(180, 180, 180, 1), 'PUNCHED_SHEET'),
+        CARBON: new BackgroundColorDef(new RgbaColor(50, 50, 54, 1), new RgbaColor(47, 47, 51, 1), new RgbaColor(69, 69, 74, 1), new RgbaColor(255, 255, 255, 1), new RgbaColor(180, 180, 180, 1), 'CARBON'),
+        STAINLESS: new BackgroundColorDef(new RgbaColor(130, 130, 130, 1), new RgbaColor(181, 181, 181, 1), new RgbaColor(253, 253, 253, 1), new RgbaColor(0, 0, 0, 1), new RgbaColor(80, 80, 80, 1), 'STAINLESS'),
+        BRUSHED_METAL: new BackgroundColorDef(new RgbaColor(50, 50, 54, 1), new RgbaColor(47, 47, 51, 1), new RgbaColor(69, 69, 74, 1), new RgbaColor(0, 0, 0, 1), new RgbaColor(80, 80, 80, 1), 'BRUSHED_METAL'),
+        BRUSHED_STAINLESS: new BackgroundColorDef(new RgbaColor(50, 50, 54, 1), new RgbaColor(47, 47, 51, 1), new RgbaColor(110, 110, 112, 1), new RgbaColor(0, 0, 0, 1), new RgbaColor(80, 80, 80, 1), 'BRUSHED_STAINLESS'),
+        TURNED: new BackgroundColorDef(new RgbaColor(130, 130, 130, 1), new RgbaColor(181, 181, 181, 1), new RgbaColor(253, 253, 253, 1), new RgbaColor(0, 0, 0, 1), new RgbaColor(80, 80, 80, 1), 'TURNED')
+    };
+
+    var lcdColor = {
+        BEIGE: new LcdColorDef('#c8c8b1', 'rgb(241, 237, 207)', 'rgb(234, 230, 194)', 'rgb(225, 220, 183)', 'rgb(237, 232, 191)', '#000000'),
+        BLUE: new LcdColorDef('#ffffff', 'rgb(231, 246, 255)', 'rgb(170, 224, 255)', 'rgb(136, 212, 255)', 'rgb(192, 232, 255)', '#124564'),
+        ORANGE: new LcdColorDef('#ffffff', 'rgb(255, 245, 225)', 'rgb(255, 217, 147)', 'rgb(255, 201, 104)', 'rgb(255, 227, 173)', '#503700'),
+        RED: new LcdColorDef('#ffffff', 'rgb(255, 225, 225)', 'rgb(253, 152, 152)', 'rgb(252, 114, 115)', 'rgb(254, 178, 178)', '#4f0c0e'),
+        YELLOW: new LcdColorDef('#ffffff', 'rgb(245, 255, 186)', 'rgb(210, 255, 0)', 'rgb(158, 205, 0)', 'rgb(210, 255, 0)', '#405300'),
+        WHITE: new LcdColorDef('#ffffff', '#ffffff', 'rgb(241, 246, 242)', 'rgb(229, 239, 244)', '#ffffff', '#000000'),
+        GRAY: new LcdColorDef('#414141', 'rgb(117, 117, 117)', 'rgb(87, 87, 87)', '#414141', 'rgb(81, 81, 81)', '#ffffff'),
+        BLACK: new LcdColorDef('#414141', '#666666', '#333333', '#000000', '#333333', '#cccccc'),
+        GREEN: new LcdColorDef('rgb(33, 67, 67)', 'rgb(33, 67, 67)', 'rgb(29, 58, 58)', 'rgb(28, 57, 57)', 'rgb(23, 46, 46)', 'rgba(0, 185, 165, 255)'),
+        BLUE2: new LcdColorDef('rgb(0, 68, 103)', 'rgb(8, 109, 165)', 'rgb(0, 72, 117)', 'rgb(0, 72, 117)', 'rgb(0, 68, 103)', 'rgb(111, 182, 228)'),
+        BLUE_BLACK: new LcdColorDef('rgb(22, 125, 212)', 'rgb(3, 162, 254)', 'rgb(3, 162, 254)', 'rgb(3, 162, 254)', 'rgb(11, 172, 244)', '#000000'),
+        BLUE_DARKBLUE: new LcdColorDef('rgb(18, 33, 88)', 'rgb(18, 33, 88)', 'rgb(19, 30, 90)', 'rgb(17, 31, 94)', 'rgb(21, 25, 90)', 'rgb(23, 99, 221)'),
+        BLUE_GRAY: new LcdColorDef('rgb(135, 174, 255)', 'rgb(101, 159, 255)', 'rgb(44, 93, 255)', 'rgb(27, 65, 254)', 'rgb(12, 50, 255)', '#b2b4ed'),
+        STANDARD: new LcdColorDef('rgb(131, 133, 119)', 'rgb(176, 183, 167)', 'rgb(165, 174, 153)', 'rgb(166, 175, 156)', 'rgb(175, 184, 165)', 'rgb(35, 42, 52)'),
+        STANDARD_GREEN: new LcdColorDef('#ffffff', 'rgb(219, 230, 220)', 'rgb(179, 194, 178)', 'rgb(153, 176, 151)', 'rgb(114, 138, 109)', '#080C06'),
+        BLUE_BLUE: new LcdColorDef('rgb(100, 168, 253)', 'rgb(100, 168, 253)', 'rgb(95, 160, 250)', 'rgb(80, 144, 252)', 'rgb(74, 134, 255)', '#002cbb'),
+        RED_DARKRED: new LcdColorDef('rgb(72, 36, 50)', 'rgb(185, 111, 110)', 'rgb(148, 66, 72)', 'rgb(83, 19, 20)', 'rgb(7, 6, 14)', '#FE8B92'),
+        DARKBLUE: new LcdColorDef('rgb(14, 24, 31)', 'rgb(46, 105, 144)', 'rgb(19, 64, 96)', 'rgb(6, 20, 29)', 'rgb(8, 9, 10)', '#3DB3FF'),
+        LILA: new LcdColorDef('rgb(175, 164, 255)', 'rgb(188, 168, 253)', 'rgb(176, 159, 255)', 'rgb(174, 147, 252)', 'rgb(168, 136, 233)', '#076148'),
+        BLACKRED: new LcdColorDef('rgb(8, 12, 11)', 'rgb(10, 11, 13)', 'rgb(11, 10, 15)', 'rgb(7, 13, 9)', 'rgb(9, 13, 14)', '#B50026'),
+        DARKGREEN: new LcdColorDef('rgb(25, 85, 0)', 'rgb(47, 154, 0)', 'rgb(30, 101, 0)', 'rgb(30, 101, 0)', 'rgb(25, 85, 0)', '#233123'),
+        AMBER: new LcdColorDef('rgb(182, 71, 0)', 'rgb(236, 155, 25)', 'rgb(212, 93, 5)', 'rgb(212, 93, 5)', 'rgb(182, 71, 0)', '#593A0A'),
+        LIGHTBLUE: new LcdColorDef('rgb(125, 146, 184)', 'rgb(197, 212, 231)', 'rgb(138, 155, 194)', 'rgb(138, 155, 194)', 'rgb(125, 146, 184)', '#090051'),
+        SECTIONS: new LcdColorDef('#b2b2b2', '#ffffff', '#c4c4c4', '#c4c4c4', '#b2b2b2', '#000000')
+    };
+
+    var color = {
+        RED: new ColorDef(new RgbaColor(82, 0, 0, 1), new RgbaColor(158, 0, 19, 1), new RgbaColor(213, 0, 25, 1), new RgbaColor(240, 82, 88, 1), new RgbaColor(255, 171, 173, 1), new RgbaColor(255, 217, 218, 1)),
+        GREEN: new ColorDef(new RgbaColor(8, 54, 4, 1), new RgbaColor(0, 107, 14, 1), new RgbaColor(15, 148, 0, 1), new RgbaColor(121, 186, 37, 1), new RgbaColor(190, 231, 141, 1), new RgbaColor(234, 247, 218, 1)),
+        BLUE: new ColorDef(new RgbaColor(0, 11, 68, 1), new RgbaColor(0, 73, 135, 1), new RgbaColor(0, 108, 201, 1), new RgbaColor(0, 141, 242, 1), new RgbaColor(122, 200, 255, 1), new RgbaColor(204, 236, 255, 1)),
+        ORANGE: new ColorDef(new RgbaColor(118, 83, 30, 1), new RgbaColor(215, 67, 0, 1), new RgbaColor(240, 117, 0, 1), new RgbaColor(255, 166, 0, 1), new RgbaColor(255, 255, 128, 1), new RgbaColor(255, 247, 194, 1)),
+        YELLOW: new ColorDef(new RgbaColor(41, 41, 0, 1), new RgbaColor(102, 102, 0, 1), new RgbaColor(177, 165, 0, 1), new RgbaColor(255, 242, 0, 1), new RgbaColor(255, 250, 153, 1), new RgbaColor(255, 252, 204, 1)),
+        CYAN: new ColorDef(new RgbaColor(15, 109, 109, 1), new RgbaColor(0, 109, 144, 1), new RgbaColor(0, 144, 191, 1), new RgbaColor(0, 174, 239, 1), new RgbaColor(153, 223, 249, 1), new RgbaColor(204, 239, 252, 1)),
+        MAGENTA: new ColorDef(new RgbaColor(98, 0, 114, 1), new RgbaColor(128, 24, 72, 1), new RgbaColor(191, 36, 107, 1), new RgbaColor(255, 48, 143, 1), new RgbaColor(255, 172, 210, 1), new RgbaColor(255, 214, 23, 1)),
+        WHITE: new ColorDef(new RgbaColor(210, 210, 210, 1), new RgbaColor(220, 220, 220, 1), new RgbaColor(235, 235, 235, 1), new RgbaColor(255, 255, 255, 1), new RgbaColor(255, 255, 255, 1), new RgbaColor(255, 255, 255, 1)),
+        GRAY: new ColorDef(new RgbaColor(25, 25, 25, 1), new RgbaColor(51, 51, 51, 1), new RgbaColor(76, 76, 76, 1), new RgbaColor(128, 128, 128, 1), new RgbaColor(204, 204, 204, 1), new RgbaColor(243, 243, 243, 1)),
+        BLACK: new ColorDef(new RgbaColor(0, 0, 0, 1), new RgbaColor(5, 5, 5, 1), new RgbaColor(10, 10, 10, 1), new RgbaColor(15, 15, 15, 1), new RgbaColor(20, 20, 20, 1), new RgbaColor(25, 25, 25, 1)),
+        RAITH: new ColorDef(new RgbaColor(0, 32, 65, 1), new RgbaColor(0, 65, 125, 1), new RgbaColor(0, 106, 172, 1), new RgbaColor(130, 180, 214, 1), new RgbaColor(148, 203, 242, 1), new RgbaColor(191, 229, 255, 1)),
+        GREEN_LCD: new ColorDef(new RgbaColor(0, 55, 45, 1), new RgbaColor(15, 109, 93, 1), new RgbaColor(0, 185, 165, 1), new RgbaColor(48, 255, 204, 1), new RgbaColor(153, 255, 227, 1), new RgbaColor(204, 255, 241, 1)),
+        JUG_GREEN: new ColorDef(new RgbaColor(0, 56, 0, 1), new RgbaColor(32, 69, 36, 1), new RgbaColor(50, 161, 0, 1), new RgbaColor(129, 206, 0, 1), new RgbaColor(190, 231, 141, 1), new RgbaColor(234, 247, 218, 1))
+    };
+
+    var ledColor = {
+        RED_LED: new LedColorDef('#FF9A89', '#FF9A89', '#FF3300', '#FF8D70', '#7E1C00', '#7E1C00', '#641B00'),
+        GREEN_LED: new LedColorDef('#9AFF89', '#9AFF89', '#59FF2A', '#A5FF00', '#1C7E00', '#1C7E00', '#1B6400'),
+        BLUE_LED: new LedColorDef('#899AFF', '#899AFF', '#0033FF', '#708DFF', '#001C7E', '#001C7E', '#001B64'),
+        ORANGE_LED: new LedColorDef('#FEA23F', '#FEA23F', '#FD6C00', '#FD6C00', '#592800', '#592800', '#421F00'),
+        YELLOW_LED: new LedColorDef('#FFFF62', '#FFFF62', '#FFFF00', '#FFFF00', '#6B6D00', '#6B6D00', '#515300'),
+        CYAN_LED: new LedColorDef('#00FFFF', '#00FFFF', '#1BC3C3', '#00FFFF', '#083B3B', '#083B3B', '#052727'),
+        MAGENTA_LED: new LedColorDef('#D300FF', '#D300FF', '#8600CB', '#C300FF', '#38004B', '#38004B', '#280035')
+    };
+
+    var gaugeType = {
+        TYPE1: new GaugeTypeDef('type1'),
+        TYPE2: new GaugeTypeDef('type2'),
+        TYPE3: new GaugeTypeDef('type3'),
+        TYPE4: new GaugeTypeDef('type4'),
+        TYPE5: new GaugeTypeDef('type5')
+    };
+
+    var orientation = {
+        NORTH: new OrientationDef('north'),
+        SOUTH: new OrientationDef('south'),
+        EAST: new OrientationDef('east'),
+        WEST: new OrientationDef('west')
+    };
+
+    var knobType = {
+        STANDARD_KNOB: new KnobTypeDef('standardKnob'),
+        METAL_KNOB: new KnobTypeDef('metalKnob')
+    };
+
+    var knobStyle = {
+        BLACK: new KnobStyleDef('black'),
+        BRASS: new KnobStyleDef('brass'),
+        SILVER: new KnobStyleDef('silver')
+    };
+
+    var frameDesign = {
+        BLACK_METAL: new FrameDesignDef('blackMetal'),
+        METAL: new FrameDesignDef('metal'),
+        SHINY_METAL: new FrameDesignDef('shinyMetal'),
+        BRASS: new FrameDesignDef('brass'),
+        STEEL: new FrameDesignDef('steel'),
+        CHROME: new FrameDesignDef('chrome'),
+        GOLD: new FrameDesignDef('gold'),
+        ANTHRACITE: new FrameDesignDef('anthracite'),
+        TILTED_GRAY: new FrameDesignDef('tiltedGray'),
+        TILTED_BLACK: new FrameDesignDef('tiltedBlack'),
+        GLOSSY_METAL: new FrameDesignDef('glossyMetal')
+    };
+
+    var pointerType = {
+        TYPE1: new PointerTypeDef('type1'),
+        TYPE2: new PointerTypeDef('type2'),
+        TYPE3: new PointerTypeDef('type3'),
+        TYPE4: new PointerTypeDef('type4'),
+        TYPE5: new PointerTypeDef('type5'),
+        TYPE6: new PointerTypeDef('type6'),
+        TYPE7: new PointerTypeDef('type7'),
+        TYPE8: new PointerTypeDef('type8'),
+        TYPE9: new PointerTypeDef('type9'),
+        TYPE10: new PointerTypeDef('type10'),
+        TYPE11: new PointerTypeDef('type11'),
+        TYPE12: new PointerTypeDef('type12'),
+        TYPE13: new PointerTypeDef('type13'),
+        TYPE14: new PointerTypeDef('type14'),
+        TYPE15: new PointerTypeDef('type15'),
+        TYPE16: new PointerTypeDef('type16')
+    };
+
+    var foregroundType = {
+        TYPE1: new ForegroundTypeDef('type1'),
+        TYPE2: new ForegroundTypeDef('type2'),
+        TYPE3: new ForegroundTypeDef('type3'),
+        TYPE4: new ForegroundTypeDef('type4'),
+        TYPE5: new ForegroundTypeDef('type5')
+    };
+
+    var labelNumberFormat = {
+        STANDARD: new LabelNumberFormatDef('standard'),
+        FRACTIONAL: new LabelNumberFormatDef('fractional'),
+        SCIENTIFIC: new LabelNumberFormatDef('scientific')
+    };
+
+    var tickLabelOrientation = {
+        NORMAL: new TickLabelOrientationDef('normal'),
+        HORIZONTAL: new TickLabelOrientationDef('horizontal'),
+        TANGENT: new TickLabelOrientationDef('tangent')
+    };
+
+    var trendState = {
+        UP: new TrendStateDef('up'),
+        STEADY: new TrendStateDef('steady'),
+        DOWN: new TrendStateDef('down'),
+        OFF: new TrendStateDef('off')
+    };
+
+    //**********************************   E X P O R T   F U N C T I O N S   *******************************************
+    return {
+        getCanvasContext: getCanvasContext,
+        createBuffer :createBuffer ,
+        calcNiceNumber :calcNiceNumber ,
+
+        drawRadialFrameImage:drawRadialFrameImage ,
+        drawRadialBackgroundImage:drawRadialBackgroundImage,
+        drawRadialCustomImage:drawRadialCustomImage,
+
+        drawLinearFrameImage:drawLinearFrameImage,
+        drawLinearBackgroundImage:drawLinearBackgroundImage,
+        drawLinearForegroundImage:drawLinearForegroundImage,
+
+
+        createLedImage :createLedImage ,
+        createKnobImage :createKnobImage ,
+        createLcdBackgroundImage:createLcdBackgroundImage ,
+        createTrendIndicator:createTrendIndicator,
+        createMeasuredValueImage:createMeasuredValueImage,
+        drawTitleImage :drawTitleImage ,
+        drawPointerImage :drawPointerImage ,
+        // Images
+        drawFrame : drawRadialFrameImage,
+        drawBackground : drawRadialBackgroundImage,
+        drawForeground : drawRadialForegroundImage,
+
+        drawRadialForegroundImage :drawRadialForegroundImage ,
+
+        drawRoseImage:drawRoseImage,
+
+
+
+
+        // Tools
+        rgbaColor :  RgbaColor,
+        ConicalGradient : ConicalGradient,
+        setAlpha : setAlpha,
+        getColorFromFraction : getColorFromFraction,
+        gradientWrapper : GradientWrapper,
+        requestAnimFrame :requestAnimFrame ,
+
+        // Constants
+        BackgroundColor : backgroundColor,
+        LcdColor : lcdColor,
+        ColorDef : color,
+        LedColor : ledColor,
+        GaugeType : gaugeType,
+        Orientation: orientation,
+        FrameDesign : frameDesign,
+        PointerType : pointerType,
+        ForegroundType : foregroundType,
+        KnobType : knobType,
+        KnobStyle: knobStyle,
+        LabelNumberFormat: labelNumberFormat,
+        TickLabelOrientation: tickLabelOrientation,
+        TrendState: trendState,
+
+        // Other
+        Section : section,
+        Odometer:odometer
+    };
+}());
+
+
