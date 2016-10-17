@@ -1,6 +1,6 @@
 gun-ui-lib
 ==========
-> main component of the gun-ui library.
+> main component of the gun-ui library.<br>
 > A collection of widgets created to work brilliantly with GUN, or without.
 
 ## NOTE: 
@@ -30,5 +30,5 @@ Yes, the original file holds all widgets in a single file. I needed every widget
 syncing
 
 gun-ui-lcd , gun-ui-gauge and gun-ui-bargauge 
-![alt text](https://cloud.githubusercontent.com/assets/890650/19337265/e26abdcc-9113-11e6-9fea-e5d8a66bff31.gif)
+![alt text](https://cloud.githubusercontent.com/assets/890650/19337265/e26abdcc-9113-11e6-9fea-e5d8a66bff31.gif)<br>
 _All canvas elements in the gun-ui-lib are created by Gerrit Grunwald (@hansolo)_**
