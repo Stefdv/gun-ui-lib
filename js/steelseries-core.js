@@ -3626,6 +3626,7 @@ var steelseries = (function () {
         createTrendIndicator:createTrendIndicator,
         drawTitleImage :drawTitleImage ,
         drawPointerImage :drawPointerImage ,
+        customColorDef :customColorDef ,
         // Images
         drawFrame : drawRadialFrameImage,
         drawBackground : drawRadialBackgroundImage,
